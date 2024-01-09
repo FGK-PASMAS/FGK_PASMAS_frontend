@@ -5,7 +5,7 @@ COPY . .
 
 RUN npm install
 
-CMD [ "npm", "run", "build" ]
+RUN npm run build
 
 
 FROM nginx
