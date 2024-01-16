@@ -12,7 +12,7 @@ function closeDrawer()
 </script>
 
 <template>
-    <div class="drawer h-full flex flex-column justify-content-between min-w-max z-5" :class="{ 'open': isOpen, 'closed': !isOpen }">
+    <div class="drawer h-full md:static fixed flex-shrink-0 flex flex-column justify-content-between min-w-max z-5" :class="{ 'open': isOpen, 'closed': !isOpen }">
         <div class="flex flex-column">
             <div class="flex justify-content-between align-items-center p-2">
                 <MenuLogo />
