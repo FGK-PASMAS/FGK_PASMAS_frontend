@@ -3,13 +3,15 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 
-// UI Library
 import PrimeVue from 'primevue/config';
 import 'primevue/resources/themes/lara-dark-green/theme.css';
+import 'primeflex/primeflex.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+import './assets/main.scss'
 
 import Button from 'primevue/button';
 import Divider from 'primevue/divider';
+import ScrollPanel from 'primevue/scrollpanel';
 
 const app = createApp(App);
 
@@ -17,8 +19,9 @@ app.use(createPinia());
 app.use(router);
 app.use(PrimeVue);
 
-// Global components
-app.component('PrimeButton', Button);
-app.component('PrimeDivider', Divider);
+app
+    .component('PrimeButton', Button)
+    .component('PrimeDivider', Divider)
+    .component('PrimeScrollPanel', ScrollPanel);
 
 app.mount('#app');

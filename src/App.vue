@@ -1,40 +1,42 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import { RouterView, useRouter } from 'vue-router'
-import MenuMain from './components/MenuMain.vue';
+import { useRouter } from 'vue-router';
+import MenuDrawer from './components/MenuDrawer.vue';
+import MenuItem from './components/MenuItem.vue';
+import MenuTopBar from './components/MenuTopBar.vue';
 
-const showMenu = ref(true);
 const router = useRouter();
+const isNotFound = ref(false);
+const isOpen = ref(true);
 
 router.beforeEach((to, from) => {
     if (to.name === 'notFound') {
-        showMenu.value = false;
+        isNotFound.value = true;
     } else {
-        showMenu.value = true;
+        isNotFound.value = false;
     }
 });
+
+function onOpenDrawer()
+{
+    isOpen.value = true;
+}
 </script>
 
 <template>
-    <MenuMain v-if="showMenu" class="menu"/>
-    <RouterView />
+    <div class="h-full flex">
+        <MenuDrawer v-if="!isNotFound" v-model="isOpen">
+            <MenuItem icon="bi-book" item="Planung" to="/" />
+            <MenuItem icon="bi-airplane" item="Flüge" to="/flights" />
+            <MenuItem icon="bi-people" item="Passagiere" to="/passengers" />
+            <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
+        </MenuDrawer>
+        <PrimeScrollPanel style="height: 100%; width: 100%;">
+            <MenuTopBar :isVisible="!isOpen" @openDrawer="onOpenDrawer()"/>
+            <RouterView />
+        </PrimeScrollPanel>
+    </div>
 </template>
 
 <style lang="scss">
-    body {
-        margin: 0;
-        padding: 0px;
-    }
-
-    :root {
-        background-color: var(--surface-50);
-    }
-
-    .menu {
-        width: 100%;
-        position: sticky;
-        top: 0;
-        left: 0;
-        background-color: var(--surface-50);
-    }
 </style>

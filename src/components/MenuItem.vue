@@ -10,10 +10,10 @@ defineProps([
 
 <template>
     <RouterLink class="menu-item" :to="to">
-        <div class="menu-label">
-            <i :class="icon"/>
+        <div class="flex align-items-center gap-2 p-2 border-round-sm">
+            <i class="text-2xl" :class="icon" />
             {{ item }}
-        </diV>
+        </div>
     </RouterLink>
 </template>
 
@@ -21,25 +21,13 @@ defineProps([
     .menu-item {
         color: inherit;
         text-decoration: none;
-        padding: 10px;
-        border-radius: 5px;
     }
 
-    .menu-item:hover {
-        background-color: var(--surface-100);
+    .menu-item:hover div {
+        background-color: var(--surface-200);
     }
 
-    .menu-label {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .menu-label i {
-        font-size: 1.5rem;
-    }
-
-    .router-link-active {
-        background-color: var(--surface-300);
+    .router-link-active div {
+        background-color: var(--primary-color);
     }
 </style>
