@@ -12,15 +12,16 @@ function closeDrawer()
 </script>
 
 <template>
-    <div class="drawer h-full flex flex-column min-w-max z-5" :class="{ 'open': isOpen, 'closed': !isOpen }">
-        <div class="flex justify-content-between align-items-center p-2">
-            <MenuLogo />
-            <PrimeButton class="btn-close" icon="bi-x-lg" text rounded aria-label="Close" @click="closeDrawer()" />
+    <div class="drawer h-full flex flex-column justify-content-between min-w-max z-5" :class="{ 'open': isOpen, 'closed': !isOpen }">
+        <div class="flex flex-column">
+            <div class="flex justify-content-between align-items-center p-2">
+                <MenuLogo />
+                <PrimeButton class="btn-close" icon="bi-x-lg" text rounded aria-label="Close" @click="closeDrawer()" />
+            </div>
+            <div class="p-2">
+                <slot></slot>
+            </div>
         </div>
-        <div class="p-2">
-            <slot></slot>
-        </div>
-        <div class="flex-grow-1"></div>
         <div class="p-2">
             <PrimeDivider />
             <div class="text-center">
@@ -29,6 +30,7 @@ function closeDrawer()
                 <span>{{ " " + name }}</span>
             </div>
         </div>
+
     </div>
 </template>
 
