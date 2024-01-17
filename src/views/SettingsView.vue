@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import ContentHeader from '@/components/ContentHeader.vue';
 </script>
 
 <template>
     <main>
-        <h1>Einstellungen hier!</h1>
+        <ContentHeader title="Einstellungen" />
     </main>
 
     <div>

@@ -16,7 +16,7 @@ function closeDrawer()
         <div class="flex flex-column">
             <div class="flex justify-content-between align-items-center p-2">
                 <MenuLogo />
-                <PrimeButton class="btn-close" icon="bi-x-lg" text rounded aria-label="Close" @click="closeDrawer()" />
+                <PrimeButton class="btn-no-shadow" icon="bi-x-lg" text rounded aria-label="Close" @click="closeDrawer()" />
             </div>
             <div class="p-2">
                 <slot></slot>
@@ -40,10 +40,6 @@ $menu-drawer-width: 256px;
 .drawer {
     width: $menu-drawer-width;
     background-color: var(--surface-100);
-}
-
-.btn-close:focus {
-    box-shadow: none;
 }
 
 .open {

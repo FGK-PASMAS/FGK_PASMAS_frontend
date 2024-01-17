@@ -1,9 +1,10 @@
 <script setup lang="ts">
+import ContentHeader from '@/components/ContentHeader.vue';
 </script>
 
 <template>
     <main>
-        <h1>Flüge hier!</h1>
+        <ContentHeader title="Flüge" />
     </main>
 </template>
 

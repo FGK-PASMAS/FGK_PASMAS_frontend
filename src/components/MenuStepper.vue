@@ -75,7 +75,7 @@ function jumpStep(item: MenuItem)
 </script>
 
 <template>
-    <div class="flex flex-column gap-4">
+    <div class="flex flex-column gap-6">
         <Steps v-model:activeStep="activeStep" :model="props.items" :readonly="false">
             <template #item="{ item, label, active }">
                 <div class="test flex flex-column align-items-center gap-2">

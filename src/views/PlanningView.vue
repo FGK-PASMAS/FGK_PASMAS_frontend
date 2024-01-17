@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { type MenuItem } from 'primevue/menuitem';
+import ContentHeader from '@/components/ContentHeader.vue';
 import MenuStepper from '@/components/MenuStepper.vue';
 
 const items: MenuItem[] = [
@@ -21,7 +22,7 @@ const items: MenuItem[] = [
 
 <template>
     <main>
-        <h1 class="mb-4">Planung</h1>
+        <ContentHeader title="Planung" />
         <MenuStepper :items="items" />
     </main>
 </template>
