@@ -33,7 +33,7 @@ function onOpenDrawer()
         </MenuDrawer>
         <PrimeScrollPanel style="height: 100%; width: 100%;">
             <MenuTopBar :isVisible="!isOpen" @openDrawer="onOpenDrawer()"/>
-            <RouterView />
+            <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8" />
         </PrimeScrollPanel>
     </div>
 </template>
