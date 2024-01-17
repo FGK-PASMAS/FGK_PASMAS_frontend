@@ -9,7 +9,7 @@ const router = useRouter();
 const isNotFound = ref(false);
 const isOpen = ref(true);
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
     if (to.name === 'notFound') {
         isNotFound.value = true;
     } else {
@@ -32,7 +32,7 @@ function onOpenDrawer()
             <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
         </MenuDrawer>
         <PrimeScrollPanel style="height: 100%; width: 100%;">
-            <MenuTopBar :isVisible="!isOpen" @openDrawer="onOpenDrawer()"/>
+            <MenuTopBar v-if="!isNotFound" :isVisible="!isOpen" @openDrawer="onOpenDrawer()"/>
             <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8" />
         </PrimeScrollPanel>
     </div>
