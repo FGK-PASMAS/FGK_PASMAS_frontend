@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import MenuLogo from './MenuLogo.vue';
-
-defineProps([
-    "isVisible"
-]);
-
 </script>
 
 <template>
-    <header class="sticky top-0 left-0 flex align-items-center p-2">
-        <div class="flex align-items-center" :class="{'not-visible': !isVisible}">
+    <header class="sticky top-0 left-0 flex align-items-center p-2 z-2">
+        <div class="flex align-items-center">
             <PrimeButton class="btn-no-shadow text-6xl" icon="bi-filter-left" text rounded @click="$emit('openDrawer')" />
             <MenuLogo />
         </div>
@@ -19,9 +14,5 @@ defineProps([
 <style lang="scss">
 header {
     background-color: var(--surface-50);
-}
-
-.not-visible {
-    visibility: hidden;
 }
 </style>
