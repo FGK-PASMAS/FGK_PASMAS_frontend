@@ -3,10 +3,6 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const icon = import.meta.env.VITE_APP_ICON;
-
-function goBack() {
-    router.back();
-}
 </script>
 
 <template>
@@ -15,7 +11,7 @@ function goBack() {
         <div class="text-center">
             <p class="text-4xl font-bold">Error 404</p>
             <p class="text-2xl font-bold">Page not found</p>
-            <PrimeButton class="text-color font-bold" @click="goBack()">Zurück</PrimeButton>
+            <PrimeButton class="text-color font-bold" @click="router.back()">Zurück</PrimeButton>
         </div>
     </div>
 </template>
