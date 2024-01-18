@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { type MenuItem } from 'primevue/menuitem';
 import ContentHeader from '@/components/ContentHeader.vue';
 import MenuStepper from '@/components/MenuStepper.vue';
@@ -18,12 +19,13 @@ const items: MenuItem[] = [
         route: "booking",
     }
 ];
+const isNextDisabled = ref(true);
 </script>
 
 <template>
     <main>
         <ContentHeader title="Planung" />
-        <MenuStepper :items="items" />
+        <MenuStepper :items="items" :is-next-disabled="isNextDisabled" />
     </main>
 </template>
 

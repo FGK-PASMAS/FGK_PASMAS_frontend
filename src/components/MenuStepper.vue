@@ -5,21 +5,25 @@ import Steps from 'primevue/steps';
 import { type MenuItem } from 'primevue/menuitem';
 
 const router = useRouter();
-const current = ref(router.currentRoute.value.name);
-const prev = ref(router.currentRoute.value.meta.prev);
-const next = ref(router.currentRoute.value.meta.next);
+const currentRoute = ref(router.currentRoute.value.name);
+const prevRoute = ref(router.currentRoute.value.meta.prev);
+const nextRoute = ref(router.currentRoute.value.meta.next);
 const activeStep = ref(0);
 const props = defineProps({
     items: {
         type: Array<MenuItem>,
         required: true
+    },
+    isNextDisabled: {
+        type: Boolean,
+        default: true
     }
 });
 
 router.afterEach(() => {
-    current.value = router.currentRoute.value.name;
-    prev.value = router.currentRoute.value.meta.prev;
-    next.value = router.currentRoute.value.meta.next;
+    currentRoute.value = router.currentRoute.value.name;
+    prevRoute.value = router.currentRoute.value.meta.prev;
+    nextRoute.value = router.currentRoute.value.meta.next;
 });
 
 onBeforeMount(() => {
@@ -34,7 +38,7 @@ onBeforeMount(() => {
             item.disabled = true;
         }
 
-        if (item.route === current.value) {
+        if (item.route === currentRoute.value) {
             isCurrentRouteFound = true;
             activeStep.value = index;
         }
@@ -51,7 +55,7 @@ onBeforeUpdate(() => {
             item.disabled = true;
         }
 
-        if (item.route === current.value) {
+        if (item.route === currentRoute.value) {
             isCurrentRouteFound = true;
             activeStep.value = index;
         }
@@ -60,12 +64,12 @@ onBeforeUpdate(() => {
 
 function previousStep() 
 {
-    router.push({ name: prev.value });
+    router.push({ name: prevRoute.value });
 }
 
 function nextStep()
 {
-    router.push({ name: next.value });
+    router.push({ name: nextRoute.value });
 }
 
 function jumpStep(item: MenuItem)
@@ -79,10 +83,10 @@ function jumpStep(item: MenuItem)
         <Steps v-model:activeStep="activeStep" :model="props.items" :readonly="false">
             <template #item="{ item, label, active }">
                 <div class="test flex flex-column align-items-center gap-2">
-                    <span :class="['inline-flex align-items-center justify-content-center align-items-center border-circle border-primary border-1 h-3rem w-3rem z-1 cursor-pointer', { 'bg-primary': active, 'text-color': active , 'text-primary': !active }]">
+                    <span class="mb-4 md:mb-0" :class="['inline-flex align-items-center justify-content-center align-items-center border-circle border-primary border-1 h-3rem w-3rem z-1 cursor-pointer ', { 'bg-primary': active, 'text-color': active , 'surface-50': !activeStep, 'text-primary': !active }]">
                         <i :class="[item.icon, 'text-xl']" />
                     </span>
-                    <label>{{ label }}</label>
+                    <label class="hidden md:block">{{ label }}</label>
                 </div>
             </template>
         </Steps>
@@ -90,8 +94,8 @@ function jumpStep(item: MenuItem)
         <div class="flex flex-column">
             <PrimeDivider />
             <div class="flex justify-content-between">
-                <PrimeButton class="text-color" :class="{ 'not-visible': !prev }" @click="previousStep()">Zurück</PrimeButton>
-                <PrimeButton class="text-color" :class="{ 'not-visible': !next }" @click="nextStep()">Weiter</PrimeButton>
+                <PrimeButton class="text-color" :class="{ 'not-visible': !prevRoute }" @click="previousStep()">Zurück</PrimeButton>
+                <PrimeButton class="text-color" :class="{ 'not-visible': !nextRoute }" :disabled="isNextDisabled" @click="nextStep()">Weiter</PrimeButton>
             </div>
         </div>
     </div>
