@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { ref, type Ref } from 'vue';
 
+const api = import.meta.env.VITE_API_URL;
 const select: any = ref(null);
-
 const selectedDivision: any = defineModel();
 const divisions = ref([]);
 const passengers: Ref<number[]> = ref([]);
 
 async function fetchData()
 {
-    const response = await fetch("http://localhost:8080/api/division/");
+    const url = api + "/division/";
+    const response = await fetch(url);
     let test = await response.json();
     divisions.value = test.response;
 }
