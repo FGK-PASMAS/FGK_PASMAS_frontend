@@ -1,14 +1,53 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { usePrimeVue } from "primevue/config";
 import MenuDrawer from './components/MenuDrawer.vue';
 import MenuItem from './components/MenuItem.vue';
 import MenuTopbar from './components/MenuTopbar.vue';
 
 const router = useRouter();
-const isNotFound = ref(false);
+const PrimeVue = usePrimeVue();
+
+// Theme
+const lightTheme = "lara-light-green";
+const darkTheme = "lara-dark-green";
+const isLightMode = ref(true);
+let currentTheme = lightTheme;
+let localTheme: string | null;
+
+// MenuDrawer
 const isOpen = ref(false);
 const isClosed = ref(false);
+
+// Not Found
+const isNotFound = ref(false);
+
+onBeforeMount(() => {
+    localTheme = localStorage.getItem("theme");
+
+    if (localTheme) {
+        applyTheme(localTheme);
+    } else {
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            applyTheme(darkTheme);
+        }
+    }
+
+    if (currentTheme === darkTheme) {
+        isLightMode.value = false;
+    }
+});
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+    if (localTheme) {
+        return;
+    }
+
+    const theme = event.matches ? darkTheme : lightTheme;
+
+    applyTheme(theme);
+});
 
 router.beforeEach((to) => {
     if (to.name === 'notFound') {
@@ -17,6 +56,24 @@ router.beforeEach((to) => {
         isNotFound.value = false;
     }
 });
+
+function applyTheme(nextTheme: string)
+{
+    PrimeVue.changeTheme(currentTheme, nextTheme, 'theme-link', () => {});
+    currentTheme = nextTheme;
+}
+
+function toggleTheme()
+{
+    let nextTheme = darkTheme;
+
+    if (currentTheme === nextTheme) {
+        nextTheme = lightTheme;
+    }
+
+    applyTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+}
 
 function openDrawer()
 {
@@ -34,23 +91,11 @@ function openDrawer()
             <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
         </MenuDrawer>
         <PrimeScrollPanel style="height: 100%; width: 100%;">
-            <MenuTopbar v-if="!isNotFound" class="topbar" :class="{ 'show': isClosed }" @openDrawer="openDrawer()" />
+            <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isLightMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8" />
         </PrimeScrollPanel>
     </div>
 </template>
 
 <style lang="scss">
-@import "primeflex/primeflex.scss";
-
-@media screen and (min-width: $md) {
-    .topbar {
-        visibility: hidden;
-    }
-}
-
-.show {
-    visibility: visible;
-}
-
 </style>

@@ -1,17 +1,19 @@
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import App from './App.vue';
-import router from './router';
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import App from "./App.vue";
+import router from "./router";
 
-import PrimeVue from 'primevue/config';
-import 'primevue/resources/themes/lara-dark-green/theme.css';
-import 'primeflex/primeflex.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
-import './assets/main.scss'
+import PrimeVue from "primevue/config";
+import "primeflex/primeflex.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "./assets/main.scss"
 
-import Button from 'primevue/button';
-import Divider from 'primevue/divider';
-import ScrollPanel from 'primevue/scrollpanel';
+import Button from "primevue/button";
+import Divider from "primevue/divider";
+import Dropdown from "primevue/dropdown";
+import InputNumber from "primevue/inputnumber";
+import InputText from "primevue/inputtext";
+import ScrollPanel from "primevue/scrollpanel";
 
 const app = createApp(App);
 
@@ -20,8 +22,11 @@ app.use(router);
 app.use(PrimeVue);
 
 app
-    .component('PrimeButton', Button)
-    .component('PrimeDivider', Divider)
-    .component('PrimeScrollPanel', ScrollPanel);
+    .component("PrimeButton", Button)
+    .component("PrimeDivider", Divider)
+    .component("PrimeDropdown", Dropdown)
+    .component("PrimeInputNumber", InputNumber)
+    .component("PrimeInputText", InputText)
+    .component("PrimeScrollPanel", ScrollPanel);
 
-app.mount('#app');
+app.mount("#app");
