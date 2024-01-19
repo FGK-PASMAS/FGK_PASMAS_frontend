@@ -13,9 +13,17 @@ import Divider from "primevue/divider";
 import Dropdown from "primevue/dropdown";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
+import Message from "primevue/message";
 import ScrollPanel from "primevue/scrollpanel";
 
 const app = createApp(App);
+
+app.config.errorHandler = (err, instance, info) => {
+    console.log("Handling error globally:");
+    console.log(err);
+    console.log(instance);
+    console.log(info);
+}
 
 app.use(createPinia());
 app.use(router);
@@ -27,6 +35,7 @@ app
     .component("PrimeDropdown", Dropdown)
     .component("PrimeInputNumber", InputNumber)
     .component("PrimeInputText", InputText)
+    .component("PrimeMessage", Message)
     .component("PrimeScrollPanel", ScrollPanel);
 
 app.mount("#app");

@@ -1,12 +1,28 @@
 <script setup lang="ts">
-import { ref, type Ref } from "vue";
+import { ref, type PropType, onBeforeMount } from "vue";
+import { type Division } from "@/data/division/division.interface";
+import { type Passenger } from "@/data/passenger/passenger.interface";
+import { getDivisions } from "@/data/division/division.service";
 
 const api = import.meta.env.VITE_API_URL;
-const select: any = ref(null);
-const selectedDivision: any = defineModel();
-const divisions = ref([]);
-const passengers: Ref<number[]> = ref([]);
+const dropDown = ref(null);
 
+const divisions = ref<Division[]>([]);
+const passengers = ref<Passenger[]>([]);
+const selectedDivision = defineModel({
+    type: Object as PropType<Division>
+});
+
+onBeforeMount(async () => {
+    divisions.value = await getDivisions();
+});
+
+function test()
+{
+    console.log("Dropdown Change!");
+}
+
+/*
 async function fetchData()
 {
     const url = api + "/division/";
@@ -17,11 +33,11 @@ async function fetchData()
 
 function test()
 {
+    passengers.value = [];
+
     if (!selectedDivision.value) {
         return;
     }
-
-    passengers.value = [];
 
     let length = selectedDivision.value.passengerCapacity;
 
@@ -30,23 +46,24 @@ function test()
     }
 }
 
-fetchData();
+*/
 
 </script>
 
 <template>
     <div>
         <div class="p-float-label">
-            <PrimeDropdown v-model="selectedDivision" inputId="division-select" :options="divisions" showClear optionLabel="name" class="w-full md:w-14rem" ref="select" @change="test()" />
+            <PrimeDropdown class="w-full md:w-14rem" ref="dropDown" v-model="selectedDivision" inputId="division-select" :options="divisions" showClear optionLabel="name" @change="test()" />
             <label for="dd-city">Flugtyp</label>
         </div>
-        <PrimeButton @click="console.log(selectedDivision)">DEBUG ON CONSOLE</PrimeButton>
+        <!--
         <div>
             <h2>Passagiere adden</h2>
-            <div v-for="n in passengers" :key="n">
+            <div v-for="passenger in passengers" :key="passenger.id">
                 <PrimeInputText type="text" />
             </div>
         </div>
+        -->
     </div>
 </template>
 
