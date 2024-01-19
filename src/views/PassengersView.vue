@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ContentHeader from '@/components/ContentHeader.vue';
+import ContentHeader from "@/components/ContentHeader.vue";
 </script>
 
 <template>
@@ -8,5 +8,5 @@ import ContentHeader from '@/components/ContentHeader.vue';
     </main>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 </style>

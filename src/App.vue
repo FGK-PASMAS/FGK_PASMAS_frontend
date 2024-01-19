@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { onBeforeMount, ref } from "vue";
+import { useRouter } from "vue-router";
 import { usePrimeVue } from "primevue/config";
-import MenuDrawer from './components/MenuDrawer.vue';
-import MenuItem from './components/MenuItem.vue';
-import MenuTopbar from './components/MenuTopbar.vue';
+import MenuDrawer from "./components/MenuDrawer.vue";
+import MenuItem from "./components/MenuItem.vue";
+import MenuTopbar from "./components/MenuTopbar.vue";
 
 const router = useRouter();
 const PrimeVue = usePrimeVue();
@@ -50,20 +50,20 @@ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (ev
 });
 
 router.beforeEach((to) => {
-    if (to.name === 'notFound') {
+    if (to.name === "notFound") {
         isNotFound.value = true;
     } else {
         isNotFound.value = false;
     }
 });
 
-function applyTheme(nextTheme: string)
+function applyTheme(nextTheme: string): void
 {
-    PrimeVue.changeTheme(currentTheme, nextTheme, 'theme-link', () => {});
+    PrimeVue.changeTheme(currentTheme, nextTheme, "theme-link", () => {});
     currentTheme = nextTheme;
 }
 
-function toggleTheme()
+function toggleTheme(): void
 {
     let nextTheme = darkTheme;
 
@@ -75,7 +75,7 @@ function toggleTheme()
     localStorage.setItem("theme", nextTheme);
 }
 
-function openDrawer()
+function openDrawer(): void
 {
     isOpen.value = true;
     isClosed.value = false;

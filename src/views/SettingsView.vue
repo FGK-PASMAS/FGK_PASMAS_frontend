@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ContentHeader from '@/components/ContentHeader.vue';
+import ContentHeader from "@/components/ContentHeader.vue";
 </script>
 
 <template>
@@ -41,5 +41,5 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
     </main>    
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 </style>

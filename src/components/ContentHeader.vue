@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 
-defineProps([
-    "title"
-]);
+defineProps({
+    title: { 
+        type: String,
+        required: true 
+    }
+});
 </script>
 
 <template>
@@ -15,5 +18,5 @@ defineProps([
     </header>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 </style>

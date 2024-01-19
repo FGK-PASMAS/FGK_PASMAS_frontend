@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import InputSwitch from 'primevue/inputswitch';
-import MenuLogo from './MenuLogo.vue';
+import InputSwitch from "primevue/inputswitch";
+import MenuLogo from "./MenuLogo.vue";
 
-const isLightMode = defineModel({ type: Boolean, default: true });
+const isLightMode = defineModel({ 
+    type: Boolean, 
+    default: true 
+});
 
 defineProps({
-    isMenuVisible: { type: Boolean, default: true }
+    isMenuVisible: { 
+        type: Boolean, 
+        default: true 
+    }
 });
+
 defineEmits([
     "openDrawer",
     "toggleTheme"
-])
+]);
 </script>
 
 <template>
-    <header class="sticky top-0 left-0 flex justify-content-between align-items-center p-2 z-2">
+    <header class="topbar sticky top-0 left-0 flex justify-content-between align-items-center p-2 z-2">
         <div class="topbar-menu flex align-items-center" :class="{ 'topbar-menu-visible': isMenuVisible }">
             <PrimeButton class="btn-no-shadow text-6xl" icon="bi-filter-left" text rounded @click="$emit('openDrawer')" />
             <MenuLogo />
@@ -27,10 +34,10 @@ defineEmits([
     </header>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "primeflex/primeflex.scss";
 
-header {
+.topbar {
     background-color: var(--surface-50);
 }
 

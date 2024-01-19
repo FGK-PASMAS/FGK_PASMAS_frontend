@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, type Ref } from 'vue';
+import { ref, type Ref } from "vue";
 
 const api = import.meta.env.VITE_API_URL;
 const select: any = ref(null);
@@ -50,5 +50,5 @@ fetchData();
     </div>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 </style>

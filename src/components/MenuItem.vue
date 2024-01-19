@@ -1,18 +1,29 @@
 <script setup lang="ts">
-import { RouterLink} from 'vue-router';
+import { RouterLink} from "vue-router";
 
-defineProps([
-    "icon",
-    "item",
-    "to"
-]);
+defineProps({
+    icon: {
+        type: String,
+        required: true
+    },
+
+    item: {
+        type: String,
+        required: true
+    },
+
+    to: {
+        type: String,
+        required: true
+    }
+});
 </script>
 
 <template>
     <RouterLink class="menu-item" :to="to">
         <div class="flex align-items-center gap-2 p-2 border-round-sm">
             <i class="text-2xl" :class="icon" />
-            {{ item }}
+            <span>{{ item }}</span>
         </div>
     </RouterLink>
 </template>

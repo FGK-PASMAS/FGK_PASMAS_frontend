@@ -2,8 +2,8 @@
 </script>
 
 <template>
-    Reservierung hier!
+    <span>Reservierung hier!</span>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
 </style>
