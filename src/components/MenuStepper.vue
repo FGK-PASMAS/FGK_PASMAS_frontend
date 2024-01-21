@@ -2,6 +2,8 @@
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import Steps from "primevue/steps";
+
+// TODO: https://github.com/primefaces/primevue/issues/3498
 import { type MenuItem } from "primevue/menuitem";
 
 const router = useRouter();
@@ -92,7 +94,7 @@ function jumpToStep(item: MenuItem): void
             <PrimeDivider />
             <div class="flex justify-content-between">
                 <PrimeButton class="text-color" :class="{ 'not-visible': !prevRoute }" @click="previousStep()">Zurück</PrimeButton>
-                <PrimeButton class="text-color" :class="{ 'not-visible': !nextRoute }" @click="nextStep()" :disabled="isNextDisabled">Weiter</PrimeButton>
+                <PrimeButton type="submit" class="text-color" :class="{ 'not-visible': !nextRoute }" @click="nextStep()" :disabled="isNextDisabled">Weiter</PrimeButton>
             </div>
         </div>
     </div>
