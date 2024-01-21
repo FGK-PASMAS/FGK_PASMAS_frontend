@@ -1,5 +1,8 @@
 export interface Division {
-    id: number;
-    name: string;
-    passengerCapacity: number;
+    ID: number;
+    Name: string;
+    PassengerCapacity: number;
+    CreatedAt: Date;
+    UpdatedAt: Date;
+    DeletedAt: Date;
 }

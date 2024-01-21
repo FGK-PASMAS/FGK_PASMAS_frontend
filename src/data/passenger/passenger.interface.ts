@@ -1,6 +1,9 @@
 export interface Passenger {
-    id: number,
-    lastName?: string;
-    firstName?: string;
-    weight: number;
+    ID: number,
+    LastName: string;
+    FirstName: string;
+    Weight: number;
+    CreatedAt: Date;
+    UpdatedAt: Date;
+    DeletedAt: Date;
 }

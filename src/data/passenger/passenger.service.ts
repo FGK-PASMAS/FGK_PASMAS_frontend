@@ -1,9 +1,9 @@
-import { type Division } from "./division.interface";
+import { type Passenger } from "./passenger.interface";
 const api = import.meta.env.VITE_API_URL;
 
-export const getDivisions = async (): Promise<Division[]> => {
+export const getPassengers = async (): Promise<Passenger[]> => {
     try {
-        const response = await fetch(api + "/divisions");
+        const response = await fetch(api + "/passengers");
 
         if (!response.ok) {
             throw new Error("Network response was not OK - Code: " + response.status);
