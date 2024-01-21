@@ -19,7 +19,9 @@ import ScrollPanel from "primevue/scrollpanel";
 const app = createApp(App);
 
 app.config.errorHandler = (err, instance, info) => {
+    // Report to log service
     console.log("Handling error globally:");
+    
     console.log(err);
     console.log(instance);
     console.log(info);
