@@ -10,6 +10,8 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import "./assets/main.scss"
 
 import Button from "primevue/button";
+import Column from "primevue/column";
+import DataTable from "primevue/datatable";
 import Divider from "primevue/divider";
 import Dropdown from "primevue/dropdown";
 import InputNumber from "primevue/inputnumber";
@@ -35,6 +37,8 @@ app.use(PrimeVue);
 
 app
     .component("PrimeButton", Button)
+    .component("PrimeColumn", Column)
+    .component("PrimeDataTable", DataTable)
     .component("PrimeDivider", Divider)
     .component("PrimeDropdown", Dropdown)
     .component("PrimeInputNumber", InputNumber)

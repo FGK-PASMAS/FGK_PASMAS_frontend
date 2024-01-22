@@ -4,5 +4,4 @@ export interface Division {
     PassengerCapacity: number;
     CreatedAt: Date;
     UpdatedAt: Date;
-    DeletedAt: Date;
 }

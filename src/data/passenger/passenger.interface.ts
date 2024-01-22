@@ -5,5 +5,4 @@ export interface Passenger {
     Weight?: number;
     CreatedAt?: Date;
     UpdatedAt?: Date;
-    DeletedAt?: Date;
 }

@@ -112,7 +112,7 @@ function openDrawer(): void
         <PrimeScrollPanel style="height: 100%; width: 100%;">
             <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isLightMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <PrimeMessage v-if="hasError" class="ml-2 md:ml-8 mr-2 md:mr-8" severity="error" @close="closeErrorMessage()">{{ errorMessage }}</PrimeMessage>
-            <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8" />
+            <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8 mb-4" />
         </PrimeScrollPanel>
     </div>
 </template>
