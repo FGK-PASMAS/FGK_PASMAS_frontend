@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { type MenuItem } from "primevue/menuitem";
 import { useToast } from "primevue/usetoast";
 import { bookingStore } from "@/stores/booking";
+import { ToastInfo } from "@/utils/toasts/ToastInfo";
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
 
@@ -68,11 +69,7 @@ function cancelBooking()
     store.resetBooking();
     router.push("/");
 
-    toast.add({ 
-        summary: "Info",
-        detail: "Buchung wurde abgebrochen",
-        life: 3000
-    });
+    toast.add(new ToastInfo("Buchung wurde abgebrochen"));
 }
 </script>
 
