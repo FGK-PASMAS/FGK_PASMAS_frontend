@@ -1,85 +1,121 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { onBeforeMount, onErrorCaptured, ref } from "vue";
+import { useRouter } from "vue-router";
+import { usePrimeVue } from "primevue/config";
+import Toast from "primevue/toast";
+import MenuDrawer from "./components/MenuDrawer.vue";
+import MenuItem from "./components/MenuItem.vue";
+import MenuTopbar from "./components/MenuTopbar.vue";
+
+const router = useRouter();
+const PrimeVue = usePrimeVue();
+
+// Error Handling
+const hasError = ref(false);
+const errorMessage = ref("");
+
+// Theme
+const lightTheme = "lara-light-green";
+const darkTheme = "lara-dark-green";
+const isLightMode = ref(true);
+let currentTheme = lightTheme;
+let localTheme: string | null;
+
+// MenuDrawer
+const isOpen = ref(false);
+const isClosed = ref(false);
+
+// Not Found
+const isNotFound = ref(false);
+
+onErrorCaptured((error) => {
+    console.log("Error catched in App component");
+    
+    hasError.value = true;
+    errorMessage.value = error.message;
+});
+
+onBeforeMount(() => {
+    localTheme = localStorage.getItem("theme");
+
+    if (localTheme) {
+        applyTheme(localTheme);
+    } else {
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            applyTheme(darkTheme);
+        }
+    }
+
+    if (currentTheme === darkTheme) {
+        isLightMode.value = false;
+    }
+});
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+    if (localTheme) {
+        return;
+    }
+
+    const theme = event.matches ? darkTheme : lightTheme;
+
+    applyTheme(theme);
+});
+
+router.beforeEach((to) => {
+    if (to.name === "notFound") {
+        isNotFound.value = true;
+    } else {
+        isNotFound.value = false;
+    }
+});
+
+function closeErrorMessage(): void
+{
+    hasError.value = false;
+    errorMessage.value = "";
+}
+
+function applyTheme(nextTheme: string): void
+{
+    PrimeVue.changeTheme(currentTheme, nextTheme, "theme-link", () => {});
+    currentTheme = nextTheme;
+}
+
+function toggleTheme(): void
+{
+    let nextTheme = darkTheme;
+
+    if (currentTheme === nextTheme) {
+        nextTheme = lightTheme;
+    }
+
+    applyTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+}
+
+function openDrawer(): void
+{
+    isOpen.value = true;
+    isClosed.value = false;
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+    <div class="h-full flex">
+        <Toast />
+        <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
+            <MenuItem icon="bi-book" item="Buchen" to="/" />
+            <MenuItem icon="bi-airplane" item="Flüge" to="/flights" />
+            <MenuItem icon="bi-people" item="Passagiere" to="/passengers" />
+            <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
+        </MenuDrawer>
+        <PrimeScrollPanel style="height: 100%; width: 100%;">
+            <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isLightMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
+            <PrimeMessage v-if="hasError" class="ml-2 md:ml-8 mr-2 md:mr-8" severity="error" @close="closeErrorMessage()">{{ errorMessage }}</PrimeMessage>
+            <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8" />
+        </PrimeScrollPanel>
     </div>
-  </header>
-
-  <RouterView />
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
+<style lang="scss">
 </style>
