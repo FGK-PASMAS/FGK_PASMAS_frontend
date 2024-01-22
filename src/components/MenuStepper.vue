@@ -2,8 +2,6 @@
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import Steps from "primevue/steps";
-
-// TODO: https://github.com/primefaces/primevue/issues/3498
 import { type MenuItem } from "primevue/menuitem";
 
 const router = useRouter();
