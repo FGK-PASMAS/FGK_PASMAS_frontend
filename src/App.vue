@@ -102,7 +102,7 @@ function openDrawer(): void
 <template>
     <div class="h-full flex">
         <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
-            <MenuItem icon="bi-book" item="Planung" to="/" />
+            <MenuItem icon="bi-book" item="Buchen" to="/" />
             <MenuItem icon="bi-airplane" item="Flüge" to="/flights" />
             <MenuItem icon="bi-people" item="Passagiere" to="/passengers" />
             <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />

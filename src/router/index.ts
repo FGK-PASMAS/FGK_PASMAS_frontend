@@ -2,10 +2,10 @@ import { createRouter, createWebHistory } from "vue-router";
 import FlightsView from "@/views/FlightsView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import PassengersView from "@/views/PassengersView.vue";
-import PlanningBookingView from "@/views/PlanningBookingView.vue";
-import PlanningPassengerDataView from "@/views/PlanningPassengerDataView.vue";
-import PlanningPrebookingView from "@/views/PlanningPrebookingView.vue";
-import PlanningView from "@/views/PlanningView.vue";
+import BookingConfirmView from "@/views/BookingConfirmView.vue";
+import BookingPassengersView from "@/views/BookingPassengersView.vue";
+import BookingPrebookingView from "@/views/BookingPrebookingView.vue";
+import BookingView from "@/views/BookingView.vue";
 import SettingsView from "@/views/SettingsView.vue";
 
 const router = createRouter({
@@ -18,34 +18,34 @@ const router = createRouter({
         },
         {
             path: "/",
-            name: "planning",
-            component: PlanningView,
+            name: "booking",
+            component: BookingView,
             children: [
                 {
                     path: "/",
-                    name: "passenger_data",
-                    component: PlanningPassengerDataView,
+                    name: "booking_passengers",
+                    component: BookingPassengersView,
                     meta: {
                         prev: undefined,
-                        next: "prebooking"
+                        next: "booking_prebooking"
                     }
                 },
                 {
                     path: "prebooking",
-                    name: "prebooking",
-                    component: PlanningPrebookingView,
+                    name: "booking_prebooking",
+                    component: BookingPrebookingView,
                     meta: {
-                        prev: "passenger_data",
-                        next: "booking"
+                        prev: "booking_passengers",
+                        next: "booking_confirm"
                     }
 
                 },
                 {
-                    path: "booking",
-                    name: "booking",
-                    component: PlanningBookingView,
+                    path: "confirm",
+                    name: "booking_confirm",
+                    component: BookingConfirmView,
                     meta: {
-                        prev: "prebooking",
+                        prev: "booking_prebooking",
                         next: undefined
                     }
                 }

@@ -14,15 +14,15 @@ const items: MenuItem[] = [
     { 
         label: "Passagiere",
         icon: "bi-people",
-        route: "passenger_data",
+        route: "booking_passengers",
     }, { 
         label: "Reservierung",
         icon: "bi-airplane",
-        route: "prebooking",
+        route: "booking_prebooking",
     }, { 
         label: "Buchung",
         icon: "bi-check-lg",
-        route: "booking",
+        route: "booking_confirm",
     }
 ];
 
@@ -46,7 +46,7 @@ function onBookingUpdate()
 function setBookingState()
 {
     switch (router.currentRoute.value.name) {
-        case "passenger_data":
+        case "booking_passengers":
             if (store.totalWeight > 0) {
                 isNextDisabled.value = false;
             } else {
