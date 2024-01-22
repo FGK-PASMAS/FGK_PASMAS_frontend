@@ -1,69 +1,67 @@
 <script setup lang="ts">
-import { ref, type PropType, onBeforeMount } from "vue";
+import { ref, type PropType, onBeforeMount, inject } from "vue";
+import { bookingStore } from "@/stores/booking";
 import { type Division } from "@/data/division/division.interface";
-import { type Passenger } from "@/data/passenger/passenger.interface";
+import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getDivisions } from "@/data/division/division.service";
+import PassengerEditInline from "@/components/PassengerEditInline.vue";
 
-const api = import.meta.env.VITE_API_URL;
 const dropDown = ref(null);
 
+const store = bookingStore();
+
 const divisions = ref<Division[]>([]);
-const passengers = ref<Passenger[]>([]);
 const selectedDivision = defineModel({
     type: Object as PropType<Division>
 });
 
 onBeforeMount(async () => {
     divisions.value = await getDivisions();
+
+    const index: number = divisions.value.findIndex((division) => { return division.ID === store.division?.ID });
+    selectedDivision.value = divisions.value[index];
 });
 
-function test()
-{
-    console.log("Dropdown Change!");
-}
+const bookingUpdated = inject<Function>("bookingUpdated");
 
-/*
-async function fetchData()
+function setDivision()
 {
-    const url = api + "/division/";
-    const response = await fetch(url);
-    let test = await response.json();
-    divisions.value = test.response;
-}
-
-function test()
-{
-    passengers.value = [];
-
     if (!selectedDivision.value) {
+        store.resetBooking();
+        bookingUpdated!();
         return;
     }
 
-    let length = selectedDivision.value.passengerCapacity;
+    store.division = selectedDivision.value;
+    store.passengers = [];
 
-    for (let index = 0; index < length; index++) {
-        passengers.value.push(1);
+    for (let i = 0; i < selectedDivision.value.PassengerCapacity; i++) {
+        store.passengers.push({});
     }
+
+    bookingUpdated!();
 }
 
-*/
+function updateStore(passengerId: number, passenger: Passenger)
+{
+    store.passengers[passengerId - 1] = passenger;
 
+    bookingUpdated!();
+}
 </script>
 
 <template>
-    <div>
-        <div class="p-float-label">
-            <PrimeDropdown class="w-full md:w-14rem" ref="dropDown" v-model="selectedDivision" inputId="division-select" :options="divisions" showClear optionLabel="name" @change="test()" />
-            <label for="dd-city">Flugtyp</label>
-        </div>
-        <!--
+    <div class="flex flex-column gap-4">
         <div>
-            <h2>Passagiere adden</h2>
-            <div v-for="passenger in passengers" :key="passenger.id">
-                <PrimeInputText type="text" />
+            <h4>Flugtyp auswählen</h4>
+            <PrimeDropdown class="w-full md:w-20rem" ref="dropDown" v-model="selectedDivision" :options="divisions" optionLabel="Name" placeholder="Flugtyp" showClear @change="setDivision()" />
+        </div>
+        <div>
+            <h4 v-if="selectedDivision">Passagiere hinzufügen</h4>
+            <div class="flex flex-column gap-4">
+                <PassengerEditInline v-for="n in store.passengers.length" :key="n" :seatNumber="n" @passenger-updated="(passenger) => updateStore(n, passenger)" />
             </div>
         </div>
-        -->
     </div>
 </template>
 
