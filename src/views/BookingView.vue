@@ -59,11 +59,20 @@ function setBookingState()
             break;
     }
 }
+
+function cancelBooking()
+{
+    store.resetBooking();
+    router.push("/");
+}
 </script>
 
 <template>
     <main>
-        <ContentHeader title="Planung" />
+        <div class="flex justify-content-between">
+            <ContentHeader title="Planung" />
+            <PrimeButton class="align-self-center text-color" text @click="cancelBooking()">Abrrechen</PrimeButton>
+        </div>
         <MenuStepper :items="items" :is-next-disabled="isNextDisabled" />
     </main>
 </template>
