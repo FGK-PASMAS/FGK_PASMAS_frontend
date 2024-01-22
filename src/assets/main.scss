@@ -1,0 +1,19 @@
+* {
+    box-sizing: border-box;
+}
+
+:root, body, #app {
+    height: 100%;
+}
+
+:root {
+    background-color: var(--surface-50);
+}
+
+body {
+    margin: 0;
+}
+
+.btn-no-shadow:focus {
+    box-shadow: none;
+}

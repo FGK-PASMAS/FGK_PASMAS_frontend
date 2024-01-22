@@ -1,14 +1,45 @@
-import './assets/main.css'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import App from "./App.vue";
+import router from "./router";
+import ToastService from "primevue/toastservice";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import PrimeVue from "primevue/config";
+import "primeflex/primeflex.css";
+import "bootstrap-icons/font/bootstrap-icons.css";
+import "./assets/main.scss"
 
-import App from './App.vue'
-import router from './router'
+import Button from "primevue/button";
+import Divider from "primevue/divider";
+import Dropdown from "primevue/dropdown";
+import InputNumber from "primevue/inputnumber";
+import InputText from "primevue/inputtext";
+import Message from "primevue/message";
+import ScrollPanel from "primevue/scrollpanel";
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(createPinia())
-app.use(router)
+app.config.errorHandler = (err, instance, info) => {
+    // Report to log service
+    console.log("Handling error globally:");
+    
+    console.log(err);
+    console.log(instance);
+    console.log(info);
+}
 
-app.mount('#app')
+app.use(createPinia());
+app.use(router);
+app.use(ToastService);
+app.use(PrimeVue);
+
+app
+    .component("PrimeButton", Button)
+    .component("PrimeDivider", Divider)
+    .component("PrimeDropdown", Dropdown)
+    .component("PrimeInputNumber", InputNumber)
+    .component("PrimeInputText", InputText)
+    .component("PrimeMessage", Message)
+    .component("PrimeScrollPanel", ScrollPanel);
+
+app.mount("#app");
