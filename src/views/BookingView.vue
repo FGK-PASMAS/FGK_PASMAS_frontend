@@ -71,7 +71,7 @@ function cancelBooking()
     <main>
         <div class="flex justify-content-between">
             <ContentHeader title="Planung" />
-            <PrimeButton class="align-self-center text-color" text @click="cancelBooking()">Abrrechen</PrimeButton>
+            <PrimeButton class="align-self-center text-color" text @click="cancelBooking()">Abbrechen</PrimeButton>
         </div>
         <MenuStepper :items="items" :is-next-disabled="isNextDisabled" />
     </main>
