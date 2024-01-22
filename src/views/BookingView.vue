@@ -2,11 +2,14 @@
 import { onBeforeMount, provide, ref } from "vue";
 import { useRouter } from "vue-router";
 import { type MenuItem } from "primevue/menuitem";
+import { useToast } from "primevue/usetoast";
 import { bookingStore } from "@/stores/booking";
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
 
 const router = useRouter();
+
+const toast = useToast();
 
 const store = bookingStore();
 
@@ -64,6 +67,12 @@ function cancelBooking()
 {
     store.resetBooking();
     router.push("/");
+
+    toast.add({ 
+        summary: "Info",
+        detail: "Buchung wurde abgebrochen",
+        life: 3000
+    });
 }
 </script>
 

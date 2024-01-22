@@ -39,6 +39,7 @@ defineEmits([
 
 .topbar {
     background-color: var(--surface-50);
+    opacity: 0.95;
 }
 
 @media screen and (min-width: $md) {

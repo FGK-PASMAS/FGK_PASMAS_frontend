@@ -2,6 +2,7 @@
 import { onBeforeMount, onErrorCaptured, ref } from "vue";
 import { useRouter } from "vue-router";
 import { usePrimeVue } from "primevue/config";
+import Toast from "primevue/toast";
 import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuItem from "./components/MenuItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
@@ -101,6 +102,7 @@ function openDrawer(): void
 
 <template>
     <div class="h-full flex">
+        <Toast />
         <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
             <MenuItem icon="bi-book" item="Buchen" to="/" />
             <MenuItem icon="bi-airplane" item="Flüge" to="/flights" />
