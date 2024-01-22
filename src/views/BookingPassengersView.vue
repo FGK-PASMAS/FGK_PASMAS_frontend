@@ -16,7 +16,7 @@ onBeforeMount(async () => {
     divisions.value = await getDivisions();
 });
 
-function initPassengers()
+function initPassengers(): void
 {
     store.seats = [];
 

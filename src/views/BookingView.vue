@@ -42,12 +42,12 @@ router.afterEach(() => {
     setBookingState();
 });
 
-function onBookingUpdate()
+function onBookingUpdate(): void
 {
     setBookingState();
 }
 
-function setBookingState()
+function setBookingState(): void
 {
     switch (router.currentRoute.value.name) {
         case "booking_passengers":
@@ -64,7 +64,7 @@ function setBookingState()
     }
 }
 
-function cancelBooking()
+function cancelBooking(): void
 {
     store.resetBooking();
     router.push("/");
