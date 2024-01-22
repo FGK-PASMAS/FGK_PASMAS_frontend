@@ -1,15 +1,22 @@
 <script setup lang="ts">
-import { ref, type PropType } from "vue";
+import { type PropType } from "vue";
 import { type Passenger } from "@/data/passenger/passenger.interface";
 
-const passenger = ref<Passenger>({
-    LastName: undefined,
-    FirstName: undefined,
-    Weight: undefined
+defineProps({
+    seatNumber: {
+        type: Number,
+        required: true
+    },
+
+    required: {
+        default: {
+            LastName: false,
+            FirstName: false,
+            Weight: false
+        }
+    }
 });
 
-// ToDo
-/*
 const passenger = defineModel("passenger", {
     type: Object as PropType<Passenger>,
     default: {
@@ -18,36 +25,36 @@ const passenger = defineModel("passenger", {
         Weight: undefined
     }
 });
-*/
-
-defineProps({
-    seatNumber: {
-        type: Number,
-        required: true
-    }
-});
 
 const emit = defineEmits([
-    "passengerUpdated"
+    "passengerChanged"
 ]);
 
-// PrimeVue Bug... https://github.com/primefaces/primevue/issues/506
-function onWeightChange(weight: number)
-{
+/**
+ * Set weight of the passenger.
+ * 
+ * Weight has to be updated manually due to PrimeVue InputNumber not updating properly on @input. It only updates in the following cases:
+ * * Clicking outside to validate the change after changing something in InputNumber
+ * * Changing the value using spinner's button/arrow keys
+ * * Pressing the 'enter' key
+ * 
+ * See: https://github.com/primefaces/primevue/issues/506
+ * 
+ * @param weight Weight of the passenger.
+ */
+function setWeight(weight: number) {
     passenger.value.Weight = weight;
-
-    emit("passengerUpdated", passenger.value);
+    emit("passengerChanged");
 }
-
 </script>
 
 <template>
 <div class="flex flex-column md:flex-row md:align-items-center gap-2">
     <span class="flex-shrink-0 w-full md:w-4rem">Sitz {{ seatNumber }}</span>
     <div class="flex flex-wrap gap-2">
-        <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.LastName" type="text" placeholder="Nachname" @input="$emit('passengerUpdated', passenger)" />
-        <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.FirstName" type="text" placeholder="Vorname" @input="$emit('passengerUpdated', passenger)" />
-        <PrimeInputNumber class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.Weight" locale="de-DE" :maxFractionDigits="2" suffix="kg" placeholder="Gewicht" @input="onWeightChange($event.value)" />
+        <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.LastName" type="text" :placeholder="required.LastName ? 'Nachname*' : 'Nachname'" @input="$emit('passengerChanged')" />
+        <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.FirstName" type="text" :placeholder="required.FirstName ? 'Vorname*' : 'Vorname'" @input="$emit('passengerChanged')" />
+        <PrimeInputNumber class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.Weight" locale="de-DE" :min="0" :maxFractionDigits="2" suffix="kg" :placeholder="required.Weight ? 'Gewicht*' : 'Gewicht'" @input="setWeight($event.value)" />
     </div>
 </div>
 </template>

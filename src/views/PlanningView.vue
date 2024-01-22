@@ -1,10 +1,14 @@
 <script setup lang="ts">
 import { onBeforeMount, provide, ref } from "vue";
+import { useRouter } from "vue-router";
 import { type MenuItem } from "primevue/menuitem";
+import { bookingStore } from "@/stores/booking";
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
-import { bookingStore } from "@/stores/booking";
-import { useRouter } from "vue-router";
+
+const router = useRouter();
+
+const store = bookingStore();
 
 const items: MenuItem[] = [
     { 
@@ -22,11 +26,9 @@ const items: MenuItem[] = [
     }
 ];
 
-const router = useRouter();
-
-const store = bookingStore();
-
 const isNextDisabled = ref(true);
+
+provide("bookingUpdated", onBookingUpdate);
 
 onBeforeMount(() => {
     store.resetBooking();
@@ -35,8 +37,6 @@ onBeforeMount(() => {
 router.afterEach(() => {
     setBookingState();
 });
-
-provide("bookingUpdated", onBookingUpdate);
 
 function onBookingUpdate()
 {
