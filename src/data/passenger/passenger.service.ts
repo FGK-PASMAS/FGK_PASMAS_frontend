@@ -1,5 +1,6 @@
 import { type Passenger } from "./passenger.interface";
 const api = import.meta.env.VITE_API_URL;
+const stream = import.meta.env.VITE_STREAM_API_URL;
 
 export const getPassengers = async (): Promise<Passenger[]> => {
     try {
@@ -67,4 +68,19 @@ export const deletePassenger = async (id: number): Promise<boolean> => {
         console.log("Error catched in service.");
         throw error;
     }
+}
+
+export const getPassengersStream = (): EventSource => {
+        const eventSource = new EventSource(stream + "/passenger/");
+
+        eventSource.onopen = () => {
+            console.log("Successfully connected to passengers stream.");
+        }
+
+        // ToDo Error handling concept - Can't throw error in callback to global error handler...
+        eventSource.onerror = (error) => {
+            console.log(error);
+        }
+
+        return eventSource;
 }

@@ -1,30 +1,18 @@
 <script setup lang="ts">
-// ToDo optimize whole page...
-
-import { onBeforeMount, ref } from "vue";
-import { type Passenger } from "@/data/passenger/passenger.interface";
-import { getPassengers } from "@/data/passenger/passenger.service";
-import ContentHeader from "@/components/ContentHeader.vue";
-
-import { createPassenger, deletePassenger } from "@/data/passenger/passenger.service";
-import { FilterMatchMode } from "primevue/api"
-
+import { onBeforeMount, onUnmounted, ref } from "vue";
+import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
 import { ToastInfo } from "@/utils/toasts/ToastInfo";
+import { type Passenger } from "@/data/passenger/passenger.interface";
+import { getPassengers, getPassengersStream } from "@/data/passenger/passenger.service";
+import ContentHeader from "@/components/ContentHeader.vue";
 
 const toast = useToast();
 
 const passengers = ref<Passenger[]>([]);
 
-const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    ID: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    LastName: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    FirstName: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    Weight: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    CreatedAt: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    UpdatedAt: { value: null, matchMode: FilterMatchMode.CONTAINS }
-});
+let eventSource: EventSource;
+
 const columns = [
     {
         field: "ID",
@@ -52,11 +40,63 @@ const columns = [
     },
 ];
 
+const filters = ref({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    ID: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    LastName: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    FirstName: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    Weight: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    CreatedAt: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    UpdatedAt: { value: null, matchMode: FilterMatchMode.CONTAINS }
+});
+
 onBeforeMount(async () => {
     passengers.value = await getPassengers();
-})
+    
+    eventSource = getPassengersStream();
+    eventSource.onmessage = (event) => {
+        handleOnMessageEvent(event);
+    }
+});
 
-// DEBUG
+onUnmounted(() => {
+    if (eventSource) {
+        eventSource.close();
+    }
+});
+
+function handleOnMessageEvent(event: MessageEvent): void
+{
+    const json = JSON.parse(event.data);
+    const action: string = json.action;
+    const passengerData: Passenger = json.data;
+    
+    switch(action) {
+        case "CREATED":
+            passengers.value.push(passengerData);
+            
+            toast.add(new ToastInfo("Passagier " + passengerData.LastName + ", " + passengerData.FirstName + "wurde angelegt."));
+
+            break;
+        case "DELETED":
+            passengers.value = passengers.value.filter((passenger) => {
+                return passenger.ID !== passengerData.ID;
+            });
+
+            toast.add(new ToastInfo("Passagier " + passengerData.LastName + ", " + passengerData.FirstName + "wurde gelöscht."));
+
+            break;
+        default:
+            console.log("Unidentified action.");
+            console.log(json);
+    }
+}
+
+/*******
+/* DEBUG
+ *******/
+import { createPassenger, deletePassenger } from "@/data/passenger/passenger.service";
+
 const debugPassenger = ref<Passenger>({
     LastName: undefined,
     FirstName: undefined,
@@ -65,7 +105,7 @@ const debugPassenger = ref<Passenger>({
 
 const debugPassengerId = ref<number>();
 
-async function debugAddPassenger()
+function debugAddPassenger()
 {
     if (!debugPassenger.value.LastName || !debugPassenger.value.FirstName || !debugPassenger.value.Weight) {
         toast.add({
@@ -78,14 +118,10 @@ async function debugAddPassenger()
         return;
     }
 
-    const newPassenger = await createPassenger(debugPassenger.value);
-
-    passengers.value.push(newPassenger);
-
-    toast.add(new ToastInfo("Passagier mit ID " + newPassenger.ID + " wurde angelegt."))
+    createPassenger(debugPassenger.value);
 }
 
-async function debugDeletePassenger()
+function debugDeletePassenger()
 {
     if (!debugPassengerId.value) {
         toast.add({
@@ -98,29 +134,19 @@ async function debugDeletePassenger()
         return;
     }
 
-    const response = await deletePassenger(debugPassengerId.value);
-
-    console.log(response);
-
-    if (response) {
-        passengers.value = passengers.value.filter((passenger) => {
-            return passenger.ID !== debugPassengerId.value;
-        });
-
-        toast.add({
-            summary: "Info",
-            detail: "Passenger mit ID " + debugPassengerId.value + " wurde erfolgreich gelöscht",
-            life: 5000
-        });
-    }
+    deletePassenger(debugPassengerId.value);
 }
+/*******
+ * DEBUG
+ *******/
 </script>
 
 <template>
     <main>
         <ContentHeader title="Passagiere" />
         
-        <div class="debug">
+        <!--DEBUG-->
+        <div>
             <div>
                 <PrimeInputText v-model="debugPassenger.LastName" placeholder="Nachname"/>
                 <PrimeInputText v-model="debugPassenger.FirstName" placeholder="Vorname"/>
@@ -132,14 +158,15 @@ async function debugDeletePassenger()
                 <PrimeButton @click="debugDeletePassenger()">Debug - Delete Dummy Passenger</PrimeButton>
             </div>
         </div>
+        <!--DEBUG-->
         
         <div>
             <PrimeDataTable 
                 v-model:filters="filters" 
-                :value="passengers" 
-                filterDisplay="row" 
-                sortMode="multiple" 
-                removableSort 
+                :value="passengers"
+                filterDisplay="row"
+                sortMode="multiple"
+                removableSort
                 stripedRows
             >
                 <template #header>
@@ -151,16 +178,18 @@ async function debugDeletePassenger()
                     </div>
                 </template>
                 <template #empty> Keine Passagiere gefunden. </template>
-                <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" style="width: 25%" sortable>
+                <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable>
                     <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" />
+                        <PrimeInputText class="filter-input p-column-filter" v-model="filterModel.value" type="text" @input="filterCallback()" />
                     </template>
                 </PrimeColumn>
-
             </PrimeDataTable>
         </div>
     </main>
 </template>
 
 <style scoped lang="scss">
+.filter-input {
+    min-width: 75px;
+}
 </style>
