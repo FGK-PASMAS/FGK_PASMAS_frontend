@@ -17,7 +17,7 @@ const errorMessage = ref("");
 // Theme
 const lightTheme = "lara-light-green";
 const darkTheme = "lara-dark-green";
-const isLightMode = ref(true);
+const isDarkMode = ref(false);
 let currentTheme = lightTheme;
 let localTheme: string | null;
 
@@ -44,10 +44,6 @@ onBeforeMount(() => {
         if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
             applyTheme(darkTheme);
         }
-    }
-
-    if (currentTheme === darkTheme) {
-        isLightMode.value = false;
     }
 });
 
@@ -79,6 +75,12 @@ function applyTheme(nextTheme: string): void
 {
     PrimeVue.changeTheme(currentTheme, nextTheme, "theme-link", () => {});
     currentTheme = nextTheme;
+
+    if (currentTheme === darkTheme) {
+        isDarkMode.value = true;
+    } else {
+        isDarkMode.value = false;
+    }
 }
 
 function toggleTheme(): void
@@ -110,7 +112,7 @@ function openDrawer(): void
             <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
         </MenuDrawer>
         <PrimeScrollPanel style="height: 100%; width: 100%;">
-            <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isLightMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
+            <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isDarkMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <PrimeMessage v-if="hasError" class="ml-2 md:ml-8 mr-2 md:mr-8" severity="error" @close="closeErrorMessage()">{{ errorMessage }}</PrimeMessage>
             <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8 mb-4" />
         </PrimeScrollPanel>

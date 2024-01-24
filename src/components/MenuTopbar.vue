@@ -2,9 +2,9 @@
 import InputSwitch from "primevue/inputswitch";
 import MenuLogo from "./MenuLogo.vue";
 
-const isLightMode = defineModel({ 
+const isDarkMode = defineModel({ 
     type: Boolean, 
-    default: true 
+    default: false 
 });
 
 defineProps({
@@ -27,9 +27,9 @@ defineEmits([
             <MenuLogo />
         </div>
         <div class="flex align-items-center gap-2">
-            <i v-if="!isLightMode" class="bi-moon" />
-            <i v-if="isLightMode" class="bi-sun" />
-            <InputSwitch class="mr-2" v-model="isLightMode" @click="$emit('toggleTheme')" />
+            <i v-if="isDarkMode" class="bi-moon" />
+            <i v-if="!isDarkMode" class="bi-sun" />
+            <InputSwitch class="mr-2" v-model="isDarkMode" @click="$emit('toggleTheme')" />
         </div>
     </header>
 </template>
