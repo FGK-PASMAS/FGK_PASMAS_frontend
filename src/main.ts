@@ -17,7 +17,6 @@ import Dropdown from "primevue/dropdown";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
 import Message from "primevue/message";
-import ScrollPanel from "primevue/scrollpanel";
 
 const app = createApp(App);
 
@@ -33,7 +32,17 @@ app.config.errorHandler = (err, instance, info) => {
 app.use(createPinia());
 app.use(router);
 app.use(ToastService);
-app.use(PrimeVue);
+app.use(PrimeVue, {
+    locale: {
+        startsWith: "Beginnt mit",
+        contains: "Enthält",
+        notContains: "Enthält nicht",
+        endsWith: "Endet mit",
+        equals: "Ist gleich",
+        notEquals: "Ist nicht gleich",
+        noFilter: "Kein Filter"
+    }
+});
 
 app
     .component("PrimeButton", Button)
@@ -43,7 +52,6 @@ app
     .component("PrimeDropdown", Dropdown)
     .component("PrimeInputNumber", InputNumber)
     .component("PrimeInputText", InputText)
-    .component("PrimeMessage", Message)
-    .component("PrimeScrollPanel", ScrollPanel);
+    .component("PrimeMessage", Message);
 
 app.mount("#app");
