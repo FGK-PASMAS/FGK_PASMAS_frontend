@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onBeforeMount, onErrorCaptured, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import { usePrimeVue } from "primevue/config";
 import Toast from "primevue/toast";
@@ -9,10 +9,6 @@ import MenuTopbar from "./components/MenuTopbar.vue";
 
 const router = useRouter();
 const PrimeVue = usePrimeVue();
-
-// Error Handling
-const hasError = ref(false);
-const errorMessage = ref("");
 
 // Theme
 const lightTheme = "lara-light-green";
@@ -27,13 +23,6 @@ const isClosed = ref(false);
 
 // Not Found
 const isNotFound = ref(false);
-
-onErrorCaptured((error) => {
-    console.log("Error catched in App component");
-    
-    hasError.value = true;
-    errorMessage.value = error.message;
-});
 
 onBeforeMount(() => {
     localTheme = localStorage.getItem("theme");
@@ -64,12 +53,6 @@ router.beforeEach((to) => {
         isNotFound.value = false;
     }
 });
-
-function closeErrorMessage(): void
-{
-    hasError.value = false;
-    errorMessage.value = "";
-}
 
 function applyTheme(nextTheme: string): void
 {
@@ -113,7 +96,6 @@ function openDrawer(): void
         </MenuDrawer>
         <div class="h-full w-full overflow-auto">
             <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isDarkMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
-            <PrimeMessage v-if="hasError" class="ml-2 md:ml-8 mr-2 md:mr-8" severity="error" @close="closeErrorMessage()">{{ errorMessage }}</PrimeMessage>
             <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8 mb-4" />
         </div>
     </div>

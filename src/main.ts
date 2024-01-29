@@ -16,7 +16,6 @@ import Divider from "primevue/divider";
 import Dropdown from "primevue/dropdown";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
-import Message from "primevue/message";
 
 const app = createApp(App);
 
@@ -51,7 +50,6 @@ app
     .component("PrimeDivider", Divider)
     .component("PrimeDropdown", Dropdown)
     .component("PrimeInputNumber", InputNumber)
-    .component("PrimeInputText", InputText)
-    .component("PrimeMessage", Message);
+    .component("PrimeInputText", InputText);
 
 app.mount("#app");

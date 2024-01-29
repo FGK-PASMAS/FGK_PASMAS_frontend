@@ -2,7 +2,8 @@
 import { onBeforeMount, onUnmounted, ref } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
-import { ToastInfo } from "@/utils/toasts/ToastInfo";
+import { ErrorToast } from "@/utils/toasts/error.toast";
+import { InfoToast } from "@/utils/toasts/info.toast";
 import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getPassengers, getPassengersStream } from "@/data/passenger/passenger.service";
 import ContentHeader from "@/components/ContentHeader.vue";
@@ -50,12 +51,36 @@ const filters = ref({
     UpdatedAt: { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 
+// ToDo Composable
 onBeforeMount(async () => {
-    passengers.value = await getPassengers();
+    const data = await getPassengers();
+
+    if (data instanceof APIError) {
+        toast.add(new ErrorToast(data.Message, undefined, data.Type));
+        throw data;
+    }
+
+    passengers.value = data;
     
     eventSource = getPassengersStream();
+
+    eventSource.onopen = async () => {
+        const data = await getPassengers();
+
+        if (data instanceof APIError) {
+            toast.add(new ErrorToast(data.Message, undefined, data.Type));
+            throw data;
+        }
+
+        passengers.value = data;
+    }
+
     eventSource.onmessage = (event) => {
         handleOnMessageEvent(event);
+    }
+
+    eventSource.onerror = () => {
+        toast.add(new ErrorToast("Es wird versucht eine Verbindung aufzubauen...", 5000, "Verbindung verloren"));
     }
 });
 
@@ -75,7 +100,7 @@ function handleOnMessageEvent(event: MessageEvent): void
         case "CREATED":
             passengers.value.push(passengerData);
             
-            toast.add(new ToastInfo("Passagier " + passengerData.LastName + ", " + passengerData.FirstName + "wurde angelegt."));
+            toast.add(new InfoToast("Passagier " + passengerData.LastName + ", " + passengerData.FirstName + " wurde angelegt."));
 
             break;
         case "DELETED":
@@ -83,12 +108,9 @@ function handleOnMessageEvent(event: MessageEvent): void
                 return passenger.ID !== passengerData.ID;
             });
 
-            toast.add(new ToastInfo("Passagier " + passengerData.LastName + ", " + passengerData.FirstName + "wurde gelöscht."));
+            toast.add(new InfoToast("Passagier " + passengerData.LastName + ", " + passengerData.FirstName + " wurde gelöscht."));
 
             break;
-        default:
-            console.log("Unidentified action.");
-            console.log(json);
     }
 }
 
@@ -96,6 +118,7 @@ function handleOnMessageEvent(event: MessageEvent): void
 /* DEBUG
  *******/
 import { createPassenger, deletePassenger } from "@/data/passenger/passenger.service";
+import { APIError } from "@/utils/errors/api.error";
 
 const debugPassenger = ref<Passenger>({
     LastName: undefined,
@@ -193,3 +216,4 @@ function debugDeletePassenger()
     min-width: 75px;
 }
 </style>
+@/utils/toasts/error.toast@/utils/toasts/info.toast
