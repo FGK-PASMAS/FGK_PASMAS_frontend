@@ -1,86 +1,19 @@
+import { fetchGET, fetchPOST, fetchDELETE } from "@/utils/services/fetch.service";
+import { getStream } from "@/utils/services/stream.service";
 import type { Passenger } from "./passenger.interface";
-const api = import.meta.env.VITE_API_URL;
-const stream = import.meta.env.VITE_STREAM_API_URL;
 
 export const getPassengers = async (): Promise<Passenger[]> => {
-    try {
-        const response = await fetch(api + "/passengers");
-
-        if (!response.ok) {
-            throw new Error("Network response was not OK - Code: " + response.status);
-        }
-
-        const apiResponse = await response.json();
-
-        if (apiResponse.Success !== true) {
-            throw new Error(apiResponse.Type + ": " + apiResponse.Message);
-        }
-
-        return apiResponse.Response;
-    } catch (error) {
-        console.log("Error catched in service.");
-        throw error;
-    }
+    return await fetchGET("/passengers");
 }
 
 export const createPassenger = async (passenger: Passenger): Promise<Passenger> => {
-    try {
-        const response = await fetch(api + "/passengers", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(passenger)
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not OK - Code: " + response.status);
-        }
-
-        const apiResponse = await response.json();
-
-        if (apiResponse.Success !== true) {
-            throw new Error(apiResponse.Type + ": " + apiResponse.Message);
-        }
-
-        return apiResponse.Response;
-    } catch (error) {
-        console.log("Error catched in service.");
-        throw error;
-    }
+    return await fetchPOST("/passengers", JSON.stringify(passenger));
 }
 
 export const deletePassenger = async (id: number): Promise<boolean> => {
-    try {
-        const response = await fetch(api + "/passengers/" + id, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error("Network response was not OK - Code: " + response.status);
-        }
-
-        return true;
-    } catch (error) {
-        console.log("Error catched in service.");
-        throw error;
-    }
+    return await fetchDELETE("/passengers/" + id);
 }
 
 export const getPassengersStream = (): EventSource => {
-        const eventSource = new EventSource(stream + "/passenger/");
-
-        eventSource.onopen = () => {
-            console.log("Successfully connected to passengers stream.");
-        }
-
-        // ToDo Error handling concept - Can't throw error in callback to global error handler...
-        eventSource.onerror = (error) => {
-            console.log(error);
-        }
-
-        return eventSource;
+    return getStream("/passengers");
 }

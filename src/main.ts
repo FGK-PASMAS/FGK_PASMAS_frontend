@@ -2,9 +2,9 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
-import ToastService from "primevue/toastservice";
 
 import PrimeVue from "primevue/config";
+import ToastService from "primevue/toastservice";
 import "primeflex/primeflex.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "./assets/main.scss"
