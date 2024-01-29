@@ -2,9 +2,7 @@
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
 import { RouterView, useRouter } from "vue-router";
 import Steps from "primevue/steps";
-
-// ToDo: https://github.com/primefaces/primevue/issues/3498
-import { type MenuItem } from "primevue/menuitem";
+import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
 
 const router = useRouter();
 const currentRoute = ref(router.currentRoute.value.name);
@@ -15,7 +13,7 @@ const activeStep = ref(0);
 
 const props = defineProps({
     items: {
-        type: Array<MenuItem>,
+        type: Array<PrimeMenuItem>,
         required: true
     },
 
@@ -71,7 +69,7 @@ function nextStep(): void
     router.push({ name: nextRoute.value });
 }
 
-function jumpToStep(item: MenuItem): void
+function jumpToStep(item: PrimeMenuItem): void
 {
     router.push({ name: item.route });
 }

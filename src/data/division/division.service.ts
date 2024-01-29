@@ -1,4 +1,4 @@
-import { type Division } from "./division.interface";
+import type { Division } from "./division.interface";
 const api = import.meta.env.VITE_API_URL;
 
 export const getDivisions = async (): Promise<Division[]> => {

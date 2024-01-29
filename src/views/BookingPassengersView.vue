@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onBeforeMount, inject } from "vue";
 import { bookingStore } from "@/stores/booking";
-import { type Division } from "@/data/division/division.interface";
+import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
 import PassengerEditInline from "@/components/PassengerEditInline.vue";
 

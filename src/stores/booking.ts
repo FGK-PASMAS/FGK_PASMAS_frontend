@@ -1,7 +1,7 @@
 import { computed, ref } from "vue";
 import { defineStore } from "pinia";
-import { type Division } from "@/data/division/division.interface";
-import { type Passenger } from "@/data/passenger/passenger.interface";
+import type { Division } from "@/data/division/division.interface";
+import type { Passenger } from "@/data/passenger/passenger.interface";
 
 export const bookingStore = defineStore("booking", () => {
     const division = ref<Division>();

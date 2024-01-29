@@ -1,4 +1,4 @@
-import { type Passenger } from "./passenger.interface";
+import type { Passenger } from "./passenger.interface";
 const api = import.meta.env.VITE_API_URL;
 const stream = import.meta.env.VITE_STREAM_API_URL;
 

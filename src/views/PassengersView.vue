@@ -3,7 +3,7 @@ import { onBeforeMount, onUnmounted, ref } from "vue";
 import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
 import { ToastInfo } from "@/utils/toasts/ToastInfo";
-import { type Passenger } from "@/data/passenger/passenger.interface";
+import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getPassengers, getPassengersStream } from "@/data/passenger/passenger.service";
 import ContentHeader from "@/components/ContentHeader.vue";
 

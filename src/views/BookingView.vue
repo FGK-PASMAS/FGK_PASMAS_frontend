@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onBeforeMount, provide, ref } from "vue";
 import { useRouter } from "vue-router";
-import { type MenuItem } from "primevue/menuitem";
 import { useToast } from "primevue/usetoast";
+import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
 import { bookingStore } from "@/stores/booking";
 import { ToastInfo } from "@/utils/toasts/ToastInfo";
 import ContentHeader from "@/components/ContentHeader.vue";
@@ -14,7 +14,7 @@ const toast = useToast();
 
 const store = bookingStore();
 
-const items: MenuItem[] = [
+const items: PrimeMenuItem[] = [
     { 
         label: "Passagiere",
         icon: "bi-people",

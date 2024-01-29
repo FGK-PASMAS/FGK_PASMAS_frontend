@@ -12,3 +12,5 @@ FROM nginx
 
 WORKDIR /usr/share/nginx/html
 COPY --from=builder /app/dist .
+
+CMD ["nginx", "-g", "daemon off;"]
