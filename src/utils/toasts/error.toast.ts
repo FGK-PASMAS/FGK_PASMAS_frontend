@@ -1,5 +1,6 @@
 import type { ToastMessageOptions } from "primevue/toast";
 
+// ToDo constructor param order
 export class ErrorToast implements ToastMessageOptions
 {
     /**
