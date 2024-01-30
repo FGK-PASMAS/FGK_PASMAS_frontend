@@ -68,8 +68,8 @@ function cancelBooking(): void
 {
     store.resetBooking();
     router.push("/");
-
-    toast.add(new InfoToast("Buchung wurde abgebrochen"));
+    
+    toast.add(new InfoToast({ detail: "Buchung wurde abgebrochen "}));
 }
 </script>
 

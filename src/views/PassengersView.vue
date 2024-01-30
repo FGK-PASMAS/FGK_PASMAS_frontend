@@ -56,7 +56,7 @@ onBeforeMount(async () => {
     const data = await getPassengers();
 
     if (data instanceof APIError) {
-        toast.add(new ErrorToast(data.Message, undefined, data.Type));
+        toast.add(new ErrorToast({ summary: data.Type, detail: data.Message }));
         throw data;
     }
 
@@ -68,7 +68,7 @@ onBeforeMount(async () => {
         const data = await getPassengers();
 
         if (data instanceof APIError) {
-            toast.add(new ErrorToast(data.Message, undefined, data.Type));
+            toast.add(new ErrorToast({ summary: data.Type, detail: data.Message }));
             throw data;
         }
 
@@ -80,7 +80,11 @@ onBeforeMount(async () => {
     }
 
     eventSource.onerror = () => {
-        toast.add(new ErrorToast("Es wird versucht eine Verbindung aufzubauen...", 5000, "Verbindung verloren"));
+        toast.add(new ErrorToast({ 
+            summary: "Verbindung zum Server verloren", 
+            detail: "Es wird versucht eine Verbindung herzustellen...",
+            life: 5000
+        }));
     }
 });
 
@@ -100,7 +104,7 @@ function handleOnMessageEvent(event: MessageEvent): void
         case "CREATED":
             passengers.value.push(passengerData);
             
-            toast.add(new InfoToast("Passagier " + passengerData.LastName + ", " + passengerData.FirstName + " wurde angelegt."));
+            toast.add(new InfoToast({ detail: "Passagier " + passengerData.LastName + ", " + passengerData.FirstName + " wurde angelegt." }));
 
             break;
         case "DELETED":
@@ -108,7 +112,7 @@ function handleOnMessageEvent(event: MessageEvent): void
                 return passenger.ID !== passengerData.ID;
             });
 
-            toast.add(new InfoToast("Passagier " + passengerData.LastName + ", " + passengerData.FirstName + " wurde gelöscht."));
+            toast.add(new InfoToast({ detail: "Passagier " + passengerData.LastName + ", " + passengerData.FirstName + " wurde gelöscht." }));
 
             break;
     }

@@ -1,6 +1,5 @@
 import type { ToastMessageOptions } from "primevue/toast";
 
-// ToDo constructor parameter order
 export class InfoToast implements ToastMessageOptions
 {
     /**
@@ -18,13 +17,16 @@ export class InfoToast implements ToastMessageOptions
     /**
      * Delay in milliseconds to close the message automatically.
      */
-    life: number | undefined;
+    life: number;
 
-    constructor(detail?: any | undefined, summary: string = "Info")
-    {
+    constructor({
+        summary = "Info",
+        detail = undefined,
+        life = 3000
+    }: { summary?: string, detail?: any | undefined, life?: number } = {}) {
         this.severity = "info";
         this.summary = summary;
         this.detail = detail;
-        this.life = 3000;
+        this.life = life;
     }
 }

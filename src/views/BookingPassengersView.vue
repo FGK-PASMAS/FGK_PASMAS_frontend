@@ -21,7 +21,7 @@ onBeforeMount(async () => {
     /*const data = await getDivisions();
 
     if (data instanceof APIError) {
-        toast.add(new ErrorToast(data.Message, undefined, data.Type));
+        toast.add(new ErrorToast({ summary: data.Type, detail: data.Message }));
         throw data;
     }
 
@@ -34,7 +34,7 @@ async function test(test: Promise<any>) {
     const data = await test;
 
     if (data instanceof APIError) {
-        toast.add(new ErrorToast(data.Message, undefined, data.Type));
+        toast.add(new ErrorToast({ summary: data.Type, detail: data.Message }));
         throw data;
     }
 

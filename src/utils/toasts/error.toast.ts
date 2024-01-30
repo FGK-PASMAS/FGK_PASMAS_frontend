@@ -1,6 +1,5 @@
 import type { ToastMessageOptions } from "primevue/toast";
 
-// ToDo constructor param order
 export class ErrorToast implements ToastMessageOptions
 {
     /**
@@ -20,11 +19,14 @@ export class ErrorToast implements ToastMessageOptions
      */
     life?: number | undefined;
 
-    constructor(detail?: any | undefined, life?: number | undefined, summary: string = "Fehler")
-    {
+    constructor({ 
+        summary = "Fehler", 
+        detail = undefined, 
+        life = undefined 
+    }: { summary?: string, detail?: any | undefined, life?: number | undefined } = {}) {
         this.severity = "error";
         this.summary = summary;
         this.detail = detail;
-        this.life = life;
+        this.life = life
     }
 }
