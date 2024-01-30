@@ -95,7 +95,7 @@ function openDrawer(): void
             <MenuItem icon="bi-people" item="Passagiere" to="/passengers" />
             <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
         </MenuDrawer>
-        <div class="h-full w-full overflow-auto">
+        <div id="app-content" class="h-full w-full overflow-auto">
             <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isDarkMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8 mb-4" />
         </div>

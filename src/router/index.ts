@@ -66,7 +66,10 @@ const router = createRouter({
             name: "settings",
             component: SettingsView
         },
-    ]
-})
+    ],
+    scrollBehavior: () => {
+        document.getElementById("app-content")!.scrollTop = 0;
+    }
+});
 
 export default router;
