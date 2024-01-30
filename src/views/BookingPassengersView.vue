@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { ref, onBeforeMount, inject } from "vue";
+import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import { bookingStore } from "@/stores/booking";
 import type { Division } from "@/data/division/division.interface";
-import { APIError } from "@/utils/errors/api.error";
 import { getDivisions } from "@/data/division/division.service";
 import PassengerEditInline from "@/components/PassengerEditInline.vue";
-import { ErrorToast } from "@/utils/toasts/error.toast";
 import { useToast } from "primevue/usetoast";
 
-const bookingUpdated = inject<Function>("bookingUpdated");
-
 const toast = useToast();
+
+const bookingUpdated = inject<Function>("bookingUpdated");
 
 const dropDown = ref(null);
 
@@ -18,28 +17,8 @@ const store = bookingStore();
 const divisions = ref<Division[]>([]);
 
 onBeforeMount(async () => {
-    /*const data = await getDivisions();
-
-    if (data instanceof APIError) {
-        toast.add(new ErrorToast({ summary: data.Type, detail: data.Message }));
-        throw data;
-    }
-
-    divisions.value = data;*/
-    divisions.value = await test(getDivisions());
+    divisions.value = await useValidateAPIData(getDivisions(), toast);
 });
-
-// ToDo Move this to a composable
-async function test(test: Promise<any>) {
-    const data = await test;
-
-    if (data instanceof APIError) {
-        toast.add(new ErrorToast({ summary: data.Type, detail: data.Message }));
-        throw data;
-    }
-
-    return data;
-}
 
 function initPassengers(): void
 {

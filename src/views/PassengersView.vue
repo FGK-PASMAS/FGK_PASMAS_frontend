@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeMount, onUnmounted, ref } from "vue";
 import { FilterMatchMode } from "primevue/api";
+import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import { useToast } from "primevue/usetoast";
 import { ErrorToast } from "@/utils/toasts/error.toast";
 import { InfoToast } from "@/utils/toasts/info.toast";
@@ -51,28 +52,13 @@ const filters = ref({
     UpdatedAt: { value: null, matchMode: FilterMatchMode.CONTAINS }
 });
 
-// ToDo Composable
 onBeforeMount(async () => {
-    const data = await getPassengers();
-
-    if (data instanceof APIError) {
-        toast.add(new ErrorToast({ summary: data.Type, detail: data.Message }));
-        throw data;
-    }
-
-    passengers.value = data;
+    passengers.value = await useValidateAPIData(getPassengers(), toast);
     
     eventSource = getPassengersStream();
 
     eventSource.onopen = async () => {
-        const data = await getPassengers();
-
-        if (data instanceof APIError) {
-            toast.add(new ErrorToast({ summary: data.Type, detail: data.Message }));
-            throw data;
-        }
-
-        passengers.value = data;
+        passengers.value = await useValidateAPIData(getPassengers(), toast);
     }
 
     eventSource.onmessage = (event) => {
@@ -122,7 +108,6 @@ function handleOnMessageEvent(event: MessageEvent): void
 /* DEBUG
  *******/
 import { createPassenger, deletePassenger } from "@/data/passenger/passenger.service";
-import { APIError } from "@/utils/errors/api.error";
 
 const debugPassenger = ref<Passenger>({
     LastName: undefined,
