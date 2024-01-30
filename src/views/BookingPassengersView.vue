@@ -7,10 +7,9 @@ import { bookingStore } from "@/stores/booking";
 import { useToast } from "primevue/usetoast";
 import { inject, onBeforeMount, ref } from "vue";
 
-const toast = useToast();
-
 const bookingUpdated = inject<Function>("bookingUpdated");
 
+const toast = useToast();
 const dropDown = ref(null);
 
 const store = bookingStore();

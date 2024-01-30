@@ -8,6 +8,7 @@ import MenuItem from "./components/MenuItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
 
 const router = useRouter();
+
 const PrimeVue = usePrimeVue();
 
 // Theme
