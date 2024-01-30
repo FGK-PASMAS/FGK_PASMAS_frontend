@@ -2,7 +2,9 @@
 </script>
 
 <template>
-    <span>Buchung hier!</span>
+    <div>
+        <span>Buchung hier!</span>
+    </div>
 </template>
 
 <style scoped lang="scss">
