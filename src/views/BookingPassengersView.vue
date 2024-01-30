@@ -1,22 +1,25 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, inject } from "vue";
-import { bookingStore } from "@/stores/booking";
-import { type Division } from "@/data/division/division.interface";
-import { getDivisions } from "@/data/division/division.service";
 import PassengerEditInline from "@/components/PassengerEditInline.vue";
+import { useValidateAPIData } from "@/composables/useValidateAPIData";
+import type { Division } from "@/data/division/division.interface";
+import { getDivisions } from "@/data/division/division.service";
+import { bookingStore } from "@/stores/booking";
+import { useToast } from "primevue/usetoast";
+import { inject, onBeforeMount, ref } from "vue";
 
 const bookingUpdated = inject<Function>("bookingUpdated");
 
+const toast = useToast();
 const dropDown = ref(null);
 
 const store = bookingStore();
 const divisions = ref<Division[]>([]);
 
 onBeforeMount(async () => {
-    divisions.value = await getDivisions();
+    divisions.value = await useValidateAPIData(getDivisions(), toast);
 });
 
-function initPassengers()
+function initPassengers(): void
 {
     store.seats = [];
 

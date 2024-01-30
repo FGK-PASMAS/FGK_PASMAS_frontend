@@ -1,23 +1,20 @@
-import { type Passenger } from "./passenger.interface";
-const api = import.meta.env.VITE_API_URL;
+import type { APIError } from "@/utils/errors/api.error";
+import { fetchDELETE, fetchGET, fetchPOST } from "@/utils/services/fetch.service";
+import { getStream } from "@/utils/services/stream.service";
+import type { Passenger } from "./passenger.interface";
 
-export const getPassengers = async (): Promise<Passenger[]> => {
-    try {
-        const response = await fetch(api + "/passengers");
+export const getPassengers = async (): Promise<Passenger[] | APIError> => {
+    return await fetchGET("/passengers");
+}
 
-        if (!response.ok) {
-            throw new Error("Network response was not OK - Code: " + response.status);
-        }
+export const createPassenger = async (passenger: Passenger): Promise<Passenger | APIError> => {
+    return await fetchPOST("/passengers", JSON.stringify(passenger));
+}
 
-        const apiResponse = await response.json();
+export const deletePassenger = async (id: number): Promise<boolean | APIError> => {
+    return await fetchDELETE("/passengers/" + id);
+}
 
-        if (apiResponse.Success !== true) {
-            throw new Error(apiResponse.Type + ": " + apiResponse.Message);
-        }
-
-        return apiResponse.Response;
-    } catch (error) {
-        console.log("Error catched in service.");
-        throw error;
-    }
+export const getPassengersStream = (): EventSource => {
+    return getStream("/passengers");
 }

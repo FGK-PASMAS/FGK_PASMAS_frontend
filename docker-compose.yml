@@ -1,0 +1,8 @@
+services:
+  frontend:
+    build:
+      context: .
+    restart: unless-stopped
+    container_name: vue
+    ports:
+      - "80:80"

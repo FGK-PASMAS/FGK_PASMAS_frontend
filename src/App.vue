@@ -1,23 +1,20 @@
 <script setup lang="ts">
-import { onBeforeMount, onErrorCaptured, ref } from "vue";
-import { useRouter } from "vue-router";
 import { usePrimeVue } from "primevue/config";
 import Toast from "primevue/toast";
+import { onBeforeMount, ref } from "vue";
+import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuItem from "./components/MenuItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
 
 const router = useRouter();
-const PrimeVue = usePrimeVue();
 
-// Error Handling
-const hasError = ref(false);
-const errorMessage = ref("");
+const PrimeVue = usePrimeVue();
 
 // Theme
 const lightTheme = "lara-light-green";
 const darkTheme = "lara-dark-green";
-const isLightMode = ref(true);
+const isDarkMode = ref(false);
 let currentTheme = lightTheme;
 let localTheme: string | null;
 
@@ -28,13 +25,6 @@ const isClosed = ref(false);
 // Not Found
 const isNotFound = ref(false);
 
-onErrorCaptured((error) => {
-    console.log("Error catched in App component");
-    
-    hasError.value = true;
-    errorMessage.value = error.message;
-});
-
 onBeforeMount(() => {
     localTheme = localStorage.getItem("theme");
 
@@ -44,10 +34,6 @@ onBeforeMount(() => {
         if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
             applyTheme(darkTheme);
         }
-    }
-
-    if (currentTheme === darkTheme) {
-        isLightMode.value = false;
     }
 });
 
@@ -69,16 +55,16 @@ router.beforeEach((to) => {
     }
 });
 
-function closeErrorMessage(): void
-{
-    hasError.value = false;
-    errorMessage.value = "";
-}
-
 function applyTheme(nextTheme: string): void
 {
     PrimeVue.changeTheme(currentTheme, nextTheme, "theme-link", () => {});
     currentTheme = nextTheme;
+
+    if (currentTheme === darkTheme) {
+        isDarkMode.value = true;
+    } else {
+        isDarkMode.value = false;
+    }
 }
 
 function toggleTheme(): void
@@ -109,13 +95,13 @@ function openDrawer(): void
             <MenuItem icon="bi-people" item="Passagiere" to="/passengers" />
             <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
         </MenuDrawer>
-        <PrimeScrollPanel style="height: 100%; width: 100%;">
-            <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isLightMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
-            <PrimeMessage v-if="hasError" class="ml-2 md:ml-8 mr-2 md:mr-8" severity="error" @close="closeErrorMessage()">{{ errorMessage }}</PrimeMessage>
-            <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8" />
-        </PrimeScrollPanel>
+        <div id="content" class="h-full w-full overflow-auto">
+            <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isDarkMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
+            <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8 mb-4" />
+        </div>
     </div>
 </template>
 
 <style lang="scss">
+// ToDo Fix layout in mobile landscape - MenuDrawer doesnt overlay correctly on certain devices
 </style>
