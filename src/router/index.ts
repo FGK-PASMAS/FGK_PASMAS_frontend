@@ -68,7 +68,7 @@ const router = createRouter({
         },
     ],
     scrollBehavior: () => {
-        document.getElementById("app-content")!.scrollTop = 0;
+        document.getElementById("content")!.scrollTop = 0;
     }
 });
 
