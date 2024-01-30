@@ -75,7 +75,7 @@ export const fetchDELETE = async (resourceURL: string): Promise<any> => {
     }
 }
 
-// ToDo Error Messages
+// ToDo Fitting end user error messages
 const getAPIError = (error: any): APIError => {
     if (error instanceof SyntaxError) {
         error = new SyntaxError();
@@ -87,22 +87,22 @@ const getAPIError = (error: any): APIError => {
 
     switch(error.Type) {
         case "UNKNOWN_ERROR":
-            error.Message = "Ein unerwarteter Fehler ist aufgetreten.";
+            // error.Message = "Fitting error message for user here.";
             break;
         case "INVALID_REQUEST_BODY":
-             error.Message = "Daten konnten nicht geladen werden.";
+            // error.Message = "Fitting error message for user here.";
             break;
         case "FLIGHT_SLOT_NOT_FREE":
-             error.Message = "Flugslot ist nicht frei.";
+            // error.Message = "Fitting error message for user here.";
             break;
         case "OBJECT_NOT_FOUND":
-             // error.Message = error.Message;
+            // error.Message = "Fitting error message for user here.";
             break;
         case "NOT_IMPLEMENTED":
-             // error.Message = error.Message;
+            // error.Message = "Fitting error message for user here.";
             break;
         case "NOT_VALID_PARAMETERS":
-             // error.Message = error.Message;
+            // error.Message = "Fitting error message for user here.";
             break;
     }
 
