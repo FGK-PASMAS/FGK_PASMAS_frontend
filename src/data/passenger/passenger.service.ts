@@ -1,6 +1,6 @@
-import { fetchGET, fetchPOST, fetchDELETE } from "@/utils/services/fetch.service";
-import { getStream } from "@/utils/services/stream.service";
 import type { APIError } from "@/utils/errors/api.error";
+import { fetchDELETE, fetchGET, fetchPOST } from "@/utils/services/fetch.service";
+import { getStream } from "@/utils/services/stream.service";
 import type { Passenger } from "./passenger.interface";
 
 export const getPassengers = async (): Promise<Passenger[] | APIError> => {

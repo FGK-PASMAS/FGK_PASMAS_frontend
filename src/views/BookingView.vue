@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onBeforeMount, provide, ref } from "vue";
-import { useRouter } from "vue-router";
-import { useToast } from "primevue/usetoast";
-import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
-import { bookingStore } from "@/stores/booking";
-import { InfoToast } from "@/utils/toasts/info.toast";
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
+import { bookingStore } from "@/stores/booking";
+import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
+import { InfoToast } from "@/utils/toasts/info.toast";
+import { useToast } from "primevue/usetoast";
+import { onBeforeMount, provide, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 

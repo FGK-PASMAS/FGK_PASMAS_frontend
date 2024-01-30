@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { onBeforeMount, onUnmounted, ref } from "vue";
-import { FilterMatchMode } from "primevue/api";
+import ContentHeader from "@/components/ContentHeader.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
-import { useToast } from "primevue/usetoast";
-import { ErrorToast } from "@/utils/toasts/error.toast";
-import { InfoToast } from "@/utils/toasts/info.toast";
 import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getPassengers, getPassengersStream } from "@/data/passenger/passenger.service";
-import ContentHeader from "@/components/ContentHeader.vue";
+import { ErrorToast } from "@/utils/toasts/error.toast";
+import { InfoToast } from "@/utils/toasts/info.toast";
+import { FilterMatchMode } from "primevue/api";
+import { useToast } from "primevue/usetoast";
+import { onBeforeMount, onUnmounted, ref } from "vue";
 
 const toast = useToast();
 

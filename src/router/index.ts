@@ -1,12 +1,12 @@
-import { createRouter, createWebHistory } from "vue-router";
-import FlightsView from "@/views/FlightsView.vue";
-import NotFoundView from "@/views/NotFoundView.vue";
-import PassengersView from "@/views/PassengersView.vue";
 import BookingConfirmView from "@/views/BookingConfirmView.vue";
 import BookingPassengersView from "@/views/BookingPassengersView.vue";
 import BookingPrebookingView from "@/views/BookingPrebookingView.vue";
 import BookingView from "@/views/BookingView.vue";
+import FlightsView from "@/views/FlightsView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
+import PassengersView from "@/views/PassengersView.vue";
 import SettingsView from "@/views/SettingsView.vue";
+import { createRouter, createWebHistory } from "vue-router";
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),

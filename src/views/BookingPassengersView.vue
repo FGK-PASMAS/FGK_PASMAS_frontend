@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref, onBeforeMount, inject } from "vue";
+import PassengerEditInline from "@/components/PassengerEditInline.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
-import { bookingStore } from "@/stores/booking";
 import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
-import PassengerEditInline from "@/components/PassengerEditInline.vue";
+import { bookingStore } from "@/stores/booking";
 import { useToast } from "primevue/usetoast";
+import { inject, onBeforeMount, ref } from "vue";
 
 const toast = useToast();
 

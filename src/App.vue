@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onBeforeMount, ref } from "vue";
-import { useRouter } from "vue-router";
 import { usePrimeVue } from "primevue/config";
 import Toast from "primevue/toast";
+import { onBeforeMount, ref } from "vue";
+import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuItem from "./components/MenuItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";

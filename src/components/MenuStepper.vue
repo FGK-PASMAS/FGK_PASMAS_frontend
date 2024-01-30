@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
+import Steps from "primevue/steps";
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
 import { RouterView, useRouter } from "vue-router";
-import Steps from "primevue/steps";
-import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
 
 const router = useRouter();
 const currentRoute = ref(router.currentRoute.value.name);
