@@ -103,75 +103,11 @@ function handleOnMessageEvent(event: MessageEvent): void
             break;
     }
 }
-
-/*******
-/* DEBUG
- *******/
-import { createPassenger, deletePassenger } from "@/data/passenger/passenger.service";
-
-const debugPassenger = ref<Passenger>({
-    LastName: undefined,
-    FirstName: undefined,
-    Weight: undefined
-});
-
-const debugPassengerId = ref<number>();
-
-function debugAddPassenger()
-{
-    if (!debugPassenger.value.LastName || !debugPassenger.value.FirstName || !debugPassenger.value.Weight) {
-        toast.add({
-            summary: "ACHTUNG",
-            detail: "Zum Testen von Passagieren hinzufügen, bitte Nachname, Vorname und Gewicht angeben",
-            severity: 'warn',
-            life: 5000
-        });
-
-        return;
-    }
-
-    createPassenger(debugPassenger.value);
-}
-
-function debugDeletePassenger()
-{
-    if (!debugPassengerId.value) {
-        toast.add({
-            summary: "ACHTUNG",
-            detail: "Zum Testen von Passagieren löschen, bitte eine ID angeben",
-            severity: 'warn',
-            life: 5000
-        });
-
-        return;
-    }
-
-    deletePassenger(debugPassengerId.value);
-}
-/*******
- * DEBUG
- *******/
 </script>
 
 <template>
     <main>
         <ContentHeader title="Passagiere" />
-        
-        <!--DEBUG-->
-        <div>
-            <div>
-                <PrimeInputText v-model="debugPassenger.LastName" placeholder="Nachname"/>
-                <PrimeInputText v-model="debugPassenger.FirstName" placeholder="Vorname"/>
-                <PrimeInputNumber v-model="debugPassenger.Weight" placeholder="Gewicht"/>
-                <PrimeButton @click="debugAddPassenger()">Debug - Add Dummy Passenger</PrimeButton>
-            </div>
-            <div>
-                <PrimeInputNumber v-model="debugPassengerId" placeholder="Zu löschende Passagier ID"/>
-                <PrimeButton @click="debugDeletePassenger()">Debug - Delete Dummy Passenger</PrimeButton>
-            </div>
-        </div>
-        <!--DEBUG-->
-        
         <div>
             <PrimeDataTable 
                 v-model:filters="filters" 
@@ -205,4 +141,3 @@ function debugDeletePassenger()
     min-width: 75px;
 }
 </style>
-@/utils/toasts/error.toast@/utils/toasts/info.toast
