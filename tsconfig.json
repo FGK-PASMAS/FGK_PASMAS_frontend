@@ -1,4 +1,13 @@
 {
+  "compilerOptions": {
+      "target": "esnext",
+      "module": "esnext",
+      "noImplicitAny": true,
+      "strict": true,
+      "lib": [
+        "esnext"
+      ]
+    },
   "files": [],
   "references": [
     {

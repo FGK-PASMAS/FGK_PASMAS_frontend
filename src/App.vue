@@ -1,85 +1,107 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { usePrimeVue } from "primevue/config";
+import Toast from "primevue/toast";
+import { onBeforeMount, ref } from "vue";
+import { useRouter } from "vue-router";
+import MenuDrawer from "./components/MenuDrawer.vue";
+import MenuItem from "./components/MenuItem.vue";
+import MenuTopbar from "./components/MenuTopbar.vue";
+
+const router = useRouter();
+
+const PrimeVue = usePrimeVue();
+
+// Theme
+const lightTheme = "lara-light-green";
+const darkTheme = "lara-dark-green";
+const isDarkMode = ref(false);
+let currentTheme = lightTheme;
+let localTheme: string | null;
+
+// MenuDrawer
+const isOpen = ref(false);
+const isClosed = ref(false);
+
+// Not Found
+const isNotFound = ref(false);
+
+onBeforeMount(() => {
+    localTheme = localStorage.getItem("theme");
+
+    if (localTheme) {
+        applyTheme(localTheme);
+    } else {
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            applyTheme(darkTheme);
+        }
+    }
+});
+
+window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+    if (localTheme) {
+        return;
+    }
+
+    const theme = event.matches ? darkTheme : lightTheme;
+
+    applyTheme(theme);
+});
+
+router.beforeEach((to) => {
+    if (to.name === "notFound") {
+        isNotFound.value = true;
+    } else {
+        isNotFound.value = false;
+    }
+});
+
+function applyTheme(nextTheme: string): void
+{
+    PrimeVue.changeTheme(currentTheme, nextTheme, "theme-link", () => {});
+    currentTheme = nextTheme;
+
+    if (currentTheme === darkTheme) {
+        isDarkMode.value = true;
+    } else {
+        isDarkMode.value = false;
+    }
+}
+
+function toggleTheme(): void
+{
+    let nextTheme = darkTheme;
+
+    if (currentTheme === nextTheme) {
+        nextTheme = lightTheme;
+    }
+
+    applyTheme(nextTheme);
+    localStorage.setItem("theme", nextTheme);
+}
+
+function openDrawer(): void
+{
+    isOpen.value = true;
+    isClosed.value = false;
+}
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
+    <div class="h-full flex">
+        <Toast />
+        <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
+            <MenuItem icon="bi-book" item="Buchen" to="/" />
+            <MenuItem icon="bi-airplane" item="Flüge" to="/flights" />
+            <MenuItem icon="bi-people" item="Passagiere" to="/passengers" />
+            <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
+        </MenuDrawer>
+        <div id="content" class="h-full w-full overflow-auto">
+            <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isDarkMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
+            <RouterView class="ml-2 md:ml-8 mr-2 md:mr-8 mb-4" />
+        </div>
     </div>
-  </header>
-
-  <RouterView />
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-  max-height: 100vh;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
-
-nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
-}
+<style lang="scss">
+// ToDo Fix layout in mobile landscape - MenuDrawer doesnt overlay correctly on certain devices
 </style>

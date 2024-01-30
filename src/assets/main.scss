@@ -1,0 +1,37 @@
+* {
+    box-sizing: border-box;
+}
+
+:root, body, #app {
+    height: 100%;
+}
+
+:root {
+    background-color: var(--surface-50);
+}
+
+body {
+    margin: 0;
+}
+
+.btn-no-shadow:focus {
+    box-shadow: none;
+}
+
+::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--surface-200);
+  }
+   
+  ::-webkit-scrollbar-thumb {
+    background: var(--surface-300);
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--surface-400);
+  }
+  
