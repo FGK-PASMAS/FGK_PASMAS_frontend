@@ -76,7 +76,7 @@ function jumpToStep(item: PrimeMenuItem): void
 </script>
 
 <template>
-    <div class="flex flex-column gap-4">
+    <div class="flex flex-column md:gap-4 overflow-hidden">
         <Steps v-model:activeStep="activeStep" :model="props.items" :readonly="false">
             <template #item="{ item, label, active }">
                 <div class="flex flex-column align-items-center gap-2">
@@ -87,7 +87,7 @@ function jumpToStep(item: PrimeMenuItem): void
                 </div>
             </template>
         </Steps>
-        <RouterView />
+        <RouterView class="flex-grow-1 overflow-auto" />
         <div class="flex flex-column">
             <PrimeDivider />
             <div class="flex justify-content-between">

@@ -19,4 +19,7 @@ defineProps({
 </template>
 
 <style scoped lang="scss">
+h1 {
+    margin: 1rem 0;
+}
 </style>
