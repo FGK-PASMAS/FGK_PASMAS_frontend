@@ -6,7 +6,8 @@ import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
 import { InfoToast } from "@/utils/toasts/info.toast";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, provide, ref } from "vue";
-import { useRouter } from "vue-router";
+import type { RouteRecordName } from "vue-router";
+import { onBeforeRouteUpdate, useRouter } from "vue-router";
 
 const router = useRouter();
 
@@ -38,8 +39,8 @@ onBeforeMount(() => {
     store.resetBooking();
 });
 
-router.afterEach(() => {
-    setBookingState();
+onBeforeRouteUpdate((to) => {
+    setBookingState(to.name);
 });
 
 function onBookingUpdate(): void
@@ -47,9 +48,13 @@ function onBookingUpdate(): void
     setBookingState();
 }
 
-function setBookingState(): void
+function setBookingState(route?: RouteRecordName | null | undefined): void
 {
-    switch (router.currentRoute.value.name) {
+    if (!route) {
+        route = router.currentRoute.value.name;
+    }
+
+    switch (route) {
         case "booking_passengers":
             if (store.totalWeight > 0) {
                 isNextDisabled.value = false;

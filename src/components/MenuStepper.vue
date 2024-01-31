@@ -2,7 +2,7 @@
 import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
 import Steps from "primevue/steps";
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
-import { RouterView, useRouter } from "vue-router";
+import { RouterView, onBeforeRouteUpdate, useRouter } from "vue-router";
 
 const router = useRouter();
 const currentRoute = ref(router.currentRoute.value.name);
@@ -35,10 +35,10 @@ onBeforeUpdate(() => {
     setStepStates();
 });
 
-router.afterEach(() => {
-    currentRoute.value = router.currentRoute.value.name;
-    prevRoute.value = router.currentRoute.value.meta.prev;
-    nextRoute.value = router.currentRoute.value.meta.next;
+onBeforeRouteUpdate((to) => {
+    currentRoute.value = to.name;
+    prevRoute.value = to.meta.prev;
+    nextRoute.value = to.meta.next;
 });
 
 function setStepStates(): void
