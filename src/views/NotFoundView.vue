@@ -11,7 +11,7 @@ const icon = import.meta.env.VITE_APP_ICON;
         <div class="text-center">
             <p class="text-4xl font-bold">Error 404</p>
             <p class="text-2xl font-bold">Page not found</p>
-            <PrimeButton class="text-color font-bold" @click="router.back()">Zurück</PrimeButton>
+            <PrimeButton class="text-color font-bold" @click="router.replace({ name: 'home' });">Zurück</PrimeButton>
         </div>
     </div>
 </template>
