@@ -91,8 +91,12 @@ function jumpToStep(item: PrimeMenuItem): void
         <div class="flex flex-column">
             <PrimeDivider />
             <div class="flex justify-content-between">
-                <PrimeButton class="text-color" :class="{ 'not-visible': !prevRoute }" @click="previousStep()">Zurück</PrimeButton>
-                <PrimeButton class="text-color" :class="{ 'not-visible': !nextRoute }" @click="nextStep()" :disabled="isNextDisabled">Weiter</PrimeButton>
+                <PrimeButton class="text-color mb-1 ml-1" :class="{ 'not-visible': !prevRoute }" label="Zurück" icon="bi-arrow-left" text @click="previousStep()"
+                    :pt="{
+                        label: { class: 'font-normal' }
+                    }"
+                />
+                <PrimeButton class="text-color mb-1 mr-1" :class="{ 'hidden': !nextRoute }" @click="nextStep()" :disabled="isNextDisabled">Weiter</PrimeButton>
             </div>
         </div>
     </div>
