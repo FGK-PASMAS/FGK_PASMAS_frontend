@@ -3,6 +3,7 @@ import BookingPassengersView from "@/views/BookingPassengersView.vue";
 import BookingPrebookingView from "@/views/BookingPrebookingView.vue";
 import BookingView from "@/views/BookingView.vue";
 import FlightsView from "@/views/FlightsView.vue";
+import HomeViewVue from "@/views/HomeView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import PassengersView from "@/views/PassengersView.vue";
 import SettingsView from "@/views/SettingsView.vue";
@@ -15,14 +16,17 @@ const router = createRouter({
             path: "/:pathMAth(.*)",
             name: "notFound",
             component: NotFoundView
-        },
-        {
+        }, {
             path: "/",
+            name: "home",
+            component: HomeViewVue
+        }, {
+            path: "/booking",
             name: "booking",
             component: BookingView,
             children: [
                 {
-                    path: "/",
+                    path: "/booking",
                     name: "booking_passengers",
                     component: BookingPassengersView,
                     meta: {
@@ -31,7 +35,7 @@ const router = createRouter({
                     }
                 },
                 {
-                    path: "prebooking",
+                    path: "/booking",
                     name: "booking_prebooking",
                     component: BookingPrebookingView,
                     meta: {
@@ -41,7 +45,7 @@ const router = createRouter({
 
                 },
                 {
-                    path: "confirm",
+                    path: "/booking",
                     name: "booking_confirm",
                     component: BookingConfirmView,
                     meta: {
@@ -50,18 +54,15 @@ const router = createRouter({
                     }
                 }
             ]
-        },
-        {
+        }, {
             path: "/flights",
             name: "flights",
             component: FlightsView
-        },
-        {
+        }, {
             path: "/passengers",
             name: "passengers",
             component: PassengersView
-        },
-        {
+        }, {
             path: "/settings",
             name: "settings",
             component: SettingsView

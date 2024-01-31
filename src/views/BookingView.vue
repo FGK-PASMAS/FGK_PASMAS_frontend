@@ -67,7 +67,7 @@ function setBookingState(): void
 function cancelBooking(): void
 {
     store.resetBooking();
-    router.push("/");
+    router.replace({ name: "booking_passengers" });
     
     toast.add(new InfoToast({ detail: "Buchung wurde abgebrochen "}));
 }
@@ -77,7 +77,7 @@ function cancelBooking(): void
     <main class="flex flex-column overflow-hidden">
         <div class="flex justify-content-between">
             <ContentHeader title="Buchen" />
-            <PrimeButton class="align-self-center text-color" text @click="cancelBooking()">Abbrechen</PrimeButton>
+            <PrimeButton class="align-self-center mr-1 text-color" text @click="cancelBooking()">Abbrechen</PrimeButton>
         </div>
         <MenuStepper class="flex-grow-1" :items="items" :is-next-disabled="isNextDisabled" />
     </main>

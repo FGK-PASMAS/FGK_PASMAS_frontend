@@ -61,17 +61,17 @@ function setStepStates(): void
 
 function previousStep(): void 
 {
-    router.push({ name: prevRoute.value });
+    router.replace({ name: prevRoute.value });
 }
 
 function nextStep(): void
 {
-    router.push({ name: nextRoute.value });
+    router.replace({ name: nextRoute.value });
 }
 
 function jumpToStep(item: PrimeMenuItem): void
 {
-    router.push({ name: item.route });
+    router.replace({ name: item.route });
 }
 </script>
 

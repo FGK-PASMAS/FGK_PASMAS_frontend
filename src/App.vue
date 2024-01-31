@@ -90,10 +90,11 @@ function openDrawer(): void
     <div class="h-full flex">
         <Toast />
         <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
-            <MenuItem icon="bi-book" item="Buchen" to="/" />
-            <MenuItem icon="bi-airplane" item="Flüge" to="/flights" />
-            <MenuItem icon="bi-people" item="Passagiere" to="/passengers" />
-            <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
+            <MenuItem icon="bi-house-door" item="Home" :to="{ name: 'home' }" />
+            <MenuItem icon="bi-book" item="Buchen" :to="{ name: 'booking_passengers' }" />
+            <MenuItem icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
+            <MenuItem icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
+            <MenuItem icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
             <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isDarkMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
