@@ -38,7 +38,7 @@ function closeDialog(): void
         <div v-if="isOpen" class="shade z-4">
             <div class="dialog flex flex-column justify-content-center align-items-center gap-5 md:border-round surface-100 p-4 overflow-hidden">
                 <i class="dialog-icon" :class="icon" />
-                <div>{{ description }}</div>
+                <div class="text-center">{{ description }}</div>
                 <div class="flex gap-5">
                     <PrimeButton type="button" class="text-color" label="Bestätigen" icon="bi-check-lg" @click="confirmDialog()"
                         :pt="{
