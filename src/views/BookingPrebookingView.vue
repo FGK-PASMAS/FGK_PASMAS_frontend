@@ -1,14 +1,25 @@
 <script setup lang="ts">
-import { bookingStore } from '@/stores/booking';
+import { onMounted, ref } from "vue";
+import { getFlights } from "@/data/flight/flight.service";
+import BookingInfoMinimal from "@/components/BookingInfoMinimal.vue";
 
-const store = bookingStore();
+const flights = ref<any>([]);
+
+onMounted(async () => {
+    flights.value = await getFlights({
+        includePlane: "true"
+    });
+
+    console.log(flights.value);
+});
 </script>
 
 <template>
-    <div>
-        <h4>Reservierung hier!</h4>
-        <span v-if="store.passengers.length === 1">{{ store.passengers.length }} Passagier mit Gesamtgewicht {{ store.totalWeight }}kg</span>
-        <span v-else>{{ store.passengers.length }} Passagiere mit Gesamtgewicht {{ store.totalWeight }}kg</span>
+    <div class="flex flex-column gap-4">
+        <BookingInfoMinimal />
+        <div>
+            FLIGHTS HERE CMON
+        </div>
     </div>
 </template>
 
