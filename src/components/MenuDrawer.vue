@@ -28,7 +28,7 @@ function closeDrawer(): void
             <div class="flex flex-column">
                 <div class="flex justify-content-between align-items-center p-2">
                     <MenuLogo />
-                    <PrimeButton class="btn-no-shadow" icon="bi-x-lg" text rounded @click="closeDrawer()" />
+                    <PrimeButton type="button" class="btn-no-shadow" icon="bi-x-lg" text rounded @click="closeDrawer()" />
                 </div>
                 <div class="p-2">
                     <slot></slot>
