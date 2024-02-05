@@ -2,8 +2,8 @@ import type { Plane } from "../plane/plane.interface";
 
 export interface Pilot {
     ID?: number;
-    FirstName?: string;
     LastName?: string;
+    FirstName?: string;
     Weight?: number;
     AllowedPlanes?: Plane[];
     CreatedAt?: Date;

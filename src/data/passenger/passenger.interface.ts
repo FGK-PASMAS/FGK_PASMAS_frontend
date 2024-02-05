@@ -2,8 +2,8 @@ import type { Flight } from "../flight/flight.interface";
 
 export interface Passenger {
     ID?: number;
-    FirstName?: string;
     LastName?: string;
+    FirstName?: string;
     Weight?: number;
     FlightID?: number;
     Flight?: Flight;
