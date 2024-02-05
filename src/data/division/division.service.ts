@@ -1,7 +1,11 @@
 import type { APIError } from "@/utils/errors/api.error";
-import { fetchGET } from "@/utils/services/fetch.service";
+import { fetchAPI } from "@/utils/services/fetch.service";
 import type { Division } from "./division.interface";
 
-export const getDivisions = async (): Promise<Division[] | APIError> => {
-    return await fetchGET("/divisions");
+export const getDivisions = async (params?: Record<string, string>): Promise<Division[] | APIError> => {
+    return await fetchAPI({ 
+        resource: "divisions", 
+        method: "GET", 
+        params: params 
+    });
 }

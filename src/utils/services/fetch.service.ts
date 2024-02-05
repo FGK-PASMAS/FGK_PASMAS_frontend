@@ -3,19 +3,44 @@ import { FetchError } from "../errors/fetch.error";
 import { HTTPError } from "../errors/http.error";
 import { SyntaxError } from "../errors/syntax.error";
 
-const api = import.meta.env.VITE_API_URL;
+interface FetchAPIRequest {
+    resource: string,
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
+    id?: number | string,
+    data?: any,
+    params?: Record<string, string>   
+}
 
-export const fetchGET = async (resourceURL: string): Promise<any> => {
+export const fetchAPI = async ({ resource, id, method, data, params }: FetchAPIRequest): Promise<any> => {
+    const api = import.meta.env.VITE_API_URL;
+
+    let url = api + "/" + resource;
+
+    if (id) {
+        url += "/" + id;
+    }
+
+    if (params) {
+        url += "?" + new URLSearchParams(params);
+    }
+
+    const requestOptions = {
+        method: method,
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: data ? JSON.stringify(data) : undefined
+    };
+    
     try {
-        const response = await fetch(api + resourceURL, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
+        const response = await fetch(url, requestOptions);
 
         if (!response.ok) {
             throw new HTTPError(response.status);
+        }
+
+        if (method === "DELETE") {
+            return true;
         }
 
         const apiResponse = await response.json();
@@ -25,51 +50,6 @@ export const fetchGET = async (resourceURL: string): Promise<any> => {
         }
 
         return apiResponse.Response;
-    } catch (error) {
-        return getAPIError(error);
-    }
-}
-
-export const fetchPOST = async (resourceURL: string, body: any): Promise<any> => {
-    try {
-        const response = await fetch(api + resourceURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: body
-        });
-
-        if (!response.ok) {
-            throw new HTTPError(response.status);
-        }
-
-        const apiResponse = await response.json();
-
-        if (apiResponse.Success !== true) {
-            throw apiResponse as APIError;
-        }
-
-        return apiResponse.Response;
-    } catch (error) {
-        return getAPIError(error);
-    }
-}
-
-export const fetchDELETE = async (resourceURL: string): Promise<any> => {
-    try {
-        const response = await fetch(api + resourceURL, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!response.ok) {
-            throw new HTTPError(response.status);
-        }
-
-        return true;
     } catch (error) {
         return getAPIError(error);
     }
