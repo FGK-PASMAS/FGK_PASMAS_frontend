@@ -45,7 +45,7 @@ function toggle(): void
 <style scoped lang="scss">
 .v-enter-active,
 .v-leave-active {
-    transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease;
     line-height: 1.2;
 }
 

@@ -64,23 +64,23 @@ $menu-drawer-width: 256px;
     width: $menu-drawer-width;
     background-color: var(--surface-100);
     margin-left: calc(-1 * $menu-drawer-width);
-    transition: margin-left 0.3s ease-in-out;
+    transition: margin-left 0.3s ease;
 }
 
 .open {
     margin-left: 0;
-    transition: margin-left 0.3s ease-in-out;
+    transition: margin-left 0.3s ease;
 }
 
 @media screen and (min-width: $md) {
     .drawer {
         margin-left: 0;
-        transition: margin-left 0.3s ease-in-out;
+        transition: margin-left 0.3s ease;
     }
 
     .closed {
         margin-left: calc(-1 * $menu-drawer-width);
-        transition: margin-left 0.3s ease-in-out;
+        transition: margin-left 0.3s ease;
     }
 }
 </style>
