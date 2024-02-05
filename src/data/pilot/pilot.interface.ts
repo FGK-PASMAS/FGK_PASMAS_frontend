@@ -1,12 +1,11 @@
-import type { Flight } from "../flight/flight.interface";
+import type { Plane } from "../plane/plane.interface";
 
-export interface Passenger {
+export interface Pilot {
     ID?: number;
     FirstName?: string;
     LastName?: string;
     Weight?: number;
-    FlightID?: number;
-    Flight?: Flight;
+    AllowedPlanes?: Plane[];
     CreatedAt?: Date;
     UpdatedAt?: Date;
     DeletedAt?: Date;
