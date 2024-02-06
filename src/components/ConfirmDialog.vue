@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const isOpen = defineModel({
+const isOpen = defineModel("isOpen", {
     type: Boolean,
     default: true
 });
@@ -38,7 +38,7 @@ function closeDialog(): void
         <div v-if="isOpen" class="shade z-4">
             <div class="dialog flex flex-column justify-content-center align-items-center gap-5 md:border-round surface-100 p-4 overflow-hidden">
                 <i class="dialog-icon" :class="icon" />
-                <div class="text-center">{{ description }}</div>
+                <div v-html="description" class="text-center line-height-2" />
                 <div class="flex gap-5">
                     <PrimeButton type="button" class="text-color" label="Bestätigen" icon="bi-check-lg" @click="confirmDialog()"
                         :pt="{
@@ -97,11 +97,11 @@ function closeDialog(): void
 @media screen and (max-width: $md) {
     .dialog {
         position: absolute;
-        bottom: 0;
+        top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        transform: translateY(0);
+        transform: translateX(0);
     }
 
     .v-enter-active,
@@ -111,7 +111,7 @@ function closeDialog(): void
 
     .v-enter-from,
     .v-leave-to {
-        transform: translateY(100%);
+        transform: translateX(-100%);
     }
 }
 </style>

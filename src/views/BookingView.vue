@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
+import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import { bookingStore } from "@/stores/booking";
 import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
 import { InfoToast } from "@/utils/toasts/info.toast";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, provide, ref } from "vue";
 import type { RouteRecordName } from "vue-router";
-import { onBeforeRouteUpdate, useRouter } from "vue-router";
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from "vue-router";
 
 const router = useRouter();
 
@@ -31,6 +32,8 @@ const items: PrimeMenuItem[] = [
     }
 ];
 
+const isAllowedToLeave = ref(false);
+const isNavDialogOpen = ref(false);
 const isNextDisabled = ref(true);
 
 provide("bookingUpdated", onBookingUpdate);
@@ -41,6 +44,14 @@ onBeforeMount(() => {
 
 onBeforeRouteUpdate((to) => {
     setBookingState(to.name);
+});
+
+onBeforeRouteLeave(() => {
+    if (store.isEmpty) {
+        isAllowedToLeave.value = true;
+    } else {
+        isNavDialogOpen.value = true;
+    }
 });
 
 function onBookingUpdate(): void
@@ -69,23 +80,36 @@ function setBookingState(route?: RouteRecordName | null | undefined): void
     }
 }
 
+function showCancelBookingToast(): void
+{
+    toast.add(new InfoToast({ detail: "Buchung wurde abgebrochen "}));
+}
+
 function cancelBooking(): void
 {
     store.resetBooking();
     router.replace({ name: "booking_passengers" });
     
-    toast.add(new InfoToast({ detail: "Buchung wurde abgebrochen "}));
+    showCancelBookingToast();
 }
 </script>
 
 <template>
-    <main class="flex flex-column overflow-hidden">
+<main class="flex flex-column overflow-hidden">
+    <div class="flex-grow-1 flex flex-column overflow-hidden">
         <div class="flex justify-content-between">
             <ContentHeader title="Buchen" />
-            <PrimeButton class="align-self-center mr-1 text-color" text @click="cancelBooking()">Abbrechen</PrimeButton>
+            <PrimeButton type="button" class="align-self-center mr-1 text-color" text @click="cancelBooking()">Abbrechen</PrimeButton>
         </div>
         <MenuStepper class="flex-grow-1" :items="items" :is-next-disabled="isNextDisabled" />
-    </main>
+    </div>
+    <NavigationGuardDialog 
+        v-model:isOpen="isNavDialogOpen" 
+        v-model:isAllowedToLeave="isAllowedToLeave" 
+        description="Du bist gerade dabei den Buchungsprozess zu verlassen. Bist du sicher?" 
+        @confirm="showCancelBookingToast()" 
+    />
+</main>
 </template>
 
 <style scoped lang="scss">
