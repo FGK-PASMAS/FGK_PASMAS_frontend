@@ -15,7 +15,7 @@ const isAllowedToLeave = defineModel("isAllowedToLeave", {
     default: false
 });
 
-window.addEventListener("popstate", setPopstateDetected);
+window.addEventListener("popstate", popstateHandler);
 
 onBeforeRouteLeave((to) => {
     navTo = to.path
@@ -23,7 +23,7 @@ onBeforeRouteLeave((to) => {
     return isAllowedToLeave.value;
 });
 
-function setPopstateDetected(event: PopStateEvent): void
+function popstateHandler(event: PopStateEvent): void
 {
     if (event.state.current !== router.currentRoute.value.path) {
         return;
@@ -38,7 +38,7 @@ function confirmNavigation(): void
 {
     isAllowedToLeave.value = true;
 
-    removeEventListener("popstate", setPopstateDetected);
+    removeEventListener("popstate", popstateHandler);
 
     if (popstateDetected) {
         if (navTo === navBack) {
