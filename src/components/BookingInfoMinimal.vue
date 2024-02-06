@@ -17,7 +17,7 @@ function toggle(): void
 <div class="flex flex-column">
 
     <div class="flex justify-content-between align-items-center border-1 border-round border-primary surface-100 p-3 cursor-pointer" :class="{ 'border-noround-bottom': isOpen }" @click="toggle()">
-        <div class="flex gap-8">
+        <div class="flex flex-wrap column-gap-8 row-gap-2 ">
             <div class="flex align-items-center gap-2">
                 <i class="bi-airplane-fill text-xl" />
                 <span>{{ store.division?.Name }}</span>
