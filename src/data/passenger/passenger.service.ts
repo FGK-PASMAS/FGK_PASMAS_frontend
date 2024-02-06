@@ -3,7 +3,7 @@ import { fetchAPI } from "@/utils/services/fetch.service";
 import { getStream } from "@/utils/services/stream.service";
 import type { Passenger } from "./passenger.interface";
 
-export const getPassengers = async (params?: Record<string, string>): Promise<Passenger[] | APIError> => {
+export const getPassengers = async (params?: Record<string, string | number | boolean>): Promise<Passenger[] | APIError> => {
     return await fetchAPI({ 
         resource: "passengers", 
         method: "GET", 

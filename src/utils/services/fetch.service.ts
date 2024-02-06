@@ -8,7 +8,7 @@ interface FetchAPIRequest {
     method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
     id?: number | string,
     data?: any,
-    params?: Record<string, string>   
+    params?: Record<string, string | number | boolean>
 }
 
 export const fetchAPI = async ({ resource, id, method, data, params }: FetchAPIRequest): Promise<any> => {
@@ -21,7 +21,13 @@ export const fetchAPI = async ({ resource, id, method, data, params }: FetchAPIR
     }
 
     if (params) {
-        url += "?" + new URLSearchParams(params);
+        const queryParams: Record<string, string> = {};
+
+        Object.entries(params).forEach(([key, value]) => {
+            queryParams[key] = value.toString();
+        });
+
+        url += "?" + new URLSearchParams(queryParams);
     }
 
     const requestOptions = {
