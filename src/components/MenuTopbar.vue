@@ -2,7 +2,7 @@
 import InputSwitch from "primevue/inputswitch";
 import MenuLogo from "./MenuLogo.vue";
 
-const isDarkMode = defineModel({ 
+const isDarkMode = defineModel("isDarkMode", { 
     type: Boolean, 
     default: false 
 });
