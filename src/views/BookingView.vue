@@ -39,7 +39,7 @@ const isNextDisabled = ref(true);
 provide("bookingUpdated", onBookingUpdate);
 
 onBeforeMount(() => {
-    store.resetBooking();
+    store.resetStore();
 });
 
 onBeforeRouteUpdate((to) => {
@@ -87,7 +87,7 @@ function showCancelBookingToast(): void
 
 function cancelBooking(): void
 {
-    store.resetBooking();
+    store.resetStore();
     router.replace({ name: "booking_passengers" });
     
     showCancelBookingToast();

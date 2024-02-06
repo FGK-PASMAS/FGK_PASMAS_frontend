@@ -21,10 +21,10 @@ export const bookingStore = defineStore("booking", () => {
         return true;
     });
 
-    function resetBooking() {
+    function resetStore() {
         division.value = undefined;
         seats.value = [];
     }
 
-    return { division, seats, passengers, totalWeight, isEmpty, resetBooking };
+    return { division, seats, passengers, totalWeight, isEmpty, resetStore };
 });
