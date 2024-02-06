@@ -1,5 +1,5 @@
-# PASMAS
-The **PAS**senger **M**anagement **AS**sistant (PASMAS) is a system designed to make it easier for smaller flying clubs to manage sightseeing flights on open days.
+# PasMAs
+The **Pas**senger **M**anagement **As**sistant (PasMAs) is a system designed to make it easier for smaller flying clubs to manage sightseeing flights on open days.
 The assistant allows you to manage the various flight slots for each aircraft. It also performs flight logic calculations such as the maximum take-off mass which prevents overloaded flights.
 
 ## Important note
