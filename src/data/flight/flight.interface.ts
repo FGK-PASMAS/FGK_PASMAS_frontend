@@ -9,7 +9,7 @@ export interface Flight {
     FuelAtDeparture?: number;
     DepartureTime: Date;
     ArrivalTime: Date;
-    PlaneId: number;
+    PlaneId?: number;
     Plane?: Plane;
     PilotId?: number;
     Pilot?: Pilot;
