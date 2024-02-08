@@ -4,12 +4,12 @@ import type { Plane } from "../plane/plane.interface";
 
 export interface Flight {
     ID?: number;
-    Status?: "PLANNED" | "RESERVED" | "BOOKED" | "BLOCKED";
+    Status: "OK" | "PLANNED" | "RESERVED" | "BOOKED" | "BLOCKED";
     Description?: string;
     FuelAtDeparture?: number;
-    DepartureTime?: Date;
-    ArrivalTime?: Date;
-    PlaneId?: number;
+    DepartureTime: Date;
+    ArrivalTime: Date;
+    PlaneId: number;
     Plane?: Plane;
     PilotId?: number;
     Pilot?: Pilot;
