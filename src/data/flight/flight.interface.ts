@@ -5,7 +5,7 @@ import type { Plane } from "../plane/plane.interface";
 
 export interface Flight {
     ID?: number;
-    Status: "OK" | "OVERLOADED" | "RESERVED" | "BOOKED" | "BLOCKED";
+    Status?: "OK" | "OVERLOADED" | "RESERVED" | "BOOKED" | "BLOCKED";
     Description?: string;
     FuelAtDeparture?: number;
     DepartureTime: DateTimeMaybeValid;

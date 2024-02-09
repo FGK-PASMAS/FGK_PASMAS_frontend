@@ -3,8 +3,11 @@ import type { Plane } from "@/data/plane/plane.interface";
 import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import { computed, ref, type Ref } from "vue";
+import { bookingStore } from "./booking";
 
 export const flightsStore = defineStore("flights", () => {
+    const booking = bookingStore();
+
     // ToDo v0.2.0 Configure time interval
     const startTime: DateTime = DateTime.fromISO("2024-02-06T11:00:00.000000Z");
     const endTime: DateTime = DateTime.fromISO("2024-02-06T18:00:00.000000Z");
@@ -43,12 +46,13 @@ export const flightsStore = defineStore("flights", () => {
                 }
 
                 const virtualFlight: Flight = {
-                    Status: "OK",
                     DepartureTime: departure,
                     ArrivalTime: arrival,
                     PlaneId: plane.ID!,
                     Plane: plane
                 }
+
+                virtualFlight.Status = calculateFlightStatus(virtualFlight);
                 
                 flights.push(virtualFlight);
                 i = arrival;
@@ -66,6 +70,37 @@ export const flightsStore = defineStore("flights", () => {
         }
     
         return false;
+    }
+
+    function getPreviousExistingFlight(flight: Flight): Flight | undefined
+    {
+        return existingFlights.value.findLast((flightToCheck) => {
+            if (flightToCheck.PlaneId === flight.PlaneId && flightToCheck.ArrivalTime < flight.DepartureTime) {
+                return true;
+            }
+
+            return false;
+        });
+    }
+
+    function calculateFlightStatus(flight: Flight): Flight["Status"]
+    {
+        let fuel = 0;
+        const passengerWeight = booking.totalWeight;
+
+        if (flight.Plane!.FuelMaxCapacity !== -1) {
+            const prevFlight = getPreviousExistingFlight(flight);
+
+            if (prevFlight) {
+                fuel = prevFlight.FuelAtDeparture! - flight.Plane!.FuelburnPerFlight;
+            } else {
+                fuel = flight.Plane!.FuelStartAmount;
+            }
+        }
+
+        const eotw = flight.Plane!.EmptyWeight + passengerWeight + (fuel * flight.Plane!.FuelConversionFactor);
+
+        return eotw > flight.Plane!.MTOW ? "OVERLOADED" : "OK";
     }
 
     function compareFlights(a: Flight, b: Flight): number {
