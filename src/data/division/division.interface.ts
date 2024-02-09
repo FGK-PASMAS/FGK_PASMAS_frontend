@@ -1,3 +1,4 @@
+import type { DateTimeMaybeValid } from "luxon";
 import type { Plane } from "../plane/plane.interface";
 
 export interface Division {
@@ -5,7 +6,7 @@ export interface Division {
     Name: string;
     PassengerCapacity: number;
     Planes?: Plane[];
-    CreatedAt?: Date;
-    UpdatedAt?: Date;
-    DeletedAt?: Date;
+    CreatedAt?: DateTimeMaybeValid;
+    UpdatedAt?: DateTimeMaybeValid;
+    DeletedAt?: DateTimeMaybeValid;
 }

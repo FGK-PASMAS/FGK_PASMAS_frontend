@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import { APIError } from "../errors/api.error";
 import { FetchError } from "../errors/fetch.error";
 import { HTTPError } from "../errors/http.error";
@@ -55,10 +56,33 @@ export const fetchAPI = async ({ resource, id, method, data, params }: FetchAPIR
             throw apiResponse as APIError;
         }
 
-        return apiResponse.Response;
+        return parseDates(apiResponse.Response);
     } catch (error) {
         return getAPIError(error);
     }
+}
+
+const parseDates = (data: any): any => {
+    if (data === null || data === undefined || typeof data !== "object") {
+        return data;
+    }
+
+    if(DateTime.fromISO(data).isValid) {
+        return DateTime.fromISO(data);
+    }
+
+    Object.entries(data).forEach((entry) => {
+        const [key, value]: [any, any] = entry;
+        const date = DateTime.fromISO(value);
+
+        if (date.isValid) {
+            data[key] = date;
+        } else if (typeof value === "object") {
+            parseDates(value);
+        }
+    });
+
+    return data;
 }
 
 // ToDo Fitting end user error messages
