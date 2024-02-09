@@ -9,6 +9,7 @@ export interface Plane {
     AircraftType: string;
     FlightDuration: number;
     FuelMaxCapacity: number;
+    FuelStartAmount: number;
     FuelburnPerFlight: number;
     FuelConversionFactor: number;
     MTOW: number;
