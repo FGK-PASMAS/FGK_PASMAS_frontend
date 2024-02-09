@@ -13,7 +13,8 @@
     "noImplicitAny": true,
     "strict": true,
     "lib": [
-      "ESNext"
+        "DOM",
+        "ESNext"
     ]
   }
 }
