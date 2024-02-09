@@ -5,7 +5,7 @@ import { defineStore } from "pinia";
 import { computed, ref, type Ref } from "vue";
 
 export const flightsStore = defineStore("flights", () => {
-    // ToDo Configure time interval
+    // ToDo v0.2.0 Configure time interval
     const startTime: DateTime = DateTime.fromISO("2024-02-06T11:00:00.000000Z");
     const endTime: DateTime = DateTime.fromISO("2024-02-06T18:00:00.000000Z");
 
