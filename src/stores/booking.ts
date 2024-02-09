@@ -1,14 +1,20 @@
 import type { Division } from "@/data/division/division.interface";
 import type { Passenger } from "@/data/passenger/passenger.interface";
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
+import { computed, ref, type Ref } from "vue";
 
 export const bookingStore = defineStore("booking", () => {
-    const division = ref<Division>();
-    const seats = ref<Passenger[]>([]);
-    const passengers = computed(() => seats.value.filter((passenger) => passenger.Weight));
-    const totalWeight = computed(() => passengers.value.reduce( (accumulator, passenger) => accumulator + (passenger.Weight ?? 0), 0));
+    const division: Ref<Division | undefined> = ref();
+    const seats: Ref<Passenger[]> = ref([]);
 
+    const passengers = computed(() => {
+        return seats.value.filter((passenger) => passenger.Weight);
+    });
+
+    const totalWeight = computed(() => {
+        return passengers.value.reduce((accumulator, passenger) => accumulator + (passenger.Weight ?? 0), 0);
+    });
+    
     const isEmpty = computed(() => {
         if (division.value) {
             return false;

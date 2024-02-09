@@ -5,7 +5,7 @@ import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
 import { bookingStore } from "@/stores/booking";
 import { useToast } from "primevue/usetoast";
-import { inject, onBeforeMount, ref } from "vue";
+import { inject, onBeforeMount, ref, type Ref } from "vue";
 
 const bookingUpdated = inject<Function>("bookingUpdated");
 
@@ -13,7 +13,7 @@ const toast = useToast();
 const dropDown = ref(null);
 
 const store = bookingStore();
-const divisions = ref<Division[]>([]);
+const divisions: Ref<Division[]> = ref([]);
 
 onBeforeMount(async () => {
     divisions.value = await useValidateAPIData(getDivisions(), toast);

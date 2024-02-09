@@ -7,11 +7,11 @@ import { ErrorToast } from "@/utils/toasts/error.toast";
 import { InfoToast } from "@/utils/toasts/info.toast";
 import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
-import { onBeforeMount, onUnmounted, ref } from "vue";
+import { onBeforeMount, onUnmounted, ref, type Ref } from "vue";
 
 const toast = useToast();
 
-const passengers = ref<Passenger[]>([]);
+const passengers: Ref<Passenger[]> = ref([]);
 
 let eventSource: EventSource;
 
