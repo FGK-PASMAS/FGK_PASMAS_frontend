@@ -52,11 +52,26 @@ onBeforeRouteLeave(() => {
     } else {
         isNavDialogOpen.value = true;
     }
+
+    if (isAllowedToLeave.value) {
+        window.removeEventListener("beforeunload", onBeforeUnload);
+    }
 });
+
+function onBeforeUnload(event: BeforeUnloadEvent): void
+{
+    event.preventDefault();
+}
 
 function onBookingUpdate(): void
 {
     setBookingState();
+
+    if (!store.isEmpty) {
+        window.addEventListener("beforeunload", onBeforeUnload);
+    } else {
+        window.removeEventListener("beforeunload", onBeforeUnload);
+    }
 }
 
 function setBookingState(route?: RouteRecordName | null | undefined): void
@@ -80,17 +95,18 @@ function setBookingState(route?: RouteRecordName | null | undefined): void
     }
 }
 
-function showCancelBookingToast(): void
-{
-    toast.add(new InfoToast({ detail: "Buchung wurde abgebrochen "}));
-}
-
 function cancelBooking(): void
 {
     store.resetStore();
+    window.removeEventListener("beforeunload", onBeforeUnload);
     router.replace({ name: "booking_passengers" });
-    
+
     showCancelBookingToast();
+}
+
+function showCancelBookingToast(): void
+{
+    toast.add(new InfoToast({ detail: "Buchung wurde abgebrochen "}));
 }
 </script>
 
