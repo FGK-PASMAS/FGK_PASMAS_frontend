@@ -3,14 +3,22 @@ import type { Passenger } from "../passenger/passenger.interface";
 import type { Pilot } from "../pilot/pilot.interface";
 import type { Plane } from "../plane/plane.interface";
 
+export enum FlightStatus {
+    OK = "OK",
+    OVERLOADED = "OVERLOADED",
+    RESERVED = "RESERVED",
+    BOOKED = "BOOKED",
+    BLOCKED = "BLOCKED",
+}
+
 export interface Flight {
     ID?: number;
-    Status?: "OK" | "OVERLOADED" | "RESERVED" | "BOOKED" | "BLOCKED";
+    Status?: FlightStatus;
     Description?: string;
     FuelAtDeparture?: number;
-    DepartureTime: DateTimeMaybeValid;
-    ArrivalTime: DateTimeMaybeValid;
-    PlaneId: number;
+    DepartureTime?: DateTimeMaybeValid;
+    ArrivalTime?: DateTimeMaybeValid;
+    PlaneId?: number;
     Plane?: Plane;
     PilotId?: number;
     Pilot?: Pilot;

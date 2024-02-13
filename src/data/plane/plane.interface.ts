@@ -5,17 +5,17 @@ import type { Pilot } from "../pilot/pilot.interface";
 
 export interface Plane {
     ID?: number;
-    Registration: string;
-    AircraftType: string;
-    FlightDuration: number;
-    FuelMaxCapacity: number;
-    FuelStartAmount: number;
-    FuelburnPerFlight: number;
-    FuelConversionFactor: number;
-    MTOW: number;
-    EmptyWeight: number;
-    MaxSeatPayload: number;
-    Division: Division;
+    Registration?: string;
+    AircraftType?: string;
+    FlightDuration?: number;
+    FuelMaxCapacity?: number;
+    FuelStartAmount?: number;
+    FuelburnPerFlight?: number;
+    FuelConversionFactor?: number;
+    MTOW?: number;
+    EmptyWeight?: number;
+    MaxSeatPayload?: number;
+    Division?: Division;
     AllowedPilots?: Pilot[];
     PrefPilotId?: number;
     PrefPilot?: Pilot;
