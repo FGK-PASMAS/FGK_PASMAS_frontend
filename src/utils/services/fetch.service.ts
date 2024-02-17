@@ -75,6 +75,10 @@ const parseDates = (data: any): any => {
         const [key, value]: [any, any] = entry;
         const date = DateTime.fromISO(value);
 
+        if (typeof value !== "object" && typeof value !== "string") {
+            return;
+        }
+
         if (date.isValid) {
             data[key] = date;
         } else if (typeof value === "object") {
