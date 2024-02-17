@@ -137,7 +137,7 @@ function handleOnMessageEvent(event: MessageEvent): void
 </template>
 
 <style scoped lang="scss">
-// ToDo Fixed table headers / Show table headers when scrolling up
+// ToDo: Fixed table headers / Show table headers when scrolling up
 .filter-input {
     min-width: 75px;
 }
