@@ -1,21 +1,19 @@
-import { createPinia } from "pinia";
-import { createApp } from "vue";
-import App from "./App.vue";
-import router from "./router";
-
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { createPinia } from "pinia";
 import "primeflex/primeflex.css";
-import PrimeVue from "primevue/config";
-import ToastService from "primevue/toastservice";
-import "./assets/main.scss";
-
 import Button from "primevue/button";
 import Column from "primevue/column";
+import PrimeVue from "primevue/config";
 import DataTable from "primevue/datatable";
 import Divider from "primevue/divider";
 import Dropdown from "primevue/dropdown";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
+import ToastService from "primevue/toastservice";
+import { createApp } from "vue";
+import App from "./App.vue";
+import "./assets/main.scss";
+import router from "./router";
 
 const app = createApp(App);
 

@@ -13,7 +13,7 @@ export const flightsStore = defineStore("flights", () => {
 
     const eventStartTime: DateTime = config.eventStartTime!;
     const eventEndTime: DateTime = config.eventEndTime!;
-    const upcomingStartTime: DateTime = DateTime.utc();
+    const upcomingStartTime: DateTime = DateTime.now();
 
     const planes: Ref<Plane[]> = ref([]);
     const existingFlights: Ref<Flight[]> = ref([]);
