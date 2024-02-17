@@ -41,28 +41,35 @@ export const fetchAPI = async ({ resource, id, method, data, params }: FetchAPIR
     
     try {
         const response = await fetch(url, requestOptions);
+        let apiResponse: any | undefined;
 
         if (!response.ok) {
-            throw new HTTPError(response.status);
+            apiResponse = await response.json()
+            
+            if (apiResponse.Success !== false) {
+                throw new HTTPError(response.status);
+            }
+
+            throw new HTTPError(response.status, apiResponse.Type, apiResponse.Message);
         }
 
         if (method === "DELETE") {
             return true;
         }
 
-        const apiResponse = await response.json();
+        apiResponse = await response.json();
 
         if (apiResponse.Success !== true) {
             throw apiResponse as APIError;
         }
 
-        return parseDates(apiResponse.Response);
+        return parseAPIResponse(apiResponse.Response);
     } catch (error) {
         return getAPIError(error);
     }
 }
 
-const parseDates = (data: any): any => {
+export const parseAPIResponse = (data: any): any => {
     if (data === null || data === undefined || typeof data !== "object") {
         return data;
     }
@@ -82,7 +89,29 @@ const parseDates = (data: any): any => {
         if (date.isValid) {
             data[key] = date;
         } else if (typeof value === "object") {
-            parseDates(value);
+            parseAPIResponse(value);
+        }
+    });
+
+    return data;
+}
+
+export const parseAPIRequest = (data: any): any => {
+    if (data === null || data === undefined || typeof data !== "object") {
+        return data;
+    }
+
+    if (data instanceof DateTime) {
+        return data.toUTC().toString();
+    }
+
+    Object.entries(data).forEach((entry) => {
+        const [key, value]: [any, any] = entry;
+
+        if (value instanceof DateTime) {
+            data[key] = value.toUTC().toString();
+        } else if (typeof value === "object") {
+            parseAPIRequest(value);
         }
     });
 
