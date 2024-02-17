@@ -6,9 +6,11 @@ import type { Plane } from "../plane/plane.interface";
 export enum FlightStatus {
     OK = "OK",
     OVERLOADED = "OVERLOADED",
+    OVERLOADED_SEAT = "OVERLOADED_SEAT",
     RESERVED = "RESERVED",
     BOOKED = "BOOKED",
     BLOCKED = "BLOCKED",
+    UNKNOWN = "UNKNOWN",
 }
 
 export interface Flight {
