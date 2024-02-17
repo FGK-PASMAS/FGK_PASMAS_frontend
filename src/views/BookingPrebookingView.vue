@@ -40,8 +40,8 @@ onMounted(async () => {
             
             <div v-for="flight in flights.flights" :key="flight.ID" class="flex gap-4">
                 <span>{{ flight?.Status }}</span>
-                <span>{{ flight.DepartureTime.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
-                <span>{{ flight.ArrivalTime.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
+                <span>{{ flight.DepartureTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
+                <span>{{ flight.ArrivalTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
                 <span>{{ flight.Plane?.AircraftType }}</span>
                 <span>{{ flight.Plane?.Registration }}</span>
                 <span>{{ flight.Plane?.MTOW }}</span>
