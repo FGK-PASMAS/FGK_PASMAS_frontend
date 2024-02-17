@@ -6,6 +6,9 @@ import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuItem from "./components/MenuItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
+import { configStore } from "./stores/config";
+
+const config = configStore();
 
 const router = useRouter();
 
@@ -26,6 +29,8 @@ const isClosed = ref(false);
 const isNotFound = ref(false);
 
 onBeforeMount(() => {
+    config.init();
+
     localTheme = localStorage.getItem("theme");
 
     if (localTheme) {

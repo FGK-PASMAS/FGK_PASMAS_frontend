@@ -12,7 +12,7 @@ const bookingUpdated = inject<Function>("bookingUpdated");
 const toast = useToast();
 const dropDown = ref(null);
 
-const store = bookingStore();
+const booking = bookingStore();
 const divisions: Ref<Division[]> = ref([]);
 
 onBeforeMount(async () => {
@@ -21,20 +21,20 @@ onBeforeMount(async () => {
 
 function initPassengers(): void
 {
-    store.seats = [];
+    booking.seats = [];
 
-    if (!store.division) {
+    if (!booking.division) {
         bookingUpdated!();
         return;
     }
 
-    if (!store.division.PassengerCapacity) {
+    if (!booking.division.PassengerCapacity) {
         bookingUpdated!();
         return;
     }
 
-    for (let i = 1; i <= store.division.PassengerCapacity; i++) {
-        store.seats.push({
+    for (let i = 1; i <= booking.division.PassengerCapacity; i++) {
+        booking.seats.push({
             ID: i,
             LastName: undefined,
             FirstName: undefined,
@@ -50,13 +50,13 @@ function initPassengers(): void
     <div class="flex flex-column gap-4">
         <div v-if="divisions.length > 0">
             <h4>Flugtyp auswählen</h4>
-            <PrimeDropdown class="w-full md:w-20rem" ref="dropDown" v-model="store.division" :options="divisions" optionLabel="Name" placeholder="Flugtyp" showClear @change="initPassengers()" />
+            <PrimeDropdown class="w-full md:w-20rem" ref="dropDown" v-model="booking.division" :options="divisions" optionLabel="Name" placeholder="Flugtyp" showClear @change="initPassengers()" />
         </div>
-        <div v-if="store.seats.length > 0">
-            <h4 v-if="store.seats.length === 1">Passagier hinzufügen</h4>
+        <div v-if="booking.seats.length > 0">
+            <h4 v-if="booking.seats.length === 1">Passagier hinzufügen</h4>
             <h4 v-else>Passagiere hinzufügen</h4>
             <div class="flex flex-column gap-4">
-                <PassengerEditMinimal v-for="i in store.division?.PassengerCapacity" :key="i" :seat-number="i" v-model:passenger="store.seats[i-1]" :required="{ LastName: false, FirstName: false, Weight: true }" @passenger-changed="bookingUpdated!()" />
+                <PassengerEditMinimal v-for="i in booking.division?.PassengerCapacity" :key="i" :seat-number="i" v-model:passenger="booking.seats[i-1]" :required="{ LastName: false, FirstName: false, Weight: true }" @passenger-changed="bookingUpdated!()" />
             </div>
         </div>
     </div>

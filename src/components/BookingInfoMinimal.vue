@@ -3,7 +3,7 @@ import PassengerInfoMinimal from "@/components/PassengerInfoMinimal.vue";
 import { bookingStore } from '@/stores/booking';
 import { ref } from 'vue';
 
-const store = bookingStore();
+const booking = bookingStore();
 
 const isOpen = ref(false);
 
@@ -20,15 +20,15 @@ function toggle(): void
         <div class="flex flex-wrap column-gap-8 row-gap-2 ">
             <div class="flex align-items-center gap-2">
                 <i class="bi-airplane-fill text-xl" />
-                <span>{{ store.division?.Name }}</span>
+                <span>{{ booking.division?.Name }}</span>
             </div>
             <div class="flex align-items-center gap-2">
                 <i class="bi-people-fill text-xl" />
                 <div class="flex gap-1">
-                    <span>{{ store.passengers.length }}</span>
-                    <span v-if="store.passengers.length === 1">Passagier</span>
+                    <span>{{ booking.passengers.length }}</span>
+                    <span v-if="booking.passengers.length === 1">Passagier</span>
                     <span v-else>Passagiere</span>
-                    <span>{{ "(" + store.totalWeight + "kg)" }}</span>
+                    <span>{{ "(" + booking.totalWeight + "kg)" }}</span>
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@ function toggle(): void
     </div>
     <Transition>
         <div v-if="isOpen" class="flex flex-column gap-2 border-1 border-top-none border-round-bottom border-primary surface-100 p-3 overflow-hidden">
-            <PassengerInfoMinimal v-for="passenger in store.passengers" :key="passenger.ID" :passenger="passenger" />
+            <PassengerInfoMinimal v-for="passenger in booking.passengers" :key="passenger.ID" :passenger="passenger" />
         </div>
     </Transition>
 </div>

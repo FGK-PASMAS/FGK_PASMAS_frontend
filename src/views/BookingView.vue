@@ -14,7 +14,7 @@ const router = useRouter();
 
 const toast = useToast();
 
-const store = bookingStore();
+const booking = bookingStore();
 
 const items: PrimeMenuItem[] = [
     { 
@@ -39,7 +39,7 @@ const isNextDisabled = ref(true);
 provide("bookingUpdated", onBookingUpdate);
 
 onBeforeMount(() => {
-    store.resetStore();
+    booking.resetStore();
 });
 
 onBeforeRouteUpdate((to) => {
@@ -47,7 +47,7 @@ onBeforeRouteUpdate((to) => {
 });
 
 onBeforeRouteLeave(() => {
-    if (store.isEmpty) {
+    if (booking.isEmpty) {
         isAllowedToLeave.value = true;
     } else {
         isNavDialogOpen.value = true;
@@ -67,7 +67,7 @@ function onBookingUpdate(): void
 {
     setBookingState();
 
-    if (!store.isEmpty) {
+    if (!booking.isEmpty) {
         window.addEventListener("beforeunload", onBeforeUnload);
     } else {
         window.removeEventListener("beforeunload", onBeforeUnload);
@@ -82,7 +82,7 @@ function setBookingState(route?: RouteRecordName | null | undefined): void
 
     switch (route) {
         case "booking_passengers":
-            if (store.totalWeight > 0) {
+            if (booking.totalWeight > 0) {
                 isNextDisabled.value = false;
             } else {
                 isNextDisabled.value = true;
@@ -97,7 +97,7 @@ function setBookingState(route?: RouteRecordName | null | undefined): void
 
 function cancelBooking(): void
 {
-    store.resetStore();
+    booking.resetStore();
     window.removeEventListener("beforeunload", onBeforeUnload);
     router.replace({ name: "booking_passengers" });
 
