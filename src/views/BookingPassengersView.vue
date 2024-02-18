@@ -33,9 +33,8 @@ function initPassengers(): void
         return;
     }
 
-    for (let i = 1; i <= booking.division.PassengerCapacity; i++) {
+    for (let i = 0; i < booking.division.PassengerCapacity; i++) {
         booking.seats.push({
-            ID: i,
             LastName: undefined,
             FirstName: undefined,
             Weight: undefined
@@ -56,7 +55,7 @@ function initPassengers(): void
             <h4 v-if="booking.seats.length === 1">Passagier hinzufügen</h4>
             <h4 v-else>Passagiere hinzufügen</h4>
             <div class="flex flex-column gap-4">
-                <PassengerEditMinimal v-for="i in booking.division?.PassengerCapacity" :key="i" :seat-number="i" v-model:passenger="booking.seats[i-1]" :required="{ LastName: false, FirstName: false, Weight: true }" @passenger-changed="bookingUpdated!()" />
+                <PassengerEditMinimal v-for="(seat, index) in booking.seats" :key="index" :seat-number="index + 1" v-model:passenger="booking.seats[index]" :required="{ LastName: false, FirstName: false, Weight: true }" @passenger-changed="bookingUpdated!()" />
             </div>
         </div>
     </div>
