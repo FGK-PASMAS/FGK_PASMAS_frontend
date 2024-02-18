@@ -71,9 +71,14 @@ const hasFlight = ref(false);
 
 async function test(flight: Flight)
 {
-    hasFlight.value = true;
-    const reservedFlight = await useValidateAPIData(createFlight(flight), toast);
-    booking.flight = reservedFlight;
+    try {
+        hasFlight.value = true;
+        const reservedFlight = await useValidateAPIData(createFlight(flight), toast);
+        booking.flight = reservedFlight;
+    } catch (error) {
+        hasFlight.value = false;
+        throw error;
+    }
 }
 </script>
 
