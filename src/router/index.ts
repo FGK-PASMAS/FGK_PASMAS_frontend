@@ -1,6 +1,6 @@
-import BookingConfirmView from "@/views/BookingConfirmView.vue";
+import BookingOverviewView from "@/views/BookingOverviewView.vue";
 import BookingPassengersView from "@/views/BookingPassengersView.vue";
-import BookingPrebookingView from "@/views/BookingPrebookingView.vue";
+import BookingFlightsView from "@/views/BookingFlightsView.vue";
 import BookingView from "@/views/BookingView.vue";
 import FlightsView from "@/views/FlightsView.vue";
 import HomeViewVue from "@/views/HomeView.vue";
@@ -26,30 +26,30 @@ const router = createRouter({
             component: BookingView,
             children: [
                 {
-                    path: "/booking",
+                    path: "",
                     name: "booking_passengers",
                     component: BookingPassengersView,
                     meta: {
                         prev: undefined,
-                        next: "booking_prebooking"
+                        next: "booking_flights"
                     }
                 },
                 {
-                    path: "/booking",
-                    name: "booking_prebooking",
-                    component: BookingPrebookingView,
+                    path: "",
+                    name: "booking_flights",
+                    component: BookingFlightsView,
                     meta: {
                         prev: "booking_passengers",
-                        next: "booking_confirm"
+                        next: "booking_overview"
                     }
 
                 },
                 {
-                    path: "/booking",
-                    name: "booking_confirm",
-                    component: BookingConfirmView,
+                    path: "",
+                    name: "booking_overview",
+                    component: BookingOverviewView,
                     meta: {
-                        prev: "booking_prebooking",
+                        prev: "booking_flights",
                         next: undefined
                     }
                 }

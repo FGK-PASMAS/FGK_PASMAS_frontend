@@ -6,6 +6,10 @@ defineProps({
     passenger: {
         type: Object as PropType<Passenger>,
         required: true
+    },
+    seat : {
+        type: Number,
+        required: true
     }
 });
 </script>
@@ -18,7 +22,7 @@ defineProps({
                 <span v-if="passenger.LastName" class="word-break">{{ passenger.LastName }}</span>
                 <span v-if="passenger.FirstName" class="word-break">{{ passenger.FirstName }}</span>
             </div>
-            <span v-else>{{ "Passagier #" + passenger.ID }}</span>
+            <span v-else>{{ "Passagier #" + seat }}</span>
             <span>{{ "(" + passenger.Weight + "kg)" }}</span>
         </div>
     </div>

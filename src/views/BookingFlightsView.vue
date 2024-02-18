@@ -66,7 +66,7 @@ onUnmounted(() => {
     }
 });
 
-// DEBUG AND TESTING
+// ToDo: Implement functionality
 const hasFlight = ref(false);
 
 async function test(flight: Flight)
@@ -89,7 +89,7 @@ async function test(flight: Flight)
             <Transition>
             <div v-if="isDataLoaded">
                 
-                <!--DEBUG AND TESTING: Placeholder-->
+                <!--ToDo: Implement component-->
                 <div v-for="(flight, index) in flights.flights" :key="index" class="flex flex-wrap gap-4 p-1 border-1 ">
                     <span>{{ flight?.Status }}</span>
                     <span>{{ flight.DepartureTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
@@ -100,7 +100,7 @@ async function test(flight: Flight)
                     <span>{{ flight.Plane?.MaxSeatPayload }}</span>
                     <PrimeButton @click="test(flight)" :disabled="hasFlight">Reservieren (Test)</PrimeButton>
                 </div>
-                <!--DEBUG AND TESTING: Placeholder-->
+                <!--ToDo: Implement component-->
 
             </div>
             <div v-else class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">

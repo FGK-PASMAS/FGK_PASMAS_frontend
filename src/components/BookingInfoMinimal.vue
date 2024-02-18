@@ -1,25 +1,24 @@
 <script setup lang="ts">
-import PassengerInfoMinimal from "@/components/PassengerInfoMinimal.vue";
 import { bookingStore } from '@/stores/booking';
 import { ref } from 'vue';
+import AppDialog from './AppDialog.vue';
+import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
 
 const booking = bookingStore();
 
-const isOpen = ref(false);
+const isOverviewDialogOpen = ref(false);
 
-function toggle(): void
-{
-    isOpen.value = !isOpen.value;
+function openOverview() {
+    isOverviewDialogOpen.value = true;
 }
 </script>
 
 <template>
 <div class="flex flex-column">
-
-    <div class="flex justify-content-between align-items-center border-1 border-round border-primary surface-100 p-3 cursor-pointer" :class="{ 'border-noround-bottom': isOpen }" @click="toggle()">
-        <div class="flex flex-wrap column-gap-8 row-gap-2 ">
+    <div class="flex justify-content-between align-items-center border-1 border-round border-primary surface-100 p-3 cursor-pointer" @click="openOverview()">
+        <div class="flex flex-wrap column-gap-6 row-gap-2 ">
             <div class="flex align-items-center gap-2">
-                <i class="bi-airplane-fill text-xl" />
+                <i class="bi-ticket-fill text-xl" />
                 <span>{{ booking.division?.Name }}</span>
             </div>
             <div class="flex align-items-center gap-2">
@@ -31,28 +30,32 @@ function toggle(): void
                     <span>{{ "(" + booking.totalWeight + "kg)" }}</span>
                 </div>
             </div>
+            <div class="flex align-items-center gap-2">
+                <i class="bi-airplane-fill" />
+                <span>-</span>
+            </div>
+            <div class="flex align-items-center gap-2">
+                <i class="bi-clock-fill" />
+                <span>-</span>
+            </div>
         </div>
-        <i :class="{'bi-chevron-down': !isOpen, 'bi-chevron-up': isOpen }" />
+        <div class="flex gap-2">
+            <i class="bi-info-circle-fill" />
+            <span>Details</span>
+        </div>
     </div>
-    <Transition>
-        <div v-if="isOpen" class="flex flex-column gap-2 border-1 border-top-none border-round-bottom border-primary surface-100 p-3 overflow-hidden">
-            <PassengerInfoMinimal v-for="passenger in booking.passengers" :key="passenger.ID" :passenger="passenger" />
+
+    <!--ToDo: Implement component-->
+    <AppDialog v-model:isOpen="isOverviewDialogOpen">
+        <div class="flex flex-column gap-2 overflow-auto">
+            <h1>Buchungsübersicht</h1>
+            <PassengerInfoMinimal v-for="(passenger, index) in booking.passengers" :key="index" :passenger="passenger" :seat="index+1" />
         </div>
-    </Transition>
+    </AppDialog>
+    <!--ToDo: Implement component-->
+
 </div>
 </template>
 
 <style scoped lang="scss">
-.v-enter-active,
-.v-leave-active {
-    transition: all 0.3s ease;
-    line-height: 1.2;
-}
-
-.v-enter-from,
-.v-leave-to {
-    line-height: 0;
-    opacity: 0;
-    padding: 0 1rem !important;
-}
 </style>

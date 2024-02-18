@@ -24,11 +24,11 @@ const items: MenuItemInterface[] = [
     }, { 
         label: "Reservierung",
         icon: "bi-airplane",
-        route: "booking_prebooking",
+        route: "booking_flights",
     }, { 
         label: "Buchung",
         icon: "bi-check-lg",
-        route: "booking_confirm",
+        route: "booking_overview",
     }
 ];
 
