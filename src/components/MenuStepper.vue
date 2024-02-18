@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
+import type { MenuItemInterface } from "@/utils/interfaces/menuItem.interface";
 import Steps from "primevue/steps";
 import { onBeforeMount, onBeforeUpdate, ref } from "vue";
 import { RouterView, onBeforeRouteUpdate, useRouter } from "vue-router";
@@ -13,7 +13,7 @@ const activeStep = ref(0);
 
 const props = defineProps({
     items: {
-        type: Array<PrimeMenuItem>,
+        type: Array<MenuItemInterface>,
         required: true
     },
 
@@ -69,7 +69,7 @@ function nextStep(): void
     router.replace({ name: nextRoute.value });
 }
 
-function jumpToStep(item: PrimeMenuItem): void
+function jumpToStep(item: MenuItemInterface): void
 {
     router.replace({ name: item.route });
 }

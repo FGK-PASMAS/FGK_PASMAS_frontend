@@ -3,7 +3,7 @@ import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import { bookingStore } from "@/stores/booking";
-import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
+import type { MenuItemInterface } from "@/utils/interfaces/menuItem.interface";
 import { InfoToast } from "@/utils/toasts/info.toast";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, provide, ref } from "vue";
@@ -16,7 +16,7 @@ const toast = useToast();
 
 const booking = bookingStore();
 
-const items: PrimeMenuItem[] = [
+const items: MenuItemInterface[] = [
     { 
         label: "Passagiere",
         icon: "bi-people",
