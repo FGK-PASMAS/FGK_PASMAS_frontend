@@ -95,9 +95,9 @@ function setBookingState(route?: RouteRecordName | null | undefined): void
     }
 }
 
-function cancelBooking(): void
+async function cancelBooking(): Promise<void>
 {
-    booking.resetStore();
+    await booking.cancelBooking(toast);
     window.removeEventListener("beforeunload", onBeforeUnload);
     router.replace({ name: "booking_passengers" });
 

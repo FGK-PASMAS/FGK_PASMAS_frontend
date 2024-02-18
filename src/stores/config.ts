@@ -9,8 +9,8 @@ export const configStore = defineStore("config", () => {
     // ToDo: Get event interval from somewhere
     function init(): void 
     {
-        eventStartTime.value = DateTime.fromISO("2024-02-17T11:00:00.000000Z");
-        eventEndTime.value = DateTime.fromISO("2024-02-17T17:00:00.000000Z");
+        eventStartTime.value = DateTime.fromISO("2024-02-17T00:00:00.000000Z");
+        eventEndTime.value = DateTime.fromISO("2024-02-29T20:00:00.000000Z");
     }
 
     return { eventStartTime, eventEndTime, init }

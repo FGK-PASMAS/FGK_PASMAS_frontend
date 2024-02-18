@@ -9,6 +9,7 @@ import Divider from "primevue/divider";
 import Dropdown from "primevue/dropdown";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
+import ProgressSpinner from "primevue/progressspinner";
 import ToastService from "primevue/toastservice";
 import { createApp } from "vue";
 import App from "./App.vue";
@@ -48,6 +49,7 @@ app
     .component("PrimeDivider", Divider)
     .component("PrimeDropdown", Dropdown)
     .component("PrimeInputNumber", InputNumber)
-    .component("PrimeInputText", InputText);
+    .component("PrimeInputText", InputText)
+    .component("PrimeProgressSpinner", ProgressSpinner);
 
 app.mount("#app");

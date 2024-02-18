@@ -96,28 +96,6 @@ export const parseAPIResponse = (data: any): any => {
     return data;
 }
 
-export const parseAPIRequest = (data: any): any => {
-    if (data === null || data === undefined || typeof data !== "object") {
-        return data;
-    }
-
-    if (data instanceof DateTime) {
-        return data.toUTC().toString();
-    }
-
-    Object.entries(data).forEach((entry) => {
-        const [key, value]: [any, any] = entry;
-
-        if (value instanceof DateTime) {
-            data[key] = value.toUTC().toString();
-        } else if (typeof value === "object") {
-            parseAPIRequest(value);
-        }
-    });
-
-    return data;
-}
-
 // ToDo: Fitting end user error messages
 const getAPIError = (error: any): APIError => {
     if (error instanceof SyntaxError) {

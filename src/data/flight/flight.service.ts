@@ -11,27 +11,20 @@ export const getFlights = async (params?: Record<string, string | number | boole
     });
 }
 
-export const planFlight = async (flight: Flight): Promise<Flight | APIError> => {
+export const createFlight = async (flight: Flight): Promise<Flight | APIError> => {
     return await fetchAPI({
-        resource: "flights/planning",
+        resource: "flights",
         method: "POST",
         data: flight
     });
 }
 
-export const reserveFlight = async (flight: Flight): Promise<Flight | APIError> => {
+export const updateFlight = async (flight: Flight): Promise<Flight | APIError> => {
     return await fetchAPI({
-        resource: "flights/reservation",
-        method: "POST",
-        id: flight.ID
-    });
-}
-
-export const bookFlight = async (flight: Flight): Promise<Flight | APIError> => {
-    return await fetchAPI({
-        resource: "flights/booking",
-        method: "POST",
-        id: flight.ID
+        resource: "flights",
+        method: "PATCH",
+        id: flight.ID,
+        data: flight
     });
 }
 
@@ -45,4 +38,8 @@ export const deleteFlight = async (flight: Flight): Promise<boolean | APIError> 
 
 export const getFlightsStream = (): EventSource => {
     return getStream("flights");
+}
+
+export const getFlightsByDivisionStream = (divisionId: number) => {
+    return getStream("divisions/" + divisionId + "/flights");
 }
