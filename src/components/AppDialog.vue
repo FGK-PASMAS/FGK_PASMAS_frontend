@@ -51,7 +51,7 @@ function closeDialog()
         position: absolute;
         top: 10%;
         left: 50%;
-        width: 50%;
+        width: 60%;
         height: 80%;
         transform: translateX(-50%);
     }
