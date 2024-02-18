@@ -36,8 +36,8 @@ function closeDialog(): void
 </script>
 
 <template>
-    <AppDialog v-model:isOpen="isOpen">
-        <div class="h-full w-full flex flex-column justify-content-center align-items-center gap-5 overflow-hidden">
+    <AppDialog v-model:isOpen="isOpen" :showCloseButton="false" :isStrictClose="true">
+        <div class="flex-grow-1 flex flex-column justify-content-center align-items-center gap-5 overflow-hidden">
             <i class="dialog-icon" :class="icon" />
             <div v-html="description" class="text-center line-height-2" />
             <div class="flex gap-5">

@@ -3,12 +3,31 @@ const isOpen = defineModel("isOpen", {
     type: Boolean,
     default: true
 });
+
+defineProps({
+    showCloseButton: {
+        type: Boolean,
+        default: true
+    },
+    isStrictClose: {
+        type: Boolean,
+        default: false
+    }
+});
+
+function closeDialog()
+{
+    isOpen.value = false;
+}
 </script>
 
 <template>
     <Transition>
-        <div v-if="isOpen" class="shade z-4">
-            <div class="dialog md:border-round surface-100 p-4 overflow-hidden">
+        <div v-if="isOpen" class="shade z-4" @click="!isStrictClose && closeDialog()">
+            <div class="dialog flex flex-column md:border-round surface-100 p-4 overflow-hidden">
+                <div v-if="showCloseButton" class="flex justify-content-end mb-4">
+                    <i class="bi-x-lg cursor-pointer" @click="closeDialog()" />
+                </div>
                 <slot></slot>
             </div>
         </div>
