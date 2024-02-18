@@ -43,8 +43,20 @@ export abstract class EntityEventHandler
     
                 break;
             }
-            default: {
+            case "OTHER": {
                 this.onEntityOtherEvent(subject, toast);
+
+                break;
+            }
+            default: {
+                if (toast) {
+                    toast.add(new ErrorToast({
+                        summary: "Unerwartetes Event",
+                        detail: "Bitte versuche es später erneut. Sollte das Problem weiterhin bestehen, kontaktiere deinen Administrator."
+                    }));
+                } 
+                    
+                console.log(message);
             }
         }
     }
