@@ -49,7 +49,7 @@ function openOverview() {
     <AppDialog v-model:isOpen="isOverviewDialogOpen">
         <div class="flex flex-column gap-2 overflow-auto">
             <h1>Buchungsübersicht</h1>
-            <PassengerInfoMinimal v-for="(passenger, index) in booking.passengers" :key="index" :passenger="passenger" :seat="index+1" />
+            <PassengerInfoMinimal v-for="(passenger, index) in booking.passengers" :key="index" :passenger="passenger" :seatNumber="index+1" />
         </div>
     </AppDialog>
     <!--ToDo: Implement component-->
