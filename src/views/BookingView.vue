@@ -16,6 +16,7 @@ const toast = useToast();
 
 const booking = bookingStore();
 
+// ToDo: Refactor booking structure - Current implementation with nested routes is super buggy
 const items: MenuItemInterface[] = [
     { 
         label: "Passagiere",
