@@ -1,3 +1,4 @@
+import type { EntityInterface } from "@/utils/interfaces/entity.interface";
 import type { DateTimeMaybeValid } from "luxon";
 import type { Passenger } from "../passenger/passenger.interface";
 import type { Pilot } from "../pilot/pilot.interface";
@@ -13,8 +14,7 @@ export enum FlightStatus {
     UNKNOWN = "UNKNOWN",
 }
 
-export interface Flight {
-    ID?: number;
+export interface Flight extends EntityInterface {
     Status?: FlightStatus;
     Description?: string;
     FuelAtDeparture?: number;
@@ -25,7 +25,4 @@ export interface Flight {
     PilotId?: number;
     Pilot?: Pilot;
     Passengers?: Passenger[];
-    CreatedAt?: DateTimeMaybeValid;
-    UpdatedAt?: DateTimeMaybeValid;
-    DeletedAt?: DateTimeMaybeValid;
 }

@@ -1,14 +1,10 @@
-import type { DateTimeMaybeValid } from "luxon";
+import type { EntityInterface } from "@/utils/interfaces/entity.interface";
 import type { Flight } from "../flight/flight.interface";
 
-export interface Passenger {
-    ID?: number;
+export interface Passenger extends EntityInterface {
     LastName?: string;
     FirstName?: string;
     Weight?: number;
     FlightID?: number;
     Flight?: Flight;
-    CreatedAt?: DateTimeMaybeValid;
-    UpdatedAt?: DateTimeMaybeValid;
-    DeletedAt?: DateTimeMaybeValid;
 }

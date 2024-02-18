@@ -1,12 +1,8 @@
-import type { DateTimeMaybeValid } from "luxon";
+import type { EntityInterface } from "@/utils/interfaces/entity.interface";
 import type { Plane } from "../plane/plane.interface";
 
-export interface Division {
-    ID?: number;
+export interface Division extends EntityInterface {
     Name?: string;
     PassengerCapacity?: number;
     Planes?: Plane[];
-    CreatedAt?: DateTimeMaybeValid;
-    UpdatedAt?: DateTimeMaybeValid;
-    DeletedAt?: DateTimeMaybeValid;
 }
