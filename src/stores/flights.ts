@@ -43,7 +43,8 @@ export const flightsStore = defineStore("flights", () => {
                     continue;
                 }
 
-                existingFlight = existingFlights.value.find((flight) => isExistingFlightInTimeSlot(flight, plane.ID!, departure, arrival));
+                // ToDo: arrival is here possible undefined
+                existingFlight = existingFlights.value.find((flight) => isExistingFlightInTimeSlot(flight, plane.ID!, departure, arrival!));
 
                 if (existingFlight) {
                     i = existingFlight.ArrivalTime!;
