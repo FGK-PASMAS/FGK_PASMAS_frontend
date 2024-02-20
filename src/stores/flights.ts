@@ -93,7 +93,6 @@ export const flightsStore = defineStore("flights", () => {
         let eotw = 0;
 
         virtualFlight.Status = FlightStatus.UNKNOWN;
-        virtualFlight.Passengers = booking.passengers;
 
         eotw = getEOTWOfVirutalFlight(virtualFlight);
 
