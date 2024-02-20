@@ -9,7 +9,8 @@ const booking = bookingStore();
 
 const isOverviewDialogOpen = ref(false);
 
-function openOverview() {
+function openOverview() 
+{
     isOverviewDialogOpen.value = true;
 }
 
