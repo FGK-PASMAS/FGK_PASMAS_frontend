@@ -3,7 +3,7 @@ import { bookingStore } from '@/stores/booking';
 import { DateTime } from 'luxon';
 import { ref } from 'vue';
 import AppDialog from './AppDialog.vue';
-import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
+import BookingInfo from './BookingInfo.vue';
 
 const booking = bookingStore();
 
@@ -11,6 +11,12 @@ const isOverviewDialogOpen = ref(false);
 
 function openOverview() {
     isOverviewDialogOpen.value = true;
+}
+
+function cancelFlight()
+{
+    booking.flight=undefined;
+    isOverviewDialogOpen.value = false;
 }
 </script>
 
@@ -54,16 +60,9 @@ function openOverview() {
             <span>Details</span>
         </div>
     </div>
-
-    <!--ToDo: Implement component-->
     <AppDialog v-model:isOpen="isOverviewDialogOpen">
-        <div class="flex flex-column gap-2 overflow-auto">
-            <h1>Buchungsübersicht</h1>
-            <PassengerInfoMinimal v-for="(passenger, index) in booking.passengers" :key="index" :passenger="passenger" :seatNumber="index+1" />
-        </div>
+        <BookingInfo :division="booking.division" :passengers="booking.passengers" :flight="booking.flight" @flightCanceled="cancelFlight()"></BookingInfo>
     </AppDialog>
-    <!--ToDo: Implement component-->
-
 </div>
 </template>
 

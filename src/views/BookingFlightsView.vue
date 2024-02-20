@@ -67,18 +67,10 @@ onUnmounted(() => {
 });
 
 // ToDo: Implement functionality
-const hasFlight = ref(false);
-
 async function test(flight: Flight)
 {
-    try {
-        hasFlight.value = true;
-        const reservedFlight = await useValidateAPIData(createFlight(flight), toast);
-        booking.flight = reservedFlight;
-    } catch (error) {
-        hasFlight.value = false;
-        throw error;
-    }
+    const reservedFlight = await useValidateAPIData(createFlight(flight), toast);
+    booking.flight = reservedFlight;
 }
 </script>
 
@@ -98,7 +90,7 @@ async function test(flight: Flight)
                     <span>{{ flight.Plane?.Registration }}</span>
                     <span>{{ flight.Plane?.MTOW }}</span>
                     <span>{{ flight.Plane?.MaxSeatPayload }}</span>
-                    <PrimeButton @click="test(flight)" :disabled="hasFlight">Reservieren (Test)</PrimeButton>
+                    <PrimeButton @click="test(flight)" :disabled="booking.flight">Reservieren (Test)</PrimeButton>
                 </div>
                 <!--ToDo: Implement component-->
 
