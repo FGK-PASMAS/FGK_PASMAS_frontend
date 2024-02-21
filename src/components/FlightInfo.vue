@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { Division } from '@/data/division/division.interface';
-import type { Flight } from '@/data/flight/flight.interface';
+import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { createFlight, deleteFlight } from '@/data/flight/flight.service';
 import type { Passenger } from '@/data/passenger/passenger.interface';
 import { DateTime } from 'luxon';
 import { useToast } from 'primevue/usetoast';
-import { ref, type PropType } from 'vue';
+import { computed, ref, type PropType } from 'vue';
 import FlightStatusInfo from './FlightStatusInfo.vue';
 import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
 
 const toast = useToast();
+
 const isButtonDisabled = ref(false);
 
 const props = defineProps({
@@ -30,7 +31,15 @@ const emit = defineEmits([
     "flightCanceled"
 ]);
 
-async function reserveFlight()
+const isReserveable = computed(() => {
+    return props.flight?.Status === FlightStatus.OK;
+});
+
+const isCanceable = computed(() => {
+    return props.flight?.Status === FlightStatus.RESERVED;
+});
+
+async function reserveFlight(): Promise<void>
 {
     if (!props.flight) {
         return;
@@ -47,7 +56,7 @@ async function reserveFlight()
     isButtonDisabled.value = false;
 }
 
-async function cancelFlight()
+async function cancelFlight(): Promise<void>
 {
     if (!props.flight) {
         return;
@@ -81,13 +90,14 @@ async function cancelFlight()
                 <span class="ml-1">{{ division?.Name }}</span>
             </div>
             <div>
-                <div class="flex align-items-center gap-2 mb-1">
+                <div class="flex flex-wrap align-items-center gap-2 row-gap-1 mb-1">
                     <i class="bi-people-fill text-xl" />
-                    <h3 class="m-0">Passagiere (Max. {{ division?.PassengerCapacity }} {{ division?.PassengerCapacity === 1 ? "Passagier" : "Passagiere" }})</h3>
+                    <h3 class="m-0">Passagiere</h3>
+                    <h3 class="m-0">(Max. {{ division?.PassengerCapacity }} {{ division?.PassengerCapacity === 1 ? "Passagier" : "Passagiere" }})</h3>
+                    <h3 v-if="flight?.Plane?.MaxSeatPayload && flight?.Plane?.MaxSeatPayload > 0" class="m-0">(Max. {{ flight!.Plane!.MaxSeatPayload }}kg pro Sitz)</h3>
                 </div>
                 <div class="flex flex-column gap-1 ml-1">
-                    <span v-if="flight?.Plane?.MaxSeatPayload && flight?.Plane?.MaxSeatPayload > 0">Maxmiales Sitzgewicht {{ flight!.Plane!.MaxSeatPayload }}</span>
-                    <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :seatNumber="index" :passenger="passenger"></PassengerInfoMinimal>
+                    <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :passenger="passenger" :seatNumber="index" :seatPayload="flight?.Plane?.MaxSeatPayload" />
                 </div>
             </div>
             <div>
@@ -124,18 +134,16 @@ async function cancelFlight()
                 </div>
                 <span v-else>-</span>
             </div>
-            <!--ToDO: Enums in vue templates dont work-->
-            <PrimeButton v-if="flight?.Status === 'OK'" label="Reservieren" class="text-color" @click="reserveFlight()" :disabled="isButtonDisabled"
+            <PrimeButton v-if="isReserveable" label="Reservieren" class="text-color" @click="reserveFlight()" :disabled="isButtonDisabled"
                 :pt="{
                     label: { class: 'font-normal' }
                 }"
             />
-            <PrimeButton v-if="flight?.Status === 'RESERVED'" label="Stornieren" severity="danger" class="text-color" @click="cancelFlight()" :disabled="isButtonDisabled" 
+            <PrimeButton v-if="isCanceable" label="Stornieren" severity="danger" class="text-color" @click="cancelFlight()" :disabled="isButtonDisabled" 
                 :pt="{
                     label: { class: 'font-normal' }
                 }"
             />
-            <!--ToDO: Enums in vue templates dont work-->
         </div>
     </div>
 </template>
