@@ -93,6 +93,7 @@ export const flightsStore = defineStore("flights", () => {
         let eotw = 0;
 
         virtualFlight.Status = FlightStatus.UNKNOWN;
+        virtualFlight.FuelAtDeparture = getFuelOfVirtualFlight(virtualFlight);
 
         eotw = getEOTWOfVirutalFlight(virtualFlight);
 
@@ -131,9 +132,15 @@ export const flightsStore = defineStore("flights", () => {
         let eotw = 0;
         let fuel = 0;
 
-        fuel = getFuelOfVirtualFlight(virtualFlight);
+        if (!virtualFlight.FuelAtDeparture) {
+            return eotw;
+        }
 
-        eotw = plane.EmptyWeight! + passengerWeight + (fuel * plane.FuelConversionFactor!);
+        if (virtualFlight.FuelAtDeparture > 0) {
+            fuel = virtualFlight.FuelAtDeparture * plane.FuelConversionFactor!;
+        }
+
+        eotw = plane.EmptyWeight! + passengerWeight + fuel;
 
         return eotw;
     }
@@ -141,7 +148,7 @@ export const flightsStore = defineStore("flights", () => {
     function getFuelOfVirtualFlight(virtualFlight: Flight): number
     {
         const plane = virtualFlight.Plane!;
-        let fuel = 0;
+        let fuel = -1;
         let prevFlight: Flight | undefined = undefined;
 
         if (plane.FuelMaxCapacity === -1) {
