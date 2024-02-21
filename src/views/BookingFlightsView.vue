@@ -121,8 +121,6 @@ function cancelTest()
                     <span>{{ flight.ArrivalTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
                     <span>{{ flight.Plane?.AircraftType }}</span>
                     <span>{{ flight.Plane?.Registration }}</span>
-                    <span>{{ flight.Plane?.MTOW }}</span>
-                    <span>{{ flight.Plane?.MaxSeatPayload }}</span>
                     <PrimeButton v-if="flight.Status === 'RESERVED'" severity="danger" @click="cancelPersistedTest(flight)">Stornieren (Test)</PrimeButton>
                     <PrimeButton v-else @click="reserveTest(flight)" :disabled="flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
                     <PrimeButton @click="openInfoTest(flight)">Info (Test)</PrimeButton>

@@ -41,10 +41,7 @@ const seatOverload = computed(() => {
             </div>
             <span v-else>Passagier #{{ seatNumber }}</span>
             <span>({{ passenger.Weight }}kg)</span>
-            <div v-if="seatOverload > 0" class="text-red-400">
-                <i class="bi-x" />
-                <span>(+{{ seatOverload }}kg)</span>
-            </div>
+            <span v-if="seatOverload > 0" class="text-red-400">(+{{ seatOverload }}kg)</span>
             <i v-else-if="seatOverload !== -1" class="bi-check2 text-primary-400" />
         </div>
     </div>
