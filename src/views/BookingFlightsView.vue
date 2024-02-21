@@ -3,7 +3,7 @@ import FlightInfoMinimal from "@/components/FlightInfoMinimal.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import { FlightEventHandler } from "@/data/flight/flight.eventHandler";
 import { type Flight } from "@/data/flight/flight.interface";
-import { createFlight, getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.service";
+import { createFlight, deleteFlight, getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.service";
 import { getPlanes } from "@/data/plane/plane.service";
 import { bookingStore } from "@/stores/booking";
 import { flightsStore } from "@/stores/flights";
@@ -79,6 +79,15 @@ async function reserveTest(flight: Flight)
     booking.flight = reservedFlight;
 }
 
+async function cancelPersistedTest(flight: Flight)
+{
+    const response = await useValidateAPIData(deleteFlight(flight), toast);
+
+    if (response) {
+        booking.flight = undefined;
+    }
+}
+
 function onReservedFlightTest(flight: Flight)
 {
     flightInfoOpenTest.value = false;
@@ -114,7 +123,8 @@ function cancelTest()
                     <span>{{ flight.Plane?.Registration }}</span>
                     <span>{{ flight.Plane?.MTOW }}</span>
                     <span>{{ flight.Plane?.MaxSeatPayload }}</span>
-                    <PrimeButton @click="reserveTest(flight)" :disabled="flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
+                    <PrimeButton v-if="flight.Status === 'RESERVED'" severity="danger" @click="cancelPersistedTest(flight)">Stornieren (Test)</PrimeButton>
+                    <PrimeButton v-else @click="reserveTest(flight)" :disabled="flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
                     <PrimeButton @click="openInfoTest(flight)">Info (Test)</PrimeButton>
                 </div>
                 <AppDialog v-model:isOpen="flightInfoOpenTest">
