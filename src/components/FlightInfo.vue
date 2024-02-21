@@ -124,6 +124,7 @@ async function cancelFlight()
                 </div>
                 <span v-else>-</span>
             </div>
+            <!--ToDO: Enums in vue templates dont work-->
             <PrimeButton v-if="flight?.Status === 'OK'" label="Reservieren" class="text-color" @click="reserveFlight()" :disabled="isButtonDisabled"
                 :pt="{
                     label: { class: 'font-normal' }
@@ -134,6 +135,7 @@ async function cancelFlight()
                     label: { class: 'font-normal' }
                 }"
             />
+            <!--ToDO: Enums in vue templates dont work-->
         </div>
     </div>
 </template>
