@@ -14,6 +14,10 @@ body {
     margin: 0;
 }
 
+.word-break-all {
+  word-break: break-all;
+}
+
 .btn-no-shadow:focus {
     box-shadow: none;
 }

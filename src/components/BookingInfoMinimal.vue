@@ -26,7 +26,7 @@ function cancelFlight()
     <div class="flex justify-content-between align-items-center border-1 border-round border-primary surface-100 p-3 cursor-pointer" @click="openOverview()">
         <div class="flex flex-wrap column-gap-4 row-gap-2 ">
             <div class="flex align-items-center gap-2">
-                <i class="bi-ticket-fill text-xl" />
+                <i class="bi-ticket-detailed-fill text-xl" />
                 <span>{{ booking.division?.Name }}</span>
             </div>
             <div class="flex align-items-center gap-2">
@@ -39,19 +39,19 @@ function cancelFlight()
                 </div>
             </div>
             <div class="flex align-items-center gap-2">
-                <i class="bi-airplane-fill" />
-                <div v-if="booking.flight?.Plane" class="flex gap-1">
-                    <span>{{ booking.flight?.Plane?.AircraftType }}</span>
-                    <span>{{ "(" + booking.flight?.Plane?.Registration + ")" }}</span>
-                </div>
-                <span v-else>-</span>
-            </div>
-            <div class="flex align-items-center gap-2">
                 <i class="bi-clock-fill" />
                 <div v-if="booking.flight" class="flex gap-1">
                     <span>{{ booking.flight?.DepartureTime?.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
                     <span>-</span>
                     <span>{{ booking.flight?.ArrivalTime?.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
+                </div>
+                <span v-else>-</span>
+            </div>
+            <div class="flex align-items-center gap-2">
+                <i class="bi-airplane-fill" />
+                <div v-if="booking.flight?.Plane" class="flex gap-1">
+                    <span>{{ booking.flight?.Plane?.AircraftType }}</span>
+                    <span>{{ "(" + booking.flight?.Plane?.Registration + ")" }}</span>
                 </div>
                 <span v-else>-</span>
             </div>

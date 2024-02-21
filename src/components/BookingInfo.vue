@@ -4,8 +4,10 @@ import type { Division } from '@/data/division/division.interface';
 import type { Flight } from '@/data/flight/flight.interface';
 import { deleteFlight } from '@/data/flight/flight.service';
 import type { Passenger } from '@/data/passenger/passenger.interface';
+import { DateTime } from 'luxon';
 import { useToast } from 'primevue/usetoast';
 import { ref, type PropType } from 'vue';
+import FlightStatusInfo from './FlightStatusInfo.vue';
 import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
 
 const toast = useToast();
@@ -47,43 +49,69 @@ async function cancelFlight()
 </script>
 
 <template>
-    <div class="flex flex-column pr-1 overflow-auto">
-        <div class="flex flex-wrap justify-content-between align-items-center gap-2">
-            <h1 class="m-0">Buchungsübersicht</h1>
-            <PrimeButton v-if="flight" label="Stornieren" icon="bi-calendar2-x" class="text-color" @click="cancelFlight()" :disabled="isCancelDisabled" 
+    <div class="flex flex-column pr-2 overflow-auto">
+        <div class="flex flex-wrap justify-content-between align-items-center">
+            <h1 class="m-0">Flugübersicht</h1>
+            <FlightStatusInfo :flightStatus="flight?.Status" />
+            <PrimeDivider />
+        </div>
+        <div class="flex flex-column gap-4">
+            <div>
+                <div class="flex align-items-center gap-2 mb-1">
+                    <i class="bi-ticket-detailed-fill text-xl" />
+                    <h3 class="m-0">Flugtyp</h3>
+                </div>
+                <span class="ml-1">{{ division?.Name }}</span>
+            </div>
+            <div>
+                <div class="flex align-items-center gap-2 mb-1">
+                    <i class="bi-people-fill text-xl" />
+                    <h3 class="m-0">Passagiere (Max. {{ division?.PassengerCapacity }} {{ division?.PassengerCapacity === 1 ? "Passagier" : "Passagiere" }})</h3>
+                </div>
+                <div class="flex flex-column gap-1 ml-1">
+                    <span v-if="flight!.Plane!.MaxSeatPayload !== -1">Maxmiales Sitzgewicht {{ flight!.Plane!.MaxSeatPayload }}</span>
+                    <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :seatNumber="index" :passenger="passenger"></PassengerInfoMinimal>
+                </div>
+            </div>
+            <div>
+                <div class="flex align-items-center gap-2 mb-1">
+                    <i class="bi-clock-fill text-xl" />
+                    <h3 class="m-0">Flug</h3>
+                </div>
+                <div v-if="flight" class="flex flex-column gap-3 ml-1">
+                    <div class="flex gap-2">
+                        <span>{{ flight!.DepartureTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
+                        <span>-</span>
+                        <span>{{ flight!.ArrivalTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
+                        <span>(Dauer: {{ flight!.ArrivalTime!.diff(flight!.DepartureTime!, "minutes").toFormat("mm") }}min)</span>
+                    </div>
+                    <div v-if="flight!.Description" class="flex gap-2">
+                        <i class="bi-info-circle-fill text-red-400" />
+                        <span class="text-red-400 word-break-all">{{ flight!.Description }}</span>
+                    </div>
+                </div>
+                <span v-else>-</span>
+            </div>
+            <div>
+                <div class="flex align-items-center gap-2 mb-1">
+                    <i class="bi-airplane-fill text-xl" />
+                    <h3 class="m-0">Flugzeug</h3>
+                </div>
+                <div v-if="flight" class="flex flex-column gap-1 ml-1">                    
+                    <span>Aktueller Treibstoff {{ flight!.FuelAtDeparture }}</span>
+                    <span>Pilot {{ flight!.Pilot!.LastName + ", " + flight!.Pilot!.FirstName + "(" + flight!.Pilot!.Weight + "kg)" }}</span>
+                    <span>Typ {{ flight!.Plane!.AircraftType }}</span>
+                    <span>Leergewicht {{ flight!.Plane!.EmptyWeight }}</span>
+                    <span>MTOW {{ flight!.Plane!.MTOW }}</span>
+                    <span>Kennzeichen {{ flight!.Plane!.Registration }}</span>
+                </div>
+                <span v-else>-</span>
+            </div>
+            <PrimeButton v-if="flight" label="Stornieren" severity="danger" class="text-color" @click="cancelFlight()" :disabled="isCancelDisabled" 
                 :pt="{
                     label: { class: 'font-normal' }
                 }"
             />
-            <PrimeDivider />
-        </div>
-        <div>
-            <h2>Passagiere</h2>
-            <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :seatNumber="index" :passenger="passenger"></PassengerInfoMinimal>
-        </div>
-        <div>
-            <h2>Flugtyp</h2>
-            <p>{{ division?.Name }}</p>
-        </div>
-        <div>
-            <h2>Maximale Passgieranzahl</h2>
-            <p>{{ division?.PassengerCapacity }}</p>
-        </div>
-        <div>
-            <h2>Flug</h2>
-            <p>Flugstart {{ flight?.ArrivalTime }}</p>
-            <p>Flugende {{ flight?.DepartureTime }}</p>
-            <p>Beschreibung {{ flight?.Description }}</p>
-            <p>Aktueller Treibstoff {{ flight?.FuelAtDeparture }}</p>
-            <p>Pilot {{ flight?.Pilot?.LastName + ", " + flight?.Pilot?.FirstName + "(" + flight?.Pilot?.Weight + "kg)" }}</p>
-            <h3>Flugzeug</h3>
-            <p>Typ {{ flight?.Plane?.AircraftType }}</p>
-            <p>Leergewicht {{ flight?.Plane?.EmptyWeight }}</p>
-            <p>Flugzeit {{ flight?.Plane?.FlightDuration }}ns</p>
-            <p>MTOW {{ flight?.Plane?.MTOW }}</p>
-            <p v-if="flight?.Plane?.MaxSeatPayload !== -1">Maxmiales Sitzgewicht {{ flight?.Plane?.MaxSeatPayload }}</p>
-            <p>Kennzeichen {{ flight?.Plane?.Registration }}</p>
-            <p>Status {{ flight?.Status }}</p>
         </div>
     </div>
 </template>
