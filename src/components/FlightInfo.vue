@@ -2,7 +2,7 @@
 import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { Division } from '@/data/division/division.interface';
 import type { Flight } from '@/data/flight/flight.interface';
-import { deleteFlight } from '@/data/flight/flight.service';
+import { createFlight, deleteFlight } from '@/data/flight/flight.service';
 import type { Passenger } from '@/data/passenger/passenger.interface';
 import { DateTime } from 'luxon';
 import { useToast } from 'primevue/usetoast';
@@ -11,6 +11,7 @@ import FlightStatusInfo from './FlightStatusInfo.vue';
 import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
 
 const toast = useToast();
+const isButtonDisabled = ref(false);
 
 const props = defineProps({
     division: {
@@ -25,10 +26,26 @@ const props = defineProps({
 });
 
 const emit = defineEmits([
+    "flightReserved",
     "flightCanceled"
 ]);
 
-const isCancelDisabled = ref(false);
+async function reserveFlight()
+{
+    if (!props.flight) {
+        return;
+    }
+
+    isButtonDisabled.value = true;
+
+    const reservedFlight = await useValidateAPIData(createFlight(props.flight), toast);
+
+    if (reservedFlight) {
+        emit("flightReserved", reservedFlight);
+    }
+
+    isButtonDisabled.value = false;
+}
 
 async function cancelFlight()
 {
@@ -36,7 +53,7 @@ async function cancelFlight()
         return;
     }
 
-    isCancelDisabled.value = true;
+    isButtonDisabled.value = true;
 
     const response = await useValidateAPIData(deleteFlight(props.flight), toast);
 
@@ -44,7 +61,7 @@ async function cancelFlight()
         emit("flightCanceled");
     }
 
-    isCancelDisabled.value = false;
+    isButtonDisabled.value = false;
 }
 </script>
 
@@ -69,7 +86,7 @@ async function cancelFlight()
                     <h3 class="m-0">Passagiere (Max. {{ division?.PassengerCapacity }} {{ division?.PassengerCapacity === 1 ? "Passagier" : "Passagiere" }})</h3>
                 </div>
                 <div class="flex flex-column gap-1 ml-1">
-                    <span v-if="flight!.Plane!.MaxSeatPayload !== -1">Maxmiales Sitzgewicht {{ flight!.Plane!.MaxSeatPayload }}</span>
+                    <span v-if="flight?.Plane?.MaxSeatPayload && flight?.Plane?.MaxSeatPayload > 0">Maxmiales Sitzgewicht {{ flight!.Plane!.MaxSeatPayload }}</span>
                     <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :seatNumber="index" :passenger="passenger"></PassengerInfoMinimal>
                 </div>
             </div>
@@ -107,7 +124,12 @@ async function cancelFlight()
                 </div>
                 <span v-else>-</span>
             </div>
-            <PrimeButton v-if="flight" label="Stornieren" severity="danger" class="text-color" @click="cancelFlight()" :disabled="isCancelDisabled" 
+            <PrimeButton v-if="flight?.Status === 'OK'" label="Reservieren" class="text-color" @click="reserveFlight()" :disabled="isButtonDisabled"
+                :pt="{
+                    label: { class: 'font-normal' }
+                }"
+            />
+            <PrimeButton v-if="flight?.Status === 'RESERVED'" label="Stornieren" severity="danger" class="text-color" @click="cancelFlight()" :disabled="isButtonDisabled" 
                 :pt="{
                     label: { class: 'font-normal' }
                 }"

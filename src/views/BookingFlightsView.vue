@@ -9,7 +9,7 @@ import { bookingStore } from "@/stores/booking";
 import { flightsStore } from "@/stores/flights";
 import { DateTime } from "luxon";
 import { useToast } from "primevue/usetoast";
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, onUnmounted, ref, type Ref } from "vue";
 
 const toast = useToast();
 
@@ -67,10 +67,34 @@ onUnmounted(() => {
 });
 
 // ToDo: Implement functionality
-async function test(flight: Flight)
+import AppDialog from "@/components/AppDialog.vue";
+import FlightInfo from "@/components/FlightInfo.vue";
+
+const flightTest: Ref<Flight | undefined> = ref();
+const flightInfoOpenTest = ref(false);
+
+async function reserveTest(flight: Flight)
 {
     const reservedFlight = await useValidateAPIData(createFlight(flight), toast);
     booking.flight = reservedFlight;
+}
+
+function onReservedFlightTest(flight: Flight)
+{
+    flightInfoOpenTest.value = false;
+    booking.flight = flight; 
+}
+
+function openInfoTest(flight: Flight)
+{
+    flightTest.value = flight;
+    flightInfoOpenTest.value = true;
+}
+
+function cancelTest()
+{
+    flightInfoOpenTest.value = false; 
+    booking.flight = undefined;
 }
 </script>
 
@@ -90,8 +114,12 @@ async function test(flight: Flight)
                     <span>{{ flight.Plane?.Registration }}</span>
                     <span>{{ flight.Plane?.MTOW }}</span>
                     <span>{{ flight.Plane?.MaxSeatPayload }}</span>
-                    <PrimeButton @click="test(flight)" :disabled="booking.flight">Reservieren (Test)</PrimeButton>
+                    <PrimeButton @click="reserveTest(flight)" :disabled="flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
+                    <PrimeButton @click="openInfoTest(flight)">Info (Test)</PrimeButton>
                 </div>
+                <AppDialog v-model:isOpen="flightInfoOpenTest">
+                    <FlightInfo :division="booking.division" :passengers="booking.passengers" :flight="flightTest" @flightReserved="(reservedFlight) => onReservedFlightTest(reservedFlight)" @flightCanceled="cancelTest()" />
+                </AppDialog>
                 <!--ToDo: Implement component-->
 
             </div>
