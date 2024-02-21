@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import BookingInfoMinimal from "@/components/BookingInfoMinimal.vue";
+import FlightInfoMinimal from "@/components/FlightInfoMinimal.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import { FlightEventHandler } from "@/data/flight/flight.eventHandler";
 import { type Flight } from "@/data/flight/flight.interface";
@@ -76,7 +76,7 @@ async function test(flight: Flight)
 
 <template>
     <div class="flex flex-column gap-4 overflow-hidden">
-        <BookingInfoMinimal />
+        <FlightInfoMinimal />
         <div class="relative w-full h-full overflow-auto">
             <Transition>
             <div v-if="isDataLoaded">

@@ -3,7 +3,7 @@ import { bookingStore } from '@/stores/booking';
 import { DateTime } from 'luxon';
 import { ref } from 'vue';
 import AppDialog from './AppDialog.vue';
-import BookingInfo from './BookingInfo.vue';
+import FlightInfo from './FlightInfo.vue';
 
 const booking = bookingStore();
 
@@ -62,7 +62,7 @@ function cancelFlight()
         </div>
     </div>
     <AppDialog v-model:isOpen="isOverviewDialogOpen">
-        <BookingInfo :division="booking.division" :passengers="booking.passengers" :flight="booking.flight" @flightCanceled="cancelFlight()"></BookingInfo>
+        <FlightInfo :division="booking.division" :passengers="booking.passengers" :flight="booking.flight" @flightCanceled="cancelFlight()" />
     </AppDialog>
 </div>
 </template>
