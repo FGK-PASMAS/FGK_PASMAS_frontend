@@ -5,9 +5,7 @@ import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
 import { bookingStore } from "@/stores/booking";
 import { useToast } from "primevue/usetoast";
-import { inject, onBeforeMount, ref, type Ref } from "vue";
-
-const bookingUpdated = inject<Function>("bookingUpdated");
+import { onBeforeMount, ref, type Ref } from "vue";
 
 const toast = useToast();
 const dropDown = ref(null);
@@ -24,12 +22,10 @@ function initPassengers(): void
     booking.seats = [];
 
     if (!booking.division) {
-        bookingUpdated!();
         return;
     }
 
     if (!booking.division.PassengerCapacity) {
-        bookingUpdated!();
         return;
     }
 
@@ -40,8 +36,6 @@ function initPassengers(): void
             Weight: undefined
         });
     }
-
-    bookingUpdated!();
 }
 </script>
 
@@ -55,7 +49,7 @@ function initPassengers(): void
             <h4 v-if="booking.seats.length === 1">Passagier hinzufügen</h4>
             <h4 v-else>Passagiere hinzufügen</h4>
             <div class="flex flex-column gap-4">
-                <PassengerEditMinimal v-for="(seat, index) in booking.seats" :key="index" :seat-number="index + 1" v-model:passenger="booking.seats[index]" :required="{ LastName: false, FirstName: false, Weight: true }" @passenger-changed="bookingUpdated!()" />
+                <PassengerEditMinimal v-for="(seat, index) in booking.seats" :key="index" :seat-number="index + 1" v-model:passenger="booking.seats[index]" :required="{ LastName: false, FirstName: false, Weight: true }" />
             </div>
         </div>
     </div>

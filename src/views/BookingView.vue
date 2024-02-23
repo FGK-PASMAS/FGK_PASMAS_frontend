@@ -6,7 +6,7 @@ import { bookingStore } from "@/stores/booking";
 import type { MenuItemInterface } from "@/utils/interfaces/menuItem.interface";
 import { InfoToast } from "@/utils/toasts/info.toast";
 import { useToast } from "primevue/usetoast";
-import { onBeforeMount, provide, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import type { RouteRecordName } from "vue-router";
 import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from "vue-router";
 
@@ -37,7 +37,9 @@ const isAllowedToLeave = ref(false);
 const isNavDialogOpen = ref(false);
 const isNextDisabled = ref(true);
 
-provide("bookingUpdated", onBookingUpdate);
+booking.$subscribe(() => {
+    onBookingUpdate();
+});
 
 onBeforeMount(() => {
     booking.resetStore();
