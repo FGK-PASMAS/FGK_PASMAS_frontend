@@ -108,7 +108,7 @@ function cancelTest()
 </script>
 
 <template>
-    <div class="flex flex-column gap-4 overflow-hidden">
+    <div class="flex flex-column gap-3 overflow-hidden">
         <FlightInfoMinimal />
         <div class="relative w-full h-full overflow-auto">
             <Transition>

@@ -76,8 +76,8 @@ function jumpToStep(item: MenuItemInterface): void
 </script>
 
 <template>
-    <div class="flex flex-column md:gap-4 overflow-hidden">
-        <Steps v-model:activeStep="activeStep" :model="props.items" :readonly="false">
+    <div class="flex flex-column overflow-hidden">
+        <Steps v-model:activeStep="activeStep" :model="props.items" :readonly="false" class="md:mb-4">
             <template #item="{ item, label, active }">
                 <div class="flex flex-column align-items-center gap-2">
                     <span class="mb-4 md:mb-0" :class="['inline-flex align-items-center justify-content-center align-items-center border-circle border-primary border-1 h-3rem w-3rem cursor-pointer z-1', { 'bg-primary': active, 'text-color': active , 'surface-50': !active, 'text-primary': !active }]">

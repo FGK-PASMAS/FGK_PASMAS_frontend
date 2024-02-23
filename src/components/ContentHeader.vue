@@ -12,7 +12,7 @@ defineProps({
 </script>
 
 <template>
-    <header class="flex align-items-center gap-5 mb-2">
+    <header class="flex align-items-center gap-5">
         <PrimeButton type="button" class="text-4xl btn-no-shadow" icon="bi-arrow-left" text rounded @click="router.back()" />
         <h1>{{ title }}</h1>
     </header>

@@ -116,9 +116,9 @@ function showCancelBookingToast(): void
 <template>
 <main class="flex flex-column overflow-hidden">
     <div class="flex-grow-1 flex flex-column overflow-hidden">
-        <div class="flex justify-content-between">
+        <div class="flex justify-content-between mb-1">
             <ContentHeader title="Buchen" />
-            <PrimeButton type="button" class="align-self-center mr-1 text-color" text @click="cancelBooking()">Abbrechen</PrimeButton>
+            <PrimeButton type="button" class="align-self-center text-color" text @click="cancelBooking()">Abbrechen</PrimeButton>
         </div>
         <MenuStepper class="flex-grow-1" :items="items" :is-next-disabled="isNextDisabled" />
     </div>
