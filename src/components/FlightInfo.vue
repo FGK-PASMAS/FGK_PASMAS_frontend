@@ -97,7 +97,7 @@ async function cancelFlight(): Promise<void>
                     <h3 v-if="flight?.Plane?.MaxSeatPayload && flight?.Plane?.MaxSeatPayload > 0" class="m-0">(Max. {{ flight!.Plane!.MaxSeatPayload }}kg pro Sitz)</h3>
                 </div>
                 <div class="flex flex-column gap-1 ml-1">
-                    <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :passenger="passenger" :seatNumber="index" :seatPayload="flight?.Plane?.MaxSeatPayload" />
+                    <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :passenger="passenger" :seatNumber="index + 1" :seatPayload="flight?.Plane?.MaxSeatPayload" />
                 </div>
             </div>
             <div>
@@ -116,6 +116,8 @@ async function cancelFlight(): Promise<void>
                         <i class="bi-info-circle-fill text-red-400" />
                         <span class="text-red-400 word-break-all">{{ flight!.Description }}</span>
                     </div>
+                    <span>MTOW {{ flight!.Plane!.MTOW }}</span>
+                    <span>ETOW HERE</span>
                 </div>
                 <span v-else>-</span>
             </div>
@@ -124,13 +126,21 @@ async function cancelFlight(): Promise<void>
                     <i class="bi-airplane-fill text-xl" />
                     <h3 class="m-0">Flugzeug</h3>
                 </div>
-                <div v-if="flight" class="flex flex-column gap-1 ml-1">                    
-                    <span>Aktueller Treibstoff {{ flight!.FuelAtDeparture }}</span>
-                    <span>Pilot {{ flight!.Pilot!.LastName + ", " + flight!.Pilot!.FirstName + "(" + flight!.Pilot!.Weight + "kg)" }}</span>
+                <div v-if="flight" class="flex flex-column gap-1 ml-1">
                     <span>Typ {{ flight!.Plane!.AircraftType }}</span>
-                    <span>Leergewicht {{ flight!.Plane!.EmptyWeight }}</span>
-                    <span>MTOW {{ flight!.Plane!.MTOW }}</span>
                     <span>Kennzeichen {{ flight!.Plane!.Registration }}</span>
+                    <span>Leergewicht {{ flight!.Plane!.EmptyWeight }}</span>
+                    <span>Aktueller Treibstoff {{ flight!.FuelAtDeparture }}</span>
+                </div>
+                <span v-else>-</span>
+            </div>
+            <div>
+                <div class="flex align-items-center gap-2 mb-1">
+                    <i class="bi-person-vcard-fill text-xl" />
+                    <h3 class="m-0">Pilot</h3>
+                </div>
+                <div v-if="flight" class="flex flex-column gap-1 ml-1">
+                    <span>{{ flight!.Pilot!.LastName + ", " + flight!.Pilot!.FirstName + "(" + flight!.Pilot!.Weight + "kg)" }}</span>
                 </div>
                 <span v-else>-</span>
             </div>
