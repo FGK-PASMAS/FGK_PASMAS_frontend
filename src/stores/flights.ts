@@ -27,15 +27,12 @@ export const flightsStore = defineStore("flights", () => {
 
             while (i < eventEndTime) {
                 let departure: DateTime = i;
-                let arrival: DateTime | undefined = undefined;
-                let existingFlight: Flight | undefined = undefined;
-                let virtualFlight: Flight | undefined = undefined;
 
                 if (!i.equals(eventStartTime)) {
                     departure = departure.plus({ minutes: 1 });
                 }
 
-                arrival = departure.plus({ seconds: duration });
+                const arrival = departure.plus({ seconds: duration });
 
                 if (arrival < upcomingStartTime) {
                     i  = arrival;
@@ -43,8 +40,7 @@ export const flightsStore = defineStore("flights", () => {
                     continue;
                 }
 
-                // ToDo: arrival is here possible undefined
-                existingFlight = existingFlights.value.find((flight) => isExistingFlightInTimeSlot(flight, plane.ID!, departure, arrival!));
+                const existingFlight = existingFlights.value.find((flight) => isExistingFlightInTimeSlot(flight, plane.ID!, departure, arrival));
 
                 if (existingFlight) {
                     i = existingFlight.ArrivalTime!;
@@ -56,7 +52,7 @@ export const flightsStore = defineStore("flights", () => {
                     continue;
                 }
 
-                virtualFlight = {
+                let virtualFlight: Flight = {
                     DepartureTime: departure,
                     ArrivalTime: arrival,
                     PlaneId: plane.ID!,
