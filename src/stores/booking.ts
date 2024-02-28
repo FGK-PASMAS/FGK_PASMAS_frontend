@@ -1,7 +1,7 @@
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import type { Division } from "@/data/division/division.interface";
-import type { Flight } from "@/data/flight/flight.interface";
-import { deleteFlight } from "@/data/flight/flight.service";
+import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
+import { deleteFlight, updateFlight } from "@/data/flight/flight.service";
 import type { Passenger } from "@/data/passenger/passenger.interface";
 import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
@@ -32,7 +32,38 @@ export const bookingStore = defineStore("booking", () => {
         return true;
     });
 
-    async function cancelBooking(toast: ToastServiceMethods) {
+    const isPassengerStepOk = computed(() => {
+        return totalWeight.value > 0;
+    });
+
+    const isFlightStepOk = computed(() => {
+        return flight.value ? true : false;
+    });
+
+    const isConfirmationStepOk = computed(() => {
+        const passengerCheck = passengers.value.every((passenger) => {
+            return passenger.Weight && passenger.LastName && passenger.FirstName;
+        });
+
+        return passengerCheck && isFlightStepOk;
+    });
+
+    async function confirmBooking(toast: ToastServiceMethods): Promise<void>
+    {
+        if(!isConfirmationStepOk.value) {
+            return;
+        }
+
+        flight.value!.Status = FlightStatus.BOOKED;
+        flight.value!.Passengers = passengers.value;
+
+        flight.value = await useValidateAPIData(updateFlight(flight.value!), toast);
+
+        seats.value = flight.value!.Passengers!;
+    }
+
+    async function cancelBooking(toast: ToastServiceMethods): Promise<void>
+    {
         if (!flight.value) {
             resetStore();
             return;
@@ -42,11 +73,12 @@ export const bookingStore = defineStore("booking", () => {
         resetStore();
     }
 
-    function resetStore() {
+    function resetStore(): void
+    {
         division.value = undefined;
         seats.value = [];
         flight.value = undefined;
     }
 
-    return { division, flight, seats, passengers, totalWeight, isEmpty, cancelBooking, resetStore };
+    return { division, flight, seats, passengers, totalWeight, isEmpty, isPassengerStepOk, isFlightStepOk, isConfirmationStepOk, confirmBooking, cancelBooking, resetStore };
 });

@@ -16,8 +16,8 @@ const toast = useToast();
 const booking = bookingStore();
 const flights = flightsStore();
 
-const eventHandler = new FlightEventHandler();
 let eventSource: EventSource;
+const eventHandler = new FlightEventHandler();
 
 const isDataLoaded = ref(false);
 

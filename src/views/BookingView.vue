@@ -1,52 +1,47 @@
 <script setup lang="ts">
+import BookingConfirmation from "@/components/BookingConfirmation.vue";
+import BookingFlights from "@/components/BookingFlights.vue";
+import BookingPassengers from "@/components/BookingPassengers.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import { bookingStore } from "@/stores/booking";
-import type { MenuItemInterface } from "@/utils/interfaces/menuItem.interface";
+import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import { InfoToast } from "@/utils/toasts/info.toast";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, ref } from "vue";
-import type { RouteRecordName } from "vue-router";
-import { onBeforeRouteLeave, onBeforeRouteUpdate, useRouter } from "vue-router";
-
-const router = useRouter();
-
-const toast = useToast();
+import { onBeforeRouteLeave } from "vue-router";
 
 const booking = bookingStore();
 
-// ToDo: Refactor booking structure - Current implementation with nested routes is super buggy
-const items: MenuItemInterface[] = [
+const stepper = ref();
+const toast = useToast();
+
+const items: MenuStepperItemInterface[] = [
     { 
+        key: "passengers",
         label: "Passagiere",
         icon: "bi-people",
-        route: "booking_passengers",
+        component: BookingPassengers
     }, { 
-        label: "Reservierung",
+        key: "flights",
+        label: "Flug",
         icon: "bi-airplane",
-        route: "booking_flights",
+        component: BookingFlights
     }, { 
+        key: "confirmation",
         label: "Buchung",
         icon: "bi-check-lg",
-        route: "booking_overview",
+        component: BookingConfirmation
     }
 ];
 
 const isAllowedToLeave = ref(false);
 const isNavDialogOpen = ref(false);
-const isNextDisabled = ref(true);
-
-booking.$subscribe(() => {
-    onBookingUpdate();
-});
+const isNextNavEnabled = ref(false);
 
 onBeforeMount(() => {
     booking.resetStore();
-});
-
-onBeforeRouteUpdate((to) => {
-    setBookingState(to.name);
 });
 
 onBeforeRouteLeave(() => {
@@ -61,6 +56,10 @@ onBeforeRouteLeave(() => {
     }
 });
 
+booking.$subscribe(() => {
+    onBookingUpdate();
+});
+
 function onBeforeUnload(event: BeforeUnloadEvent): void
 {
     event.preventDefault();
@@ -68,42 +67,54 @@ function onBeforeUnload(event: BeforeUnloadEvent): void
 
 function onBookingUpdate(): void
 {
-    setBookingState();
-
     if (!booking.isEmpty) {
         window.addEventListener("beforeunload", onBeforeUnload);
     } else {
         window.removeEventListener("beforeunload", onBeforeUnload);
     }
+
+    if (!stepper.value) {
+        return;
+    }
+
+    isNextNavEnabled.value = false;
+
+    switch (stepper.value.getCurrentStepKey()) {
+        case "passengers":
+            if (booking.isPassengerStepOk) {
+                isNextNavEnabled.value = true;
+            }
+
+            break;
+        case "flights":
+            if(booking.isFlightStepOk) {
+                isNextNavEnabled.value = true;
+            }
+
+            break;
+        case "confirmation":
+            if (booking.isConfirmationStepOk) {
+                isNextNavEnabled.value = true;
+            }
+
+            break;
+    }
 }
 
-function setBookingState(route?: RouteRecordName | null | undefined): void
+async function confirmBooking(): Promise<void>
 {
-    if (!route) {
-        route = router.currentRoute.value.name;
-    }
+    await booking.confirmBooking(toast);
 
-    switch (route) {
-        case "booking_passengers":
-            if (booking.totalWeight > 0) {
-                isNextDisabled.value = false;
-            } else {
-                isNextDisabled.value = true;
-            }
-            break;
-    
-        default:
-            isNextDisabled.value = true;
-            break;
-    }
+    // ToDo: Display succesful booking
+    alert("WIP: BOOKED!")
 }
 
 async function cancelBooking(): Promise<void>
 {
     await booking.cancelBooking(toast);
-    window.removeEventListener("beforeunload", onBeforeUnload);
-    router.replace({ name: "booking_passengers" });
 
+    stepper.value.resetStepper();
+    window.removeEventListener("beforeunload", onBeforeUnload);
     showCancelBookingToast();
 }
 
@@ -118,9 +129,9 @@ function showCancelBookingToast(): void
     <div class="flex-grow-1 flex flex-column overflow-hidden">
         <div class="flex justify-content-between mb-1">
             <ContentHeader title="Buchen" />
-            <PrimeButton type="button" class="align-self-center text-color" text @click="cancelBooking()">Abbrechen</PrimeButton>
+            <PrimeButton type="button" text class="align-self-center text-color mr-1" @click="cancelBooking()">Abbrechen</PrimeButton>
         </div>
-        <MenuStepper class="flex-grow-1" :items="items" :is-next-disabled="isNextDisabled" />
+        <MenuStepper ref="stepper" :items="items" :isNextNavEnabled="isNextNavEnabled" class="flex-grow-1" @stepChanged="onBookingUpdate()" @confirm="confirmBooking()"/>
     </div>
     <NavigationGuardDialog 
         v-model:isOpen="isNavDialogOpen" 

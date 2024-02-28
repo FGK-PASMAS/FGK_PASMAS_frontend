@@ -1,6 +1,3 @@
-import BookingOverviewView from "@/views/BookingOverviewView.vue";
-import BookingPassengersView from "@/views/BookingPassengersView.vue";
-import BookingFlightsView from "@/views/BookingFlightsView.vue";
 import BookingView from "@/views/BookingView.vue";
 import FlightsView from "@/views/FlightsView.vue";
 import HomeViewVue from "@/views/HomeView.vue";
@@ -23,37 +20,7 @@ const router = createRouter({
         }, {
             path: "/booking",
             name: "booking",
-            component: BookingView,
-            children: [
-                {
-                    path: "",
-                    name: "booking_passengers",
-                    component: BookingPassengersView,
-                    meta: {
-                        prev: undefined,
-                        next: "booking_flights"
-                    }
-                },
-                {
-                    path: "",
-                    name: "booking_flights",
-                    component: BookingFlightsView,
-                    meta: {
-                        prev: "booking_passengers",
-                        next: "booking_overview"
-                    }
-
-                },
-                {
-                    path: "",
-                    name: "booking_overview",
-                    component: BookingOverviewView,
-                    meta: {
-                        prev: "booking_flights",
-                        next: undefined
-                    }
-                }
-            ]
+            component: BookingView
         }, {
             path: "/flights",
             name: "flights",

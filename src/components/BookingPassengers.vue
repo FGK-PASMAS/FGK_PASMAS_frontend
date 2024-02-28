@@ -3,6 +3,7 @@ import PassengerEditMinimal from "@/components/PassengerEditMinimal.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
+import { PassengerAction } from "@/data/passenger/passenger.interface";
 import { bookingStore } from "@/stores/booking";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, ref, type Ref } from "vue";
@@ -31,6 +32,7 @@ function initPassengers(): void
 
     for (let i = 0; i < booking.division.PassengerCapacity; i++) {
         booking.seats.push({
+            Action: PassengerAction.CREATE,
             LastName: undefined,
             FirstName: undefined,
             Weight: undefined
@@ -43,7 +45,7 @@ function initPassengers(): void
     <div class="flex flex-column gap-4">
         <div v-if="divisions.length > 0">
             <h4>Flugtyp auswählen</h4>
-            <PrimeDropdown class="w-full md:w-20rem" ref="dropDown" v-model="booking.division" :options="divisions" optionLabel="Name" placeholder="Flugtyp" showClear @change="initPassengers()" />
+            <PrimeDropdown ref="dropDown" v-model="booking.division" :options="divisions" optionLabel="Name" placeholder="Flugtyp" showClear class="w-full md:w-20rem" @change="initPassengers()" />
         </div>
         <div v-if="booking.seats.length > 0">
             <h4 v-if="booking.seats.length === 1">Passagier hinzufügen</h4>

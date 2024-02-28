@@ -96,13 +96,13 @@ function openDrawer(): void
         <Toast />
         <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
             <MenuDrawerItem icon="bi-house-door" item="Home" :to="{ name: 'home' }" />
-            <MenuDrawerItem icon="bi-book" item="Buchen" :to="{ name: 'booking_passengers' }" />
+            <MenuDrawerItem icon="bi-book" item="Buchen" :to="{ name: 'booking' }" />
             <MenuDrawerItem icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
             <MenuDrawerItem icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
             <MenuDrawerItem icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
-            <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model:isDarkMode="isDarkMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
+            <MenuTopbar v-if="!isNotFound" v-model:isDarkMode="isDarkMode" :is-menu-visible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <div class="flex-grow-1 flex flex-column overflow-auto">
                 <RouterView class="flex-grow-1 ml-2 md:ml-8 mr-2 md:mr-8 mb-2" />
             </div>

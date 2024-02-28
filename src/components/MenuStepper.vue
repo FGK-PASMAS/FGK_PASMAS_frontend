@@ -1,77 +1,94 @@
 <script setup lang="ts">
-import type { MenuItemInterface } from "@/utils/interfaces/menuItem.interface";
+import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import Steps from "primevue/steps";
-import { onBeforeMount, onBeforeUpdate, ref } from "vue";
-import { RouterView, onBeforeRouteUpdate, useRouter } from "vue-router";
-
-const router = useRouter();
-const currentRoute = ref(router.currentRoute.value.name);
-const prevRoute = ref(router.currentRoute.value.meta.prev);
-const nextRoute = ref(router.currentRoute.value.meta.next);
+import { computed, onBeforeMount, onBeforeUpdate, ref } from "vue";
 
 const activeStep = ref(0);
 
 const props = defineProps({
     items: {
-        type: Array<MenuItemInterface>,
+        type: Array<MenuStepperItemInterface>,
         required: true
     },
 
-    isNextDisabled: {
+    isNextNavEnabled: {
         type: Boolean,
         default: true
     }
 });
 
+const nextNavLabel = computed(() => {
+    if (activeStep.value === (props.items.length - 1)) {
+        return "Bestätigen";
+    }
+
+    return "Weiter";
+});
+
+const emit = defineEmits([
+    "confirm",
+    "stepChanged"
+]);
+
+defineExpose({
+    getCurrentStepKey,
+    resetStepper
+});
+
 onBeforeMount(() => {
     props.items.forEach((item) => {
-        item.command = (event) => { jumpToStep(event.item) };
+        item.command = () => { 
+            emit("stepChanged"); 
+        };
     });
 
-    setStepStates();
+    updateStepperState();
 });
 
 onBeforeUpdate(() => {
-    setStepStates();
+    updateStepperState();
 });
 
-onBeforeRouteUpdate((to) => {
-    currentRoute.value = to.name;
-    prevRoute.value = to.meta.prev;
-    nextRoute.value = to.meta.next;
-});
-
-function setStepStates(): void
+function updateStepperState(): void
 {
-    let isCurrentRouteFound = false;
-
     props.items.forEach((item, index) => {
-        if (!isCurrentRouteFound) {
+        if (index <= activeStep.value) {
             item.disabled = false;
         } else {
             item.disabled = true;
         }
-
-        if (item.route === currentRoute.value) {
-            isCurrentRouteFound = true;
-            activeStep.value = index;
-        }
     });
 }
 
-function previousStep(): void 
+function previousStep(): void
 {
-    router.replace({ name: prevRoute.value });
+    if (activeStep.value === 0) {
+        return;
+    }
+
+    activeStep.value--;
+    emit("stepChanged");
 }
 
 function nextStep(): void
 {
-    router.replace({ name: nextRoute.value });
+    if (activeStep.value === (props.items.length - 1)) {
+        emit("confirm");
+        return;
+    }
+
+    activeStep.value++;
+    emit("stepChanged");
 }
 
-function jumpToStep(item: MenuItemInterface): void
+function getCurrentStepKey(): string | undefined
 {
-    router.replace({ name: item.route });
+    return props.items[activeStep.value].key;
+}
+
+function resetStepper(): void
+{
+    activeStep.value = 0;
 }
 </script>
 
@@ -87,23 +104,20 @@ function jumpToStep(item: MenuItemInterface): void
                 </div>
             </template>
         </Steps>
-        <RouterView class="flex-grow-1 overflow-auto" />
+        <component :is="items[activeStep].component" class="flex-grow-1 overflow-auto" />
         <div class="flex flex-column">
             <PrimeDivider />
             <div class="flex justify-content-between">
-                <PrimeButton type="button" class="text-color mb-1 ml-1" :class="{ 'not-visible': !prevRoute }" label="Zurück" icon="bi-arrow-left" text @click="previousStep()"
-                    :pt="{
-                        label: { class: 'font-normal' }
-                    }"
-                />
-                <PrimeButton type="button" class="text-color mb-1 mr-1" :class="{ 'hidden': !nextRoute }" @click="nextStep()" :disabled="isNextDisabled">Weiter</PrimeButton>
+                <!-- Custom icon button due to lag between visibility transistion when using PrimeVue icon property -->                
+                <PrimeButton type="button" text class="text-color mb-1 ml-1" :class="{ 'not-visible': activeStep === 0 }" @click="previousStep()">
+                    <i class="bi-arrow-left" />
+                    <span class="ml-2">Zurück</span>
+                </PrimeButton>
+                <PrimeButton type="button" class="text-color mb-1 mr-1" @click="nextStep()" :disabled="!isNextNavEnabled">{{ nextNavLabel }}</PrimeButton>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-.not-visible {
-    visibility: hidden;
-}
 </style>
