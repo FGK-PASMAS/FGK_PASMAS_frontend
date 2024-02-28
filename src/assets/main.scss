@@ -14,8 +14,16 @@ body {
     margin: 0;
 }
 
+.not-visible {
+  visibility: hidden !important;
+}
+
+.visible {
+  visibility: visible !important;
+}
+
 .word-break-all {
-  word-break: break-all;
+  word-break: break-all !important;
 }
 
 .btn-no-shadow:focus {

@@ -22,7 +22,7 @@ defineEmits([
 
 <template>
     <header class="topbar flex justify-content-between align-items-center pl-2 pr-2 z-2">
-        <div class="topbar-menu flex align-items-center" :class="{ 'topbar-menu-visible': isMenuVisible }">
+        <div class="not-visible flex align-items-center" :class="{ 'visible': isMenuVisible }">
             <PrimeButton type="Button" class="btn-no-shadow text-6xl" icon="bi-filter-left" text rounded @click="$emit('openDrawer')" />
             <MenuLogo />
         </div>
@@ -35,20 +35,8 @@ defineEmits([
 </template>
 
 <style scoped lang="scss">
-@import "primeflex/primeflex.scss";
-
 .topbar {
     background-color: var(--surface-50);
     opacity: 0.95;
-}
-
-@media screen and (min-width: $md) {
-    .topbar-menu {
-        visibility: hidden;
-    }
-}
-
-.topbar-menu-visible {
-    visibility: visible;
 }
 </style>
