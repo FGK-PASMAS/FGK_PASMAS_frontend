@@ -4,7 +4,7 @@ import Toast from "primevue/toast";
 import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
-import MenuItem from "./components/MenuItem.vue";
+import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
 import { configStore } from "./stores/config";
 
@@ -95,11 +95,11 @@ function openDrawer(): void
     <div class="h-full flex">
         <Toast />
         <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
-            <MenuItem icon="bi-house-door" item="Home" :to="{ name: 'home' }" />
-            <MenuItem icon="bi-book" item="Buchen" :to="{ name: 'booking_passengers' }" />
-            <MenuItem icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
-            <MenuItem icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
-            <MenuItem icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
+            <MenuDrawerItem icon="bi-house-door" item="Home" :to="{ name: 'home' }" />
+            <MenuDrawerItem icon="bi-book" item="Buchen" :to="{ name: 'booking_passengers' }" />
+            <MenuDrawerItem icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
+            <MenuDrawerItem icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
+            <MenuDrawerItem icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
             <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model:isDarkMode="isDarkMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
