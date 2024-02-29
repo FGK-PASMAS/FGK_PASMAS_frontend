@@ -38,7 +38,7 @@ defineExpose({
 onBeforeMount(() => {
     props.items.forEach((item) => {
         item.command = () => { 
-            emit("stepChanged"); 
+            emit("stepChanged", item.key);
         };
     });
 
@@ -67,7 +67,7 @@ function previousStep(): void
     }
 
     activeStep.value--;
-    emit("stepChanged");
+    emit("stepChanged", props.items[activeStep.value].key);
 }
 
 function nextStep(): void
@@ -78,7 +78,7 @@ function nextStep(): void
     }
 
     activeStep.value++;
-    emit("stepChanged");
+    emit("stepChanged", props.items[activeStep.value].key);
 }
 
 function getCurrentStepKey(): string | undefined

@@ -65,8 +65,12 @@ function onBeforeUnload(event: BeforeUnloadEvent): void
     event.preventDefault();
 }
 
-function onBookingUpdate(): void
+function onBookingUpdate(currentStep?: string): void
 {
+    if (!currentStep) {
+        currentStep = stepper.value.getCurrentStepKey();
+    }
+
     if (!booking.isEmpty) {
         window.addEventListener("beforeunload", onBeforeUnload);
     } else {
@@ -79,7 +83,7 @@ function onBookingUpdate(): void
 
     isNextNavEnabled.value = false;
 
-    switch (stepper.value.getCurrentStepKey()) {
+    switch (currentStep) {
         case "passengers":
             if (booking.isPassengerStepOk) {
                 isNextNavEnabled.value = true;
@@ -131,7 +135,7 @@ function showCancelBookingToast(): void
             <ContentHeader title="Buchen" />
             <PrimeButton type="button" text class="align-self-center text-color mr-1" @click="cancelBooking()">Abbrechen</PrimeButton>
         </div>
-        <MenuStepper ref="stepper" :items="items" :isNextNavEnabled="isNextNavEnabled" class="flex-grow-1" @stepChanged="onBookingUpdate()" @confirm="confirmBooking()"/>
+        <MenuStepper ref="stepper" :items="items" :isNextNavEnabled="isNextNavEnabled" class="flex-grow-1" @stepChanged="onBookingUpdate" @confirm="confirmBooking()"/>
     </div>
     <NavigationGuardDialog 
         v-model:isOpen="isNavDialogOpen" 
