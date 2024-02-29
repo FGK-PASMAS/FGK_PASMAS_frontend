@@ -54,7 +54,7 @@ function setWeight(weight: number) {
     <div class="flex flex-wrap gap-2">
         <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.LastName" type="text" :placeholder="required.LastName ? 'Nachname*' : 'Nachname'" @input="$emit('passengerChanged')" />
         <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.FirstName" type="text" :placeholder="required.FirstName ? 'Vorname*' : 'Vorname'" @input="$emit('passengerChanged')" />
-        <PrimeInputNumber class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.Weight" locale="de-DE" :min="0" :maxFractionDigits="2" suffix="kg" :placeholder="required.Weight ? 'Gewicht*' : 'Gewicht'" @input="setWeight($event.value)" />
+        <PrimeInputNumber class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.Weight" locale="de-DE" :min="0" :maxFractionDigits="2" suffix="kg" :placeholder="required.Weight ? 'Gewicht in kg*' : 'Gewicht in kg'" @input="setWeight($event.value)" />
     </div>
 </div>
 </template>

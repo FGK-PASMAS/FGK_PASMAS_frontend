@@ -49,7 +49,7 @@ function initPassengers(): void
         </div>
         <div v-if="booking.seats.length > 0">
             <h4 v-if="booking.seats.length === 1">Passagier hinzufügen</h4>
-            <h4 v-else>Passagiere hinzufügen</h4>
+            <h4 v-else>Passagiere hinzufügen (Min. 1 Passagier ist erforderlich)</h4>
             <div class="flex flex-column gap-4">
                 <PassengerEditMinimal v-for="(seat, index) in booking.seats" :key="index" :seat-number="index + 1" v-model:passenger="booking.seats[index]" :required="{ LastName: false, FirstName: false, Weight: true }" />
             </div>
