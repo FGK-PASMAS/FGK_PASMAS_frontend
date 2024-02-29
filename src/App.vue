@@ -102,7 +102,7 @@ function openDrawer(): void
             <MenuDrawerItem icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
-            <MenuTopbar v-if="!isNotFound" v-model:isDarkMode="isDarkMode" :is-menu-visible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
+            <MenuTopbar v-if="!isNotFound" v-model:isDarkMode="isDarkMode" :isMenuVisible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <div class="flex-grow-1 flex flex-column overflow-auto">
                 <RouterView class="flex-grow-1 ml-2 md:ml-8 mr-2 md:mr-8 mb-2" />
             </div>
