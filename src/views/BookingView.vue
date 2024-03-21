@@ -67,10 +67,6 @@ function onBeforeUnload(event: BeforeUnloadEvent): void
 
 function onBookingUpdate(currentStep?: string): void
 {
-    if (!currentStep) {
-        currentStep = stepper.value.getCurrentStepKey();
-    }
-
     if (!booking.isEmpty) {
         window.addEventListener("beforeunload", onBeforeUnload);
     } else {
@@ -79,6 +75,10 @@ function onBookingUpdate(currentStep?: string): void
 
     if (!stepper.value) {
         return;
+    }
+
+    if (!currentStep) {
+        currentStep = stepper.value.getCurrentStepKey();
     }
 
     isNextNavEnabled.value = false;
