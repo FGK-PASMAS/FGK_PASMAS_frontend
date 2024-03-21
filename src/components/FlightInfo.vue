@@ -4,6 +4,7 @@ import type { Division } from '@/data/division/division.interface';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { createFlight, deleteFlight } from '@/data/flight/flight.service';
 import type { Passenger } from '@/data/passenger/passenger.interface';
+import { bookingStore } from '@/stores/booking';
 import { DateTime } from 'luxon';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, type PropType } from 'vue';
@@ -11,6 +12,8 @@ import FlightStatusInfo from './FlightStatusInfo.vue';
 import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
 
 const toast = useToast();
+
+const booking = bookingStore();
 
 const isButtonDisabled = ref(false);
 
@@ -73,11 +76,11 @@ const emit = defineEmits([
 ]);
 
 const isReserveable = computed(() => {
-    return props.flight?.Status === FlightStatus.OK;
+    return !booking.flight && props.flight?.Status === FlightStatus.OK;
 });
 
 const isCanceable = computed(() => {
-    return props.flight?.Status === FlightStatus.RESERVED;
+    return booking.flight?.ID === props.flight?.ID && props.flight?.Status === FlightStatus.RESERVED;
 });
 
 async function reserveFlight(): Promise<void>
@@ -116,6 +119,9 @@ async function cancelFlight(): Promise<void>
 </script>
 
 <template>
+    
+    <button @click="console.log(flight)">test</button>
+
     <div class="flex flex-column pr-2 overflow-auto">
         <div class="flex flex-wrap justify-content-between align-items-center">
             <h1 class="m-0">Flugübersicht</h1>

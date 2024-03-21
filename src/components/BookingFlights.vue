@@ -96,6 +96,7 @@ function onReservedFlightTest(flight: Flight)
 
 function openInfoTest(flight: Flight)
 {
+    // ToDo: Reactivity is broken
     flightTest.value = flight;
     flightInfoOpenTest.value = true;
 }
@@ -121,8 +122,8 @@ function cancelTest()
                     <span>{{ flight.ArrivalTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
                     <span>{{ flight.Plane?.AircraftType }}</span>
                     <span>{{ flight.Plane?.Registration }}</span>
-                    <PrimeButton v-if="flight.Status === 'RESERVED'" severity="danger" @click="cancelPersistedTest(flight)">Stornieren (Test)</PrimeButton>
-                    <PrimeButton v-else @click="reserveTest(flight)" :disabled="flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
+                    <PrimeButton v-if="flight.ID === booking.flight?.ID && flight.Status === 'RESERVED'" severity="danger" @click="cancelPersistedTest(flight)">Stornieren (Test)</PrimeButton>
+                    <PrimeButton v-else @click="reserveTest(flight)" :disabled="booking.flight || flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
                     <PrimeButton @click="openInfoTest(flight)">Info (Test)</PrimeButton>
                 </div>
                 <AppDialog v-model:isOpen="flightInfoOpenTest">
