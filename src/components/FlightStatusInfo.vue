@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FlightStatus } from '@/data/flight/flight.interface';
+import { FlightStatus, FlightStatusColor, FlightStatusDisplayName } from '@/data/flight/flight.interface';
 import { ref, type PropType } from 'vue';
 
 const props = defineProps({
@@ -9,32 +9,36 @@ const props = defineProps({
 });
 
 const displayedStatus = ref("Noch offen");
-const displayedStatusColor = ref("text-bluegray-400");
+const displayedStatusColor = ref(FlightStatusColor.UNKNOWN);
 
 switch (props.flightStatus) {
     case FlightStatus.BLOCKED:
-        displayedStatus.value = "Geblockt";
-        displayedStatusColor.value = "text-yellow-400";
+        displayedStatus.value = FlightStatusDisplayName.BLOCKED;
+        displayedStatusColor.value = FlightStatusColor.BLOCKED;
         break;
     case FlightStatus.BOOKED:
-        displayedStatus.value = "Gebucht";
-        displayedStatusColor.value = "text-blue-400";
+        displayedStatus.value = FlightStatusDisplayName.BOOKED;
+        displayedStatusColor.value = FlightStatusColor.BOOKED;
         break;
     case FlightStatus.OK:
-        displayedStatus.value = "Ok";
-        displayedStatusColor.value = "text-primary-400";
+        displayedStatus.value = FlightStatusDisplayName.OK;
+        displayedStatusColor.value = FlightStatusColor.OK;
         break;
     case FlightStatus.OVERLOADED:
-        displayedStatus.value = "Überladen";
-        displayedStatusColor.value = "text-red-400";
+        displayedStatus.value = FlightStatusDisplayName.OVERLOADED;
+        displayedStatusColor.value = FlightStatusColor.OVERLOADED;
         break;
     case FlightStatus.OVERLOADED_SEAT:
-        displayedStatus.value = "Sitz überladen";
-        displayedStatusColor.value = "text-red-400";
+        displayedStatus.value = FlightStatusDisplayName.OVERLOADED_SEAT;
+        displayedStatusColor.value = FlightStatusColor.OVERLOADED_SEAT;
         break;
     case FlightStatus.RESERVED:
-        displayedStatus.value = "Reserviert";
-        displayedStatusColor.value = "text-blue-400";
+        displayedStatus.value = FlightStatusDisplayName.RESERVED;
+        displayedStatusColor.value = FlightStatusColor.RESERVED;
+        break;
+    default:
+        displayedStatus.value = FlightStatusDisplayName.UNKNOWN;
+        displayedStatusColor.value = FlightStatusColor.UNKNOWN;
         break;
 }
 </script>
