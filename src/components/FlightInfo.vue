@@ -26,6 +26,47 @@ const props = defineProps({
     }
 });
 
+// ToDo: This calculation is used in the booking store as well
+const totalPassengerWeight = computed(() => {
+    if (!props.passengers) {
+        return 0;
+    }
+
+    return props.passengers.reduce(( accumulator, passenger) => accumulator + (passenger.Weight ?? 0), 0);
+});
+
+// ToDo: This calculation is used in the flight store for virtual flights as well
+const etow = computed(() => {
+    let etow = 0;
+    let fuel = 0;
+
+    if (!props.flight?.Plane || !props.flight?.FuelAtDeparture) {
+        return etow;
+    }
+
+    if (props.flight.FuelAtDeparture > 0) {
+        fuel = props.flight.FuelAtDeparture * props.flight.Plane.FuelConversionFactor!;
+    }
+
+    etow = props.flight.Plane.EmptyWeight! + totalPassengerWeight.value + fuel;
+
+    return etow;
+});
+
+const overload = computed(() => {
+    if (!props.flight?.Plane?.MTOW) {
+        return -1;
+    }
+
+    const overload = etow.value - props.flight.Plane.MTOW;
+
+    if (overload > 0) {
+        return overload;
+    }
+
+    return 0;
+});
+
 const emit = defineEmits([
     "flightReserved",
     "flightCanceled"
@@ -81,7 +122,7 @@ async function cancelFlight(): Promise<void>
             <FlightStatusInfo :flightStatus="flight?.Status" />
             <PrimeDivider />
         </div>
-        <div class="flex flex-column gap-4">
+        <div class="flex flex-column gap-5">
             <div>
                 <div class="flex align-items-center gap-2 mb-1">
                     <i class="bi-ticket-detailed-fill text-xl" />
@@ -93,31 +134,38 @@ async function cancelFlight(): Promise<void>
                 <div class="flex flex-wrap align-items-center gap-2 row-gap-1 mb-1">
                     <i class="bi-people-fill text-xl" />
                     <h3 class="m-0">Passagiere</h3>
-                    <h3 class="m-0">(Max. {{ division?.PassengerCapacity }} {{ division?.PassengerCapacity === 1 ? "Passagier" : "Passagiere" }})</h3>
-                    <h3 v-if="flight?.Plane?.MaxSeatPayload && flight?.Plane?.MaxSeatPayload > 0" class="m-0">(Max. {{ flight!.Plane!.MaxSeatPayload }}kg pro Sitz)</h3>
+                    <h3 class="m-0">(Max.: {{ division?.PassengerCapacity }} {{ division?.PassengerCapacity === 1 ? "Passagier" : "Passagiere" }})</h3>
+                    <h3 v-if="flight?.Plane?.MaxSeatPayload && flight?.Plane?.MaxSeatPayload > 0" class="m-0">(Max.: {{ flight!.Plane!.MaxSeatPayload }}kg pro Sitz)</h3>
                 </div>
-                <div class="flex flex-column gap-1 ml-1">
-                    <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :passenger="passenger" :seatNumber="index + 1" :seatPayload="flight?.Plane?.MaxSeatPayload" />
+                <div class="flex flex-column gap-2 ml-1">
+                    <div class="flex flex-column gap-1">
+                        <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :passenger="passenger" :seatNumber="index + 1" :seatPayload="flight?.Plane?.MaxSeatPayload" />
+                    </div>
+                    <span><span class="font-bold">Gesamt:</span> {{ totalPassengerWeight }}kg</span>
                 </div>
             </div>
             <div>
-                <div class="flex align-items-center gap-2 mb-1">
+                <div class="flex flex-wrap align-items-center gap-2 row-gap-1 mb-1">
                     <i class="bi-clock-fill text-xl" />
                     <h3 class="m-0">Flug</h3>
+                    <h3 v-if="flight?.Plane?.MTOW" class="m-0">(MTOW: {{ flight!.Plane!.MTOW }}kg)</h3>
                 </div>
-                <div v-if="flight" class="flex flex-column gap-3 ml-1">
+                <div v-if="flight" class="flex flex-column gap-2 ml-1">
                     <div class="flex gap-2">
                         <span>{{ flight!.DepartureTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
                         <span>-</span>
                         <span>{{ flight!.ArrivalTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
-                        <span>(Dauer: {{ flight!.ArrivalTime!.diff(flight!.DepartureTime!, "minutes").toFormat("mm") }}min)</span>
+                    </div>
+                    <span><span class="font-bold">Dauer:</span> {{ flight!.ArrivalTime!.diff(flight!.DepartureTime!, "minutes").toFormat("mm") }}min</span>
+                    <div class="flex flex-wrap gap-1">
+                        <span><span class="font-bold">ETOW:</span> {{ etow }}kg</span>
+                        <span v-if="overload > 0" class="text-red-400">(+{{ overload }}kg)</span>
+                        <i v-else-if="overload !== -1" class="bi-check2 text-primary-400" />
                     </div>
                     <div v-if="flight!.Description" class="flex gap-2">
                         <i class="bi-info-circle-fill text-red-400" />
                         <span class="text-red-400 word-break-all">{{ flight!.Description }}</span>
                     </div>
-                    <span>MTOW {{ flight!.Plane!.MTOW }}</span>
-                    <span>ETOW HERE</span>
                 </div>
                 <span v-else>-</span>
             </div>
@@ -127,10 +175,10 @@ async function cancelFlight(): Promise<void>
                     <h3 class="m-0">Flugzeug</h3>
                 </div>
                 <div v-if="flight" class="flex flex-column gap-1 ml-1">
-                    <span>Typ {{ flight!.Plane!.AircraftType }}</span>
-                    <span>Kennzeichen {{ flight!.Plane!.Registration }}</span>
-                    <span>Leergewicht {{ flight!.Plane!.EmptyWeight }}</span>
-                    <span>Aktueller Treibstoff {{ flight!.FuelAtDeparture }}</span>
+                    <span><span class="font-bold">Typ:</span> {{ flight.Plane!.AircraftType }}</span>
+                    <span><span class="font-bold">Kennzeichen:</span> {{ flight.Plane!.Registration }}</span>
+                    <span><span class="font-bold">Leergewicht:</span> {{ flight.Plane!.EmptyWeight }}kg</span>
+                    <span v-if="flight.FuelAtDeparture && flight.FuelAtDeparture >= 0"><span class="font-bold">Treibstoff:</span> {{ flight.FuelAtDeparture }}L</span>
                 </div>
                 <span v-else>-</span>
             </div>
@@ -140,7 +188,7 @@ async function cancelFlight(): Promise<void>
                     <h3 class="m-0">Pilot</h3>
                 </div>
                 <div v-if="flight" class="flex flex-column gap-1 ml-1">
-                    <span>{{ flight!.Pilot!.LastName + ", " + flight!.Pilot!.FirstName + "(" + flight!.Pilot!.Weight + "kg)" }}</span>
+                    <span>{{ flight!.Pilot!.LastName + ", " + flight!.Pilot!.FirstName + " (" + flight!.Pilot!.Weight + "kg)" }}</span>
                 </div>
                 <span v-else>-</span>
             </div>
