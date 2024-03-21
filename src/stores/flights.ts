@@ -86,27 +86,27 @@ export const flightsStore = defineStore("flights", () => {
 
     function calculateVirtualFlight(virtualFlight: Flight): Flight
     {
-        let eotw = 0;
+        let etow = 0;
 
         virtualFlight.Status = FlightStatus.UNKNOWN;
         virtualFlight.FuelAtDeparture = getFuelOfVirtualFlight(virtualFlight);
 
-        eotw = getEOTWOfVirutalFlight(virtualFlight);
+        etow = getETOWOfVirutalFlight(virtualFlight);
 
-        if (eotw === 0) {
+        if (etow === 0) {
             return virtualFlight;
         }
 
-        virtualFlight.Pilot = getPilotOfVirtualFlight(virtualFlight, eotw);
+        virtualFlight.Pilot = getPilotOfVirtualFlight(virtualFlight, etow);
 
         if (!virtualFlight.Pilot) {
             return virtualFlight;
         }
 
         virtualFlight.PilotId = virtualFlight.Pilot!.ID;
-        eotw = eotw + virtualFlight.Pilot.Weight!;
+        etow = etow + virtualFlight.Pilot.Weight!;
 
-        if (eotw > virtualFlight.Plane!.MTOW!) {
+        if (etow > virtualFlight.Plane!.MTOW!) {
             virtualFlight.Status = FlightStatus.OVERLOADED;
             return virtualFlight;
         }
@@ -121,24 +121,24 @@ export const flightsStore = defineStore("flights", () => {
         return virtualFlight;
     }
 
-    function getEOTWOfVirutalFlight(virtualFlight: Flight): number
+    function getETOWOfVirutalFlight(virtualFlight: Flight): number
     {
         const plane = virtualFlight.Plane!;
         const passengerWeight = booking.totalWeight;
-        let eotw = 0;
+        let etow = 0;
         let fuel = 0;
 
         if (!virtualFlight.FuelAtDeparture) {
-            return eotw;
+            return etow;
         }
 
         if (virtualFlight.FuelAtDeparture > 0) {
             fuel = virtualFlight.FuelAtDeparture * plane.FuelConversionFactor!;
         }
 
-        eotw = plane.EmptyWeight! + passengerWeight + fuel;
+        etow = plane.EmptyWeight! + passengerWeight + fuel;
 
-        return eotw;
+        return etow;
     }
 
     function getFuelOfVirtualFlight(virtualFlight: Flight): number
@@ -177,13 +177,13 @@ export const flightsStore = defineStore("flights", () => {
         });
     }
 
-    function getPilotOfVirtualFlight(virtualFlight: Flight, eotw: number): Pilot | undefined
+    function getPilotOfVirtualFlight(virtualFlight: Flight, etow: number): Pilot | undefined
     {
         const plane = virtualFlight.Plane!;
         let pilot: Pilot | undefined = plane.PrefPilot;
 
         if (pilot) {
-            if (eotw + pilot.Weight! <= plane.MTOW!) {
+            if (etow + pilot.Weight! <= plane.MTOW!) {
                 return pilot;
             }
         }
@@ -193,7 +193,7 @@ export const flightsStore = defineStore("flights", () => {
         }
 
         plane.AllowedPilots.some((allowedPilot) => {
-            if (eotw + allowedPilot.Weight! <= plane.MTOW!) {
+            if (etow + allowedPilot.Weight! <= plane.MTOW!) {
                 pilot = allowedPilot;
                 return true;
             }
