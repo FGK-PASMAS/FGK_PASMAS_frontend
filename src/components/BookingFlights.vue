@@ -7,7 +7,6 @@ import { createFlight, deleteFlight, getFlights, getFlightsByDivisionStream } fr
 import { getPlanes } from "@/data/plane/plane.service";
 import { bookingStore } from "@/stores/booking";
 import { flightsStore } from "@/stores/flights";
-import { DateTime } from "luxon";
 import { useToast } from "primevue/usetoast";
 import { onMounted, onUnmounted, ref } from "vue";
 
@@ -69,6 +68,7 @@ onUnmounted(() => {
 // ToDo: Implement functionality
 import AppDialog from "@/components/AppDialog.vue";
 import FlightInfo from "@/components/FlightInfo.vue";
+import FlightTicket from "./FlightTicket.vue";
 
 const flightIndexTest = ref(0);
 const flightInfoOpenTest = ref(false);
@@ -115,19 +115,20 @@ function cancelTest()
             <div v-if="isDataLoaded">
                 
                 <!--ToDo: Implement component-->
-                <div v-for="(flight, index) in flights.flights" :key="index" class="flex flex-wrap gap-4 p-1 border-1 ">
-                    <span>{{ flight?.Status }}</span>
-                    <span>{{ flight.DepartureTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
-                    <span>{{ flight.ArrivalTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
-                    <span>{{ flight.Plane?.AircraftType }}</span>
-                    <span>{{ flight.Plane?.Registration }}</span>
-                    <PrimeButton v-if="flight.ID === booking.flight?.ID && flight.Status === 'RESERVED'" severity="danger" @click="cancelPersistedTest(flight)">Stornieren (Test)</PrimeButton>
-                    <PrimeButton v-else @click="reserveTest(flight)" :disabled="booking.flight || flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
-                    <PrimeButton @click="openInfoTest(index)">Info (Test)</PrimeButton>
-                </div>
+                    <FlightTicket v-for="(flight, index) in flights.flights" :key="index" :flight="flight" class="mt-1 mb-1" />
+                    
+                    <!--
+                    <div>
+                        <PrimeButton v-if="flight.ID === booking.flight?.ID && flight.Status === 'RESERVED'" severity="danger" @click="cancelPersistedTest(flight)">Stornieren (Test)</PrimeButton>
+                        <PrimeButton v-else @click="reserveTest(flight)" :disabled="booking.flight || flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
+                        <PrimeButton @click="openInfoTest(index)">Info (Test)</PrimeButton>
+                    </div>
+                    -->
+
                 <AppDialog v-model:isOpen="flightInfoOpenTest">
                     <FlightInfo :division="booking.division" :passengers="booking.passengers" :flight="flights.flights[flightIndexTest]" @flightReserved="(reservedFlight) => onReservedFlightTest(reservedFlight)" @flightCanceled="cancelTest()" />
                 </AppDialog>
+                
                 <!--ToDo: Implement component-->
 
             </div>

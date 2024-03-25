@@ -24,6 +24,16 @@ export enum FlightStatusColor {
     UNKNOWN = "text-bluegray-400",
 }
 
+export enum FlightStatusBgColor {
+    OK = "bg-primary-400",
+    OVERLOADED = "bg-red-400",
+    OVERLOADED_SEAT = "bg-red-400",
+    RESERVED = "bg-blue-400",
+    BOOKED = "bg-blue-400",
+    BLOCKED = "bg-yellow-400",
+    UNKNOWN = "bg-bluegray-400",
+}
+
 export enum FlightStatusDisplayName {
     OK = "Ok",
     OVERLOADED = "Überladen",
