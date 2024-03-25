@@ -9,7 +9,7 @@ import { bookingStore } from "@/stores/booking";
 import { flightsStore } from "@/stores/flights";
 import { DateTime } from "luxon";
 import { useToast } from "primevue/usetoast";
-import { onMounted, onUnmounted, ref, type Ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
 const toast = useToast();
 
@@ -70,7 +70,7 @@ onUnmounted(() => {
 import AppDialog from "@/components/AppDialog.vue";
 import FlightInfo from "@/components/FlightInfo.vue";
 
-const flightTest: Ref<Flight | undefined> = ref();
+const flightIndexTest = ref(0);
 const flightInfoOpenTest = ref(false);
 
 async function reserveTest(flight: Flight)
@@ -94,10 +94,9 @@ function onReservedFlightTest(flight: Flight)
     booking.flight = flight; 
 }
 
-function openInfoTest(flight: Flight)
+function openInfoTest(index: number)
 {
-    // ToDo: Reactivity is broken
-    flightTest.value = flight;
+    flightIndexTest.value = index;
     flightInfoOpenTest.value = true;
 }
 
@@ -124,10 +123,10 @@ function cancelTest()
                     <span>{{ flight.Plane?.Registration }}</span>
                     <PrimeButton v-if="flight.ID === booking.flight?.ID && flight.Status === 'RESERVED'" severity="danger" @click="cancelPersistedTest(flight)">Stornieren (Test)</PrimeButton>
                     <PrimeButton v-else @click="reserveTest(flight)" :disabled="booking.flight || flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
-                    <PrimeButton @click="openInfoTest(flight)">Info (Test)</PrimeButton>
+                    <PrimeButton @click="openInfoTest(index)">Info (Test)</PrimeButton>
                 </div>
                 <AppDialog v-model:isOpen="flightInfoOpenTest">
-                    <FlightInfo :division="booking.division" :passengers="booking.passengers" :flight="flightTest" @flightReserved="(reservedFlight) => onReservedFlightTest(reservedFlight)" @flightCanceled="cancelTest()" />
+                    <FlightInfo :division="booking.division" :passengers="booking.passengers" :flight="flights.flights[flightIndexTest]" @flightReserved="(reservedFlight) => onReservedFlightTest(reservedFlight)" @flightCanceled="cancelTest()" />
                 </AppDialog>
                 <!--ToDo: Implement component-->
 

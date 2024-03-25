@@ -119,9 +119,6 @@ async function cancelFlight(): Promise<void>
 </script>
 
 <template>
-    
-    <button @click="console.log(flight)">test</button>
-
     <div class="flex flex-column pr-2 overflow-auto">
         <div class="flex flex-wrap justify-content-between align-items-center">
             <h1 class="m-0">Flugübersicht</h1>
