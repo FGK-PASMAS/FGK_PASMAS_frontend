@@ -44,12 +44,18 @@ function initPassengers(): void
 <template>
     <div class="flex flex-column gap-4">
         <div v-if="divisions.length > 0">
-            <h4>Flugtyp auswählen</h4>
+            <div class="flex gap-2 align-items-center">
+                <i class="bi-ticket-detailed-fill text-xl" />
+                <h4>Flugtyp auswählen</h4>
+            </div>
             <PrimeDropdown ref="dropDown" v-model="booking.division" :options="divisions" optionLabel="Name" placeholder="Flugtyp" showClear class="w-full md:w-20rem" @change="initPassengers()" />
         </div>
         <div v-if="booking.seats.length > 0">
-            <h4 v-if="booking.seats.length === 1">Passagier hinzufügen</h4>
-            <h4 v-else>Passagiere hinzufügen (Min. 1 Passagier ist erforderlich)</h4>
+            <div class="flex gap-2 align-items-center">
+                <i class="bi-people-fill text-xl" />
+                <h4 v-if="booking.seats.length === 1">Passagier hinzufügen</h4>
+                <h4 v-else>Passagiere hinzufügen (Min. 1 Passagier ist erforderlich)</h4>
+            </div>
             <div class="flex flex-column gap-4">
                 <PassengerEditMinimal v-for="(seat, index) in booking.seats" :key="index" :seat-number="index + 1" v-model:passenger="booking.seats[index]" :required="{ LastName: false, FirstName: false, Weight: true }" />
             </div>
