@@ -42,7 +42,7 @@ function initPassengers(): void
 </script>
 
 <template>
-    <div class="flex flex-column gap-4">
+    <div class="flex flex-column gap-3">
         <div v-if="divisions.length > 0">
             <div class="flex gap-2 align-items-center">
                 <i class="bi-ticket-detailed-fill text-xl" />
