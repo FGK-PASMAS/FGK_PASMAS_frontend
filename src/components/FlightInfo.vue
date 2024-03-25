@@ -5,7 +5,6 @@ import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { createFlight, deleteFlight } from '@/data/flight/flight.service';
 import type { Passenger } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
-import { DateTime } from 'luxon';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, type PropType } from 'vue';
 import FlightStatusInfo from './FlightStatusInfo.vue';
@@ -94,6 +93,7 @@ async function reserveFlight(): Promise<void>
     const reservedFlight = await useValidateAPIData(createFlight(props.flight), toast);
 
     if (reservedFlight) {
+        booking.flight = reservedFlight;
         emit("flightReserved", reservedFlight);
     }
 
@@ -111,6 +111,7 @@ async function cancelFlight(): Promise<void>
     const response = await useValidateAPIData(deleteFlight(props.flight), toast);
 
     if (response) {
+        booking.flight = undefined;
         emit("flightCanceled");
     }
 
@@ -155,9 +156,11 @@ async function cancelFlight(): Promise<void>
                 </div>
                 <div v-if="flight" class="flex flex-column gap-2 ml-1">
                     <div class="flex gap-2">
-                        <span>{{ flight!.DepartureTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
+                        <span>{{ flight.DepartureTime!.toFormat("HH:mm") }}</span>
                         <span>-</span>
-                        <span>{{ flight!.ArrivalTime!.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
+                        <span>{{ flight.ArrivalTime!.toFormat("HH:mm") }}</span>
+                        <span>|</span>
+                        <span>{{ flight.DepartureTime!.toFormat("cccc, dd LLLL yyyy") }}</span>
                     </div>
                     <span><span class="font-bold">Dauer:</span> {{ flight!.ArrivalTime!.diff(flight!.DepartureTime!, "minutes").toFormat("mm") }}min</span>
                     <div class="flex flex-wrap gap-1">

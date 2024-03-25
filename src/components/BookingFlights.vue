@@ -1,14 +1,16 @@
 <script setup lang="ts">
+import AppDialog from "@/components/AppDialog.vue";
+import FlightInfo from "@/components/FlightInfo.vue";
 import FlightInfoMinimal from "@/components/FlightInfoMinimal.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import { FlightEventHandler } from "@/data/flight/flight.eventHandler";
-import { type Flight } from "@/data/flight/flight.interface";
-import { createFlight, deleteFlight, getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.service";
+import { getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.service";
 import { getPlanes } from "@/data/plane/plane.service";
 import { bookingStore } from "@/stores/booking";
 import { flightsStore } from "@/stores/flights";
 import { useToast } from "primevue/usetoast";
 import { onMounted, onUnmounted, ref } from "vue";
+import FlightTicket from "./FlightTicket.vue";
 
 const toast = useToast();
 
@@ -19,6 +21,8 @@ let eventSource: EventSource;
 const eventHandler = new FlightEventHandler();
 
 const isDataLoaded = ref(false);
+const flightIndex = ref(0);
+const isFlightInfoOpen = ref(false);
 
 onMounted(async () => {
     flights.resetStore();
@@ -65,45 +69,20 @@ onUnmounted(() => {
     }
 });
 
-// ToDo: Implement functionality
-import AppDialog from "@/components/AppDialog.vue";
-import FlightInfo from "@/components/FlightInfo.vue";
-import FlightTicket from "./FlightTicket.vue";
-
-const flightIndexTest = ref(0);
-const flightInfoOpenTest = ref(false);
-
-async function reserveTest(flight: Flight)
+function openFlightInfo(index: number): void
 {
-    const reservedFlight = await useValidateAPIData(createFlight(flight), toast);
-    booking.flight = reservedFlight;
+    flightIndex.value = index;
+    isFlightInfoOpen.value = true;
 }
 
-async function cancelPersistedTest(flight: Flight)
+function onFlightReservation(): void
 {
-    const response = await useValidateAPIData(deleteFlight(flight), toast);
-
-    if (response) {
-        booking.flight = undefined;
-    }
+    isFlightInfoOpen.value = false;
 }
 
-function onReservedFlightTest(flight: Flight)
+function onFlightCancellation(): void
 {
-    flightInfoOpenTest.value = false;
-    booking.flight = flight; 
-}
-
-function openInfoTest(index: number)
-{
-    flightIndexTest.value = index;
-    flightInfoOpenTest.value = true;
-}
-
-function cancelTest()
-{
-    flightInfoOpenTest.value = false; 
-    booking.flight = undefined;
+    isFlightInfoOpen.value = false;
 }
 </script>
 
@@ -113,24 +92,10 @@ function cancelTest()
         <div class="relative w-full h-full overflow-auto">
             <Transition>
             <div v-if="isDataLoaded">
-                
-                <!--ToDo: Implement component-->
-                    <FlightTicket v-for="(flight, index) in flights.flights" :key="index" :flight="flight" class="mt-1 mb-1" />
-                    
-                    <!--
-                    <div>
-                        <PrimeButton v-if="flight.ID === booking.flight?.ID && flight.Status === 'RESERVED'" severity="danger" @click="cancelPersistedTest(flight)">Stornieren (Test)</PrimeButton>
-                        <PrimeButton v-else @click="reserveTest(flight)" :disabled="booking.flight || flight?.Status !== 'OK'">Reservieren (Test)</PrimeButton>
-                        <PrimeButton @click="openInfoTest(index)">Info (Test)</PrimeButton>
-                    </div>
-                    -->
-
-                <AppDialog v-model:isOpen="flightInfoOpenTest">
-                    <FlightInfo :division="booking.division" :passengers="booking.passengers" :flight="flights.flights[flightIndexTest]" @flightReserved="(reservedFlight) => onReservedFlightTest(reservedFlight)" @flightCanceled="cancelTest()" />
+                <FlightTicket v-for="(flight, index) in flights.flights" :key="index" :flight="flight" class="mt-1 mb-1" @showInfo="openFlightInfo(index)" />
+                <AppDialog v-model:isOpen="isFlightInfoOpen">
+                    <FlightInfo :division="booking.division" :passengers="booking.passengers" :flight="flights.flights[flightIndex]" @flightReserved="onFlightReservation()" @flightCanceled="onFlightCancellation()" />
                 </AppDialog>
-                
-                <!--ToDo: Implement component-->
-
             </div>
             <div v-else class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
                 <PrimeProgressSpinner strokeWidth="4" />
