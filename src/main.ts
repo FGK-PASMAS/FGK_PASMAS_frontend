@@ -1,4 +1,5 @@
 import "bootstrap-icons/font/bootstrap-icons.css";
+import { Settings } from "luxon";
 import { createPinia } from "pinia";
 import "primeflex/primeflex.css";
 import Button from "primevue/button";
@@ -15,6 +16,8 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import "./assets/main.scss";
 import router from "./router";
+
+Settings.defaultLocale = "de";
 
 const app = createApp(App);
 

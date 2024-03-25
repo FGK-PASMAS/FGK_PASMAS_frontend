@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { bookingStore } from '@/stores/booking';
-import { DateTime } from 'luxon';
 import { ref } from 'vue';
 import AppDialog from './AppDialog.vue';
 import FlightInfo from './FlightInfo.vue';
@@ -41,9 +40,11 @@ function cancelFlight()
             <div class="hidden md:flex align-items-center gap-2">
                 <i class="bi-clock-fill" />
                 <div v-if="booking.flight" class="flex gap-1">
-                    <span>{{ booking.flight?.DepartureTime?.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
-                    <span>-</span>
-                    <span>{{ booking.flight?.ArrivalTime?.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
+                    <span>{{ booking.flight?.DepartureTime?.toFormat("HH:mm") }}</span>
+                    <span> - </span>
+                    <span>{{ booking.flight?.ArrivalTime?.toFormat("HH:mm") }}</span>
+                    <span>|</span>
+                    <span>{{ booking.flight?.DepartureTime?.toFormat("dd.LL.yyyy") }}</span>
                 </div>
                 <span v-else>-</span>
             </div>

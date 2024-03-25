@@ -1,7 +1,6 @@
 import { EntityEventHandler } from "@/utils/eventHandlers/entity.eventHandler";
 import type { EntityInterface } from "@/utils/interfaces/entity.interface";
 import { InfoToast } from "@/utils/toasts/info.toast";
-import { DateTime } from "luxon";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { FlightStatus, type Flight } from "./flight.interface";
 
@@ -12,18 +11,19 @@ export class FlightEventHandler extends EntityEventHandler
     }
 
     protected onEntityCreatedEvent(subject: Flight, toast: ToastServiceMethods): void {
-        const departure = subject.DepartureTime!.toLocaleString(DateTime.DATETIME_SHORT);
-        const arrival = subject.ArrivalTime!.toLocaleString(DateTime.DATETIME_SHORT);
+        const date = subject.DepartureTime!.toFormat("dd.LL.yyyy");
+        const departure = subject.DepartureTime!.toFormat("HH:mm");
+        const arrival = subject.ArrivalTime!.toFormat("HH:mm");
 
         if (subject.Status === FlightStatus.BLOCKED) {
-            toast.add(new InfoToast({ detail: "Es wurde ein Blocker von " + departure + " bis " + arrival + " gesetzt." }));
+            toast.add(new InfoToast({ detail: "Es wurde ein Blocker von " + departure + " bis " + arrival + " am " + date + " gesetzt." }));
         } else {
-            toast.add(new InfoToast({ detail: "Flug um " + departure + " wurde reserviert."}));
+            toast.add(new InfoToast({ detail: "Flug um " + departure + " " + date + " wurde reserviert."}));
         }
     }
 
     protected onEntityUpdatedEvent(subject: Flight, toast: ToastServiceMethods): void {
-        const departure = subject.DepartureTime!.toLocaleString(DateTime.DATETIME_SHORT);
+        const departure = subject.DepartureTime!.toFormat("HH:mm dd.LL.yyyy");
 
         if (subject.Status === FlightStatus.BOOKED) {
             toast.add(new InfoToast({ detail: "Flug um " + departure + " wurde gebucht." }));
@@ -31,7 +31,7 @@ export class FlightEventHandler extends EntityEventHandler
     }
 
     protected onEntityDeletedEvent(subject: Flight, toast: ToastServiceMethods): void {
-        const departure = subject.DepartureTime!.toLocaleString(DateTime.DATETIME_SHORT);
+        const departure = subject.DepartureTime!.toFormat("HH:mm dd.LL.yyyy");
 
         if (subject.Status === FlightStatus.BOOKED) {
             toast.add(new InfoToast({ detail: "Flug um " + departure + " wurde storniert." }));
