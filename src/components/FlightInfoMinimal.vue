@@ -29,7 +29,7 @@ function cancelFlight()
                 <i class="bi-ticket-detailed-fill text-xl" />
                 <span>{{ booking.division?.Name }}</span>
             </div>
-            <div class="flex align-items-center gap-2">
+            <div class="hidden md:flex align-items-center gap-2">
                 <i class="bi-people-fill text-xl" />
                 <div class="flex gap-1">
                     <span>{{ booking.passengers.length }}</span>
@@ -38,7 +38,7 @@ function cancelFlight()
                     <span>{{ "(" + booking.totalWeight + "kg)" }}</span>
                 </div>
             </div>
-            <div class="flex align-items-center gap-2">
+            <div class="hidden md:flex align-items-center gap-2">
                 <i class="bi-clock-fill" />
                 <div v-if="booking.flight" class="flex gap-1">
                     <span>{{ booking.flight?.DepartureTime?.toLocaleString(DateTime.DATETIME_SHORT) }}</span>
@@ -47,7 +47,7 @@ function cancelFlight()
                 </div>
                 <span v-else>-</span>
             </div>
-            <div class="flex align-items-center gap-2">
+            <div class="hidden md:flex align-items-center gap-2">
                 <i class="bi-airplane-fill" />
                 <div v-if="booking.flight?.Plane" class="flex gap-1">
                     <span>{{ booking.flight?.Plane?.AircraftType }}</span>
