@@ -155,7 +155,7 @@ async function cancelFlight(): Promise<void>
                     <h3 v-if="flight?.Plane?.MTOW" class="m-0">(MTOW: {{ flight!.Plane!.MTOW }}kg)</h3>
                 </div>
                 <div v-if="flight" class="flex flex-column gap-2 ml-1">
-                    <div class="flex gap-2">
+                    <div class="flex flex-wrap gap-2">
                         <span>{{ flight.DepartureTime!.toFormat("HH:mm") }}</span>
                         <span>-</span>
                         <span>{{ flight.ArrivalTime!.toFormat("HH:mm") }}</span>

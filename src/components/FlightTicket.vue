@@ -51,8 +51,8 @@ async function cancelFlight(): Promise<void>
                 <span class="font-bold">{{ flight.ArrivalTime!.toFormat("HH:mm") }}</span>
                 <span>|</span>
                 <span>{{ flight.DepartureTime!.toFormat("dd.LL.yyyy") }}</span>
-                <span>|</span>
-                <span>{{ flight!.ArrivalTime!.diff(flight!.DepartureTime!, "minutes").toFormat("mm") }}min</span>
+                <span class="hidden md:block">|</span>
+                <span class="hidden md:block">{{ flight!.ArrivalTime!.diff(flight!.DepartureTime!, "minutes").toFormat("mm") }}min</span>
             </div>
             <div class="flex gap-2 ml-1">
                 <i class="bi-airplane-fill" />
@@ -61,11 +61,20 @@ async function cancelFlight(): Promise<void>
             </div>
         </div>
         <i class="bi-info-circle-fill p-2" />
-        <PrimeButton v-if="flight.ID === booking.flight?.ID && flight.Status === FlightStatus.RESERVED" label="Stornieren" severity="danger" class="w-3 text-color border-noround-left" @click.stop="cancelFlight()" />
-        <div v-else-if="flight.Status === FlightStatus.OK" class="w-3 cursor-auto" @click.stop>
-            <PrimeButton label="Reservieren" class="h-full w-full text-color border-noround-left" @click.stop="reserveFlight()" :disabled="booking.flight" />
+        <PrimeButton v-if="flight.ID === booking.flight?.ID && flight.Status === FlightStatus.RESERVED" 
+            severity="danger" 
+            class="w-3 min-width flex justify-content-center align-items-center text-color border-noround-left" 
+            @click.stop="cancelFlight()">
+            Stornieren
+        </PrimeButton>
+        <div v-else-if="flight.Status === FlightStatus.OK" class="w-3 min-width cursor-auto" @click.stop>
+            <PrimeButton class="h-full w-full flex justify-content-center align-items-center text-color border-noround-left" 
+                @click.stop="reserveFlight()" 
+                :disabled="booking.flight">
+                Reservieren
+            </PrimeButton>
         </div>
-        <div v-else class="status-box w-3 flex justify-content-center align-items-center font-bold text-color border-round-right" :class="displayedStatus.bgColor" @click.stop>{{ displayedStatus.status }}</div>
+        <div v-else class="status-box w-3 min-width flex justify-content-center align-items-center text-color border-round-right" :class="displayedStatus.bgColor" @click.stop>{{ displayedStatus.status }}</div>
     </div>
 </template>
 
@@ -79,5 +88,9 @@ button:focus {
     user-select: none;
     -ms-user-select: none;
     -webkit-user-select: none;
+}
+
+.min-width {
+    min-width: 128px;
 }
 </style>
