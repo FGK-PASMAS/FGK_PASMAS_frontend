@@ -34,7 +34,7 @@ function cancelFlight()
                     <span>{{ booking.passengers.length }}</span>
                     <span v-if="booking.passengers.length === 1">Passagier</span>
                     <span v-else>Passagiere</span>
-                    <span>{{ "(" + booking.totalWeight + "kg)" }}</span>
+                    <span>{{ "(" + booking.totalPassengersWeight + "kg)" }}</span>
                 </div>
             </div>
             <div class="hidden md:flex align-items-center gap-2">

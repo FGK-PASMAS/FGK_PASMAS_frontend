@@ -106,13 +106,14 @@ function onFlightCancellation(): void
 </template>
 
 <style scoped lang="scss">
-    .v-enter-active,
-    .v-leave-active {
-        transition: opacity 0.5s ease;
-    }
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s ease;
+    transition-delay: 0.3s;
+}
 
-    .v-enter-from,
-    .v-leave-to {
-        opacity: 0;
-    }
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+}
 </style>

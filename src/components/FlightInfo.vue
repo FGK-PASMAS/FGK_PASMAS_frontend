@@ -198,12 +198,12 @@ async function cancelFlight(): Promise<void>
                 </div>
                 <span v-else>-</span>
             </div>
-            <PrimeButton v-if="isReserveable" label="Reservieren" class="text-color" @click="reserveFlight()" :disabled="isButtonDisabled"
+            <PrimeButton v-if="isReserveable" type="button" label="Reservieren" class="text-color" @click="reserveFlight()" :disabled="isButtonDisabled"
                 :pt="{
                     label: { class: 'font-normal' }
                 }"
             />
-            <PrimeButton v-if="isCanceable" label="Stornieren" severity="danger" class="text-color" @click="cancelFlight()" :disabled="isButtonDisabled" 
+            <PrimeButton v-if="isCanceable" type="button" label="Stornieren" severity="danger" class="text-color" @click="cancelFlight()" :disabled="isButtonDisabled" 
                 :pt="{
                     label: { class: 'font-normal' }
                 }"

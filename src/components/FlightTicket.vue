@@ -61,14 +61,17 @@ async function cancelFlight(): Promise<void>
             </div>
         </div>
         <i class="bi-info-circle-fill p-2" />
-        <PrimeButton v-if="flight.ID === booking.flight?.ID && flight.Status === FlightStatus.RESERVED" 
+        <PrimeButton v-if="flight.ID === booking.flight?.ID && flight.Status === FlightStatus.RESERVED"
+            type="button" 
             severity="danger" 
             class="w-3 min-width flex justify-content-center align-items-center text-color border-noround-left" 
             @click.stop="cancelFlight()">
             Stornieren
         </PrimeButton>
         <div v-else-if="flight.Status === FlightStatus.OK" class="w-3 min-width cursor-auto" @click.stop>
-            <PrimeButton class="h-full w-full flex justify-content-center align-items-center text-color border-noround-left" 
+            <PrimeButton
+                type="button" 
+                class="h-full w-full flex justify-content-center align-items-center text-color border-noround-left" 
                 @click.stop="reserveFlight()" 
                 :disabled="booking.flight">
                 Reservieren

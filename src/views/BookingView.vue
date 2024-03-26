@@ -2,17 +2,20 @@
 import BookingConfirmation from "@/components/BookingConfirmation.vue";
 import BookingFlights from "@/components/BookingFlights.vue";
 import BookingPassengers from "@/components/BookingPassengers.vue";
+import BookingResult from "@/components/BookingResult.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
+import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import { bookingStore } from "@/stores/booking";
 import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import { InfoToast } from "@/utils/toasts/info.toast";
 import { useToast } from "primevue/usetoast";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, ref, type Ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 const booking = bookingStore();
+const bookedFlight: Ref<Flight | undefined> = ref();
 
 const stepper = ref();
 const toast = useToast();
@@ -36,6 +39,7 @@ const items: MenuStepperItemInterface[] = [
     }
 ];
 
+const isDataLoaded = ref(true);
 const isAllowedToLeave = ref(false);
 const isNavDialogOpen = ref(false);
 const isNextNavEnabled = ref(false);
@@ -107,10 +111,14 @@ function onBookingUpdate(currentStep?: string): void
 
 async function confirmBooking(): Promise<void>
 {
-    await booking.confirmBooking(toast);
+    isDataLoaded.value = false;
 
-    // ToDo: Display succesful booking
-    alert("WIP: BOOKED!")
+    bookedFlight.value = await booking.confirmBooking(toast);
+
+    isDataLoaded.value = true;
+
+    isAllowedToLeave.value = true;
+    window.removeEventListener("beforeunload", onBeforeUnload);
 }
 
 async function cancelBooking(): Promise<void>
@@ -133,9 +141,28 @@ function showCancelBookingToast(): void
     <div class="flex-grow-1 flex flex-column overflow-hidden">
         <div class="flex justify-content-between mb-1">
             <ContentHeader title="Buchen" />
-            <PrimeButton type="button" text class="align-self-center text-color mr-1" @click="cancelBooking()">Abbrechen</PrimeButton>
+            <PrimeButton v-if="isDataLoaded && (booking.flight?.Status === undefined || booking.flight.Status === FlightStatus.RESERVED)" 
+                type="button" 
+                text 
+                class="align-self-center text-color mr-1" 
+                @click="cancelBooking()">
+                Abbrechen
+            </PrimeButton>
         </div>
-        <MenuStepper ref="stepper" :items="items" :isNextNavEnabled="isNextNavEnabled" class="flex-grow-1" @stepChanged="onBookingUpdate" @confirm="confirmBooking()"/>
+        <MenuStepper v-if="isDataLoaded && (booking.flight?.Status === undefined || booking.flight.Status === FlightStatus.RESERVED)"
+            ref="stepper" 
+            :items="items" 
+            :isNextNavEnabled="isNextNavEnabled" 
+            class="flex-grow-1" 
+            @stepChanged="onBookingUpdate" 
+            @confirm="confirmBooking()"
+        />
+        <BookingResult v-else-if="isDataLoaded && booking.flight!.Status === FlightStatus.BOOKED" :flight="bookedFlight" />
+        <Transition>    
+            <div v-if="!isDataLoaded" class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
+                <PrimeProgressSpinner strokeWidth="4" />
+            </div>
+        </Transition>
     </div>
     <NavigationGuardDialog 
         v-model:isOpen="isNavDialogOpen" 
@@ -147,4 +174,14 @@ function showCancelBookingToast(): void
 </template>
 
 <style scoped lang="scss">
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s ease;
+    transition-delay: 0.3s;
+}
+
+.v-enter-from,
+.v-leave-to {
+    opacity: 0;
+}
 </style>

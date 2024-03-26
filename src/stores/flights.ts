@@ -124,7 +124,7 @@ export const flightsStore = defineStore("flights", () => {
     function getETOWOfVirutalFlight(virtualFlight: Flight): number
     {
         const plane = virtualFlight.Plane!;
-        const passengerWeight = booking.totalWeight;
+        const passengersWeight = booking.totalPassengersWeight;
         let etow = 0;
         let fuel = 0;
 
@@ -136,7 +136,7 @@ export const flightsStore = defineStore("flights", () => {
             fuel = virtualFlight.FuelAtDeparture * plane.FuelConversionFactor!;
         }
 
-        etow = plane.EmptyWeight! + passengerWeight + fuel;
+        etow = plane.EmptyWeight! + passengersWeight + fuel;
 
         return etow;
     }

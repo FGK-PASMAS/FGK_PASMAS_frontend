@@ -16,8 +16,26 @@ export const bookingStore = defineStore("booking", () => {
         return seats.value.filter((passenger) => passenger.Weight);
     });
 
-    const totalWeight = computed(() => {
+    const totalPassengersWeight = computed(() => {
         return passengers.value.reduce((accumulator, passenger) => accumulator + (passenger.Weight ?? 0), 0);
+    });
+
+    // ToDo: This calculation is used in the flight store for virtual flights as well
+    const etow = computed(() => {
+        let etow = 0;
+        let fuel = 0;
+
+        if (!flight.value?.Plane || !flight.value?.FuelAtDeparture) {
+            return etow;
+        }
+
+        if (flight.value.FuelAtDeparture > 0) {
+            fuel = flight.value.FuelAtDeparture * flight.value.Plane.FuelConversionFactor!;
+        }
+
+        etow = flight.value.Plane.EmptyWeight! + totalPassengersWeight.value + fuel;
+
+        return etow;
     });
     
     const isEmpty = computed(() => {
@@ -33,7 +51,7 @@ export const bookingStore = defineStore("booking", () => {
     });
 
     const isPassengerStepOk = computed(() => {
-        return totalWeight.value > 0;
+        return totalPassengersWeight.value > 0;
     });
 
     const isFlightStepOk = computed(() => {
@@ -48,7 +66,7 @@ export const bookingStore = defineStore("booking", () => {
         return passengerCheck && isFlightStepOk;
     });
 
-    async function confirmBooking(toast: ToastServiceMethods): Promise<void>
+    async function confirmBooking(toast: ToastServiceMethods): Promise<Flight | undefined>
     {
         if(!isConfirmationStepOk.value) {
             return;
@@ -60,6 +78,8 @@ export const bookingStore = defineStore("booking", () => {
         flight.value = await useValidateAPIData(updateFlight(flight.value!), toast);
 
         seats.value = flight.value!.Passengers!;
+
+        return flight.value;
     }
 
     async function cancelBooking(toast: ToastServiceMethods): Promise<void>
@@ -80,5 +100,5 @@ export const bookingStore = defineStore("booking", () => {
         flight.value = undefined;
     }
 
-    return { division, flight, seats, passengers, totalWeight, isEmpty, isPassengerStepOk, isFlightStepOk, isConfirmationStepOk, confirmBooking, cancelBooking, resetStore };
+    return { division, flight, seats, passengers, totalPassengersWeight, etow, isEmpty, isPassengerStepOk, isFlightStepOk, isConfirmationStepOk, confirmBooking, cancelBooking, resetStore };
 });
