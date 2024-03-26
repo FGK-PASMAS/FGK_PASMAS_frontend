@@ -210,12 +210,12 @@ function showCancelBookingToast(): void
             @confirm="confirmBooking()"
         />
         <BookingResult v-else-if="isDataLoaded && booking.flight!.Status === FlightStatus.BOOKED" :flight="bookedFlight" />
-        <Transition name="fade">    
-            <div v-if="!isDataLoaded" class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
-                <PrimeProgressSpinner strokeWidth="4" />
-            </div>
-        </Transition>
     </div>
+    <Transition name="fade">    
+        <div v-if="!isDataLoaded" class="absolute top-0 left-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
+            <PrimeProgressSpinner strokeWidth="4" />
+        </div>
+    </Transition>
     <ConfirmDialog
         v-model:isOpen="isConfirmDialogOpen"
         description="Es ist eine Buchung vorhanden. Möchtest du mit dieser fortfahren?"
