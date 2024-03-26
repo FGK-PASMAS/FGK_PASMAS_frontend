@@ -18,6 +18,7 @@ export const flightsStore = defineStore("flights", () => {
     const planes: Ref<Plane[]> = ref([]);
     const existingFlights: Ref<Flight[]> = ref([]);
 
+    // ToDo: Recalculate slots or don't allow to reserve slots in the past
     const flights = computed(() => {
         const flights: Flight[] = [];
 

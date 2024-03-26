@@ -113,6 +113,7 @@ async function onCancelExistingBooking(): Promise<void>
     window.removeEventListener("beforeunload", onBeforeUnload);
 }
 
+// ToDo: If flight is reserved, validate weight again if changed after reservation
 function onBookingUpdate(currentStep?: string): void
 {
     localStorage.setItem("booking", JSON.stringify({
