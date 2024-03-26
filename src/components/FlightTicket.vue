@@ -54,7 +54,7 @@ async function cancelFlight(): Promise<void>
                 <span class="hidden md:block">|</span>
                 <span class="hidden md:block">{{ flight!.ArrivalTime!.diff(flight!.DepartureTime!, "minutes").toFormat("mm") }}min</span>
             </div>
-            <div class="flex gap-2 ml-1">
+            <div class="flex gap-2 ml-3">
                 <i class="bi-airplane-fill" />
                 <span>{{ flight.Plane!.AircraftType }}</span>
                 <span>({{ flight.Plane!.Registration }})</span>

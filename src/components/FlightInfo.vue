@@ -132,7 +132,7 @@ async function cancelFlight(): Promise<void>
                     <i class="bi-ticket-detailed-fill text-xl" />
                     <h3 class="m-0">Flugtyp</h3>
                 </div>
-                <span class="ml-1">{{ division?.Name }}</span>
+                <span class="ml-3">{{ division?.Name }}</span>
             </div>
             <div>
                 <div class="flex flex-wrap align-items-center gap-2 row-gap-1 mb-1">
@@ -141,7 +141,7 @@ async function cancelFlight(): Promise<void>
                     <h3 class="m-0">(Max.: {{ division?.PassengerCapacity }} {{ division?.PassengerCapacity === 1 ? "Passagier" : "Passagiere" }})</h3>
                     <h3 v-if="flight?.Plane?.MaxSeatPayload && flight?.Plane?.MaxSeatPayload > 0" class="m-0">(Max.: {{ flight!.Plane!.MaxSeatPayload }}kg pro Sitz)</h3>
                 </div>
-                <div class="flex flex-column gap-2 ml-1">
+                <div class="flex flex-column gap-2 ml-3">
                     <div class="flex flex-column gap-1">
                         <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :passenger="passenger" :seatNumber="index + 1" :seatPayload="flight?.Plane?.MaxSeatPayload" />
                     </div>
@@ -154,7 +154,7 @@ async function cancelFlight(): Promise<void>
                     <h3 class="m-0">Flug</h3>
                     <h3 v-if="flight?.Plane?.MTOW" class="m-0">(MTOW: {{ flight!.Plane!.MTOW }}kg)</h3>
                 </div>
-                <div v-if="flight" class="flex flex-column gap-2 ml-1">
+                <div v-if="flight" class="flex flex-column gap-2 ml-3">
                     <div class="flex flex-wrap gap-2">
                         <span>{{ flight.DepartureTime!.toFormat("HH:mm") }}</span>
                         <span>-</span>
@@ -180,7 +180,7 @@ async function cancelFlight(): Promise<void>
                     <i class="bi-airplane-fill text-xl" />
                     <h3 class="m-0">Flugzeug</h3>
                 </div>
-                <div v-if="flight" class="flex flex-column gap-1 ml-1">
+                <div v-if="flight" class="flex flex-column gap-1 ml-3">
                     <span><span class="font-bold">Typ:</span> {{ flight.Plane!.AircraftType }}</span>
                     <span><span class="font-bold">Kennzeichen:</span> {{ flight.Plane!.Registration }}</span>
                     <span><span class="font-bold">Leergewicht:</span> {{ flight.Plane!.EmptyWeight }}kg</span>
@@ -193,7 +193,7 @@ async function cancelFlight(): Promise<void>
                     <i class="bi-person-vcard-fill text-xl" />
                     <h3 class="m-0">Pilot</h3>
                 </div>
-                <div v-if="flight" class="flex flex-column gap-1 ml-1">
+                <div v-if="flight" class="flex flex-column gap-1 ml-3">
                     <span>{{ flight!.Pilot!.LastName + ", " + flight!.Pilot!.FirstName + " (" + flight!.Pilot!.Weight + "kg)" }}</span>
                 </div>
                 <span v-else>-</span>

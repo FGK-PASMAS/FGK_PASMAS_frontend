@@ -13,7 +13,7 @@ const booking = bookingStore();
                 <i class="bi-ticket-detailed-fill text-xl" />
                 <h4 class="m-0">Flugtyp</h4>
             </div>
-            <span class="ml-1">{{ booking.division!.Name }}</span>
+            <span class="ml-3">{{ booking.division!.Name }}</span>
         </div>
         <div>
             <div class="flex align-items-center gap-2 mb-3">
@@ -35,7 +35,7 @@ const booking = bookingStore();
                 <i class="bi-clock-fill text-xl" />
                 <h4 class="m-0">Flug</h4>
             </div>
-            <div class="flex flex-column gap-2 ml-1">
+            <div class="flex flex-column gap-2 ml-3">
                 <div class="flex flex-wrap gap-2">
                     <span>{{ booking.flight!.DepartureTime!.toFormat("HH:mm") }}</span>
                     <span>-</span>
@@ -58,7 +58,7 @@ const booking = bookingStore();
                 <i class="bi-airplane-fill text-xl" />
                 <h3 class="m-0">Flugzeug</h3>
             </div>
-            <div class="flex flex-column gap-1 ml-1">
+            <div class="flex flex-column gap-1 ml-3">
                 <span><span class="font-bold">Typ:</span> {{ booking.flight!.Plane!.AircraftType }}</span>
                 <span><span class="font-bold">Kennzeichen:</span> {{ booking.flight!.Plane!.Registration }}</span>
                 <span><span class="font-bold">Leergewicht:</span> {{ booking.flight!.Plane!.EmptyWeight }}kg</span>
@@ -70,7 +70,7 @@ const booking = bookingStore();
                 <i class="bi-person-vcard-fill text-xl" />
                 <h3 class="m-0">Pilot</h3>
             </div>
-            <div class="flex flex-column gap-1 ml-1">
+            <div class="flex flex-column gap-1 ml-3">
                 <span>{{ booking.flight!.Pilot!.LastName + ", " + booking.flight!.Pilot!.FirstName + " (" + booking.flight!.Pilot!.Weight + "kg)" }}</span>
             </div>
         </div>
