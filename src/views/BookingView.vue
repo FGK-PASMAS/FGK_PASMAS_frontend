@@ -3,13 +3,16 @@ import BookingConfirmation from "@/components/BookingConfirmation.vue";
 import BookingFlights from "@/components/BookingFlights.vue";
 import BookingPassengers from "@/components/BookingPassengers.vue";
 import BookingResult from "@/components/BookingResult.vue";
+import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import { bookingStore } from "@/stores/booking";
 import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
+import { parseAPIResponse } from "@/utils/services/fetch.service";
 import { InfoToast } from "@/utils/toasts/info.toast";
+import { DateTime } from "luxon";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, ref, type Ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
@@ -41,14 +44,37 @@ const items: MenuStepperItemInterface[] = [
 
 const isDataLoaded = ref(true);
 const isAllowedToLeave = ref(false);
+const isConfirmDialogOpen = ref(false);
 const isNavDialogOpen = ref(false);
 const isNextNavEnabled = ref(false);
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
     booking.resetStore();
+
+    const existingBooking = localStorage.getItem("booking");
+
+    if (!existingBooking) {
+        return;
+    }
+
+    const existingBookingParsed = parseAPIResponse(JSON.parse(existingBooking));
+
+    booking.division = existingBookingParsed.division;
+    booking.seats = existingBookingParsed.seats ?? [];
+    booking.flight = existingBookingParsed.flight;
+
+    if (booking.flight) {
+        if (DateTime.now() >= booking.flight.DepartureTime!) {
+            await booking.cancelBooking(toast);
+        }
+    }
+
+    if (!booking.isEmpty) {
+        isConfirmDialogOpen.value = true;
+    }
 });
 
-onBeforeRouteLeave(() => {
+onBeforeRouteLeave(async () => {
     if (booking.isEmpty) {
         isAllowedToLeave.value = true;
     } else {
@@ -56,6 +82,9 @@ onBeforeRouteLeave(() => {
     }
 
     if (isAllowedToLeave.value) {
+        await booking.cancelBooking(toast);
+
+        localStorage.removeItem("booking");
         window.removeEventListener("beforeunload", onBeforeUnload);
     }
 });
@@ -69,8 +98,29 @@ function onBeforeUnload(event: BeforeUnloadEvent): void
     event.preventDefault();
 }
 
+function onContinueExistingBooking(): void
+{
+    if (booking.isPassengerStepOk) {
+        isNextNavEnabled.value = true;
+    }
+}
+
+async function onCancelExistingBooking(): Promise<void>
+{
+    await booking.cancelBooking(toast);
+
+    localStorage.removeItem("booking");
+    window.removeEventListener("beforeunload", onBeforeUnload);
+}
+
 function onBookingUpdate(currentStep?: string): void
 {
+    localStorage.setItem("booking", JSON.stringify({
+        "division": booking.division,
+        "seats": booking.seats,
+        "flight": booking.flight
+    }));
+
     if (!booking.isEmpty) {
         window.addEventListener("beforeunload", onBeforeUnload);
     } else {
@@ -112,12 +162,11 @@ function onBookingUpdate(currentStep?: string): void
 async function confirmBooking(): Promise<void>
 {
     isDataLoaded.value = false;
-
     bookedFlight.value = await booking.confirmBooking(toast);
-
     isDataLoaded.value = true;
 
     isAllowedToLeave.value = true;
+    localStorage.removeItem("booking");
     window.removeEventListener("beforeunload", onBeforeUnload);
 }
 
@@ -125,8 +174,10 @@ async function cancelBooking(): Promise<void>
 {
     await booking.cancelBooking(toast);
 
-    stepper.value.resetStepper();
+    localStorage.removeItem("booking");
     window.removeEventListener("beforeunload", onBeforeUnload);
+    stepper.value.resetStepper();
+
     showCancelBookingToast();
 }
 
@@ -158,12 +209,18 @@ function showCancelBookingToast(): void
             @confirm="confirmBooking()"
         />
         <BookingResult v-else-if="isDataLoaded && booking.flight!.Status === FlightStatus.BOOKED" :flight="bookedFlight" />
-        <Transition>    
+        <Transition name="fade">    
             <div v-if="!isDataLoaded" class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
                 <PrimeProgressSpinner strokeWidth="4" />
             </div>
         </Transition>
     </div>
+    <ConfirmDialog
+        v-model:isOpen="isConfirmDialogOpen"
+        description="Es ist eine Buchung vorhanden. Möchtest du mit dieser fortfahren?"
+        @confirm="onContinueExistingBooking()"
+        @cancel="onCancelExistingBooking()"
+    />
     <NavigationGuardDialog 
         v-model:isOpen="isNavDialogOpen" 
         v-model:isAllowedToLeave="isAllowedToLeave" 
@@ -174,14 +231,14 @@ function showCancelBookingToast(): void
 </template>
 
 <style scoped lang="scss">
-.v-enter-active,
-.v-leave-active {
+.fade-enter-active,
+.fade-leave-active {
     transition: opacity 0.5s ease;
     transition-delay: 0.3s;
 }
 
-.v-enter-from,
-.v-leave-to {
+.fade-enter-from,
+.fade-leave-to {
     opacity: 0;
 }
 </style>

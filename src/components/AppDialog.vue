@@ -22,7 +22,7 @@ function closeDialog()
 </script>
 
 <template>
-    <Transition>
+    <Transition name="slide">
         <div v-if="isOpen" class="shade z-4" @click="!isStrictClose && closeDialog()">
             <div class="dialog flex flex-column md:border-round surface-100 p-4 overflow-hidden" @click="$event.stopPropagation()">
                 <div v-if="showCloseButton" class="flex justify-content-end mb-4">
@@ -56,13 +56,13 @@ function closeDialog()
         transform: translateX(-50%);
     }
 
-    .v-enter-active,
-    .v-leave-active {
+    .slide-enter-active,
+    .slide-leave-active {
         transition: opacity 0.3s ease;
     }
 
-    .v-enter-from,
-    .v-leave-to {
+    .slide-enter-from,
+    .slide-leave-to {
         opacity: 0;
     }
 }
@@ -77,13 +77,13 @@ function closeDialog()
         transform: translateX(0);
     }
 
-    .v-enter-active,
-    .v-leave-active {
+    .slide-enter-active,
+    .slide-leave-active {
         transition: transform 0.3s ease;
     }
 
-    .v-enter-from,
-    .v-leave-to {
+    .slide-enter-from,
+    .slide-leave-to {
         transform: translateX(-100%);
     }
 }

@@ -90,7 +90,7 @@ function onFlightCancellation(): void
     <div class="flex flex-column gap-3 overflow-hidden">
         <FlightInfoMinimal />
         <div class="relative w-full h-full overflow-auto">
-            <Transition>
+            <Transition name="fade">
             <div v-if="isDataLoaded">
                 <FlightTicket v-for="(flight, index) in flights.flights" :key="index" :flight="flight" class="mt-1 mb-1" @showInfo="openFlightInfo(index)" />
                 <AppDialog v-model:isOpen="isFlightInfoOpen">
@@ -106,14 +106,14 @@ function onFlightCancellation(): void
 </template>
 
 <style scoped lang="scss">
-.v-enter-active,
-.v-leave-active {
+.fade-enter-active,
+.fade-leave-active {
     transition: opacity 0.5s ease;
     transition-delay: 0.3s;
 }
 
-.v-enter-from,
-.v-leave-to {
+.fade-enter-from,
+.fade-leave-to {
     opacity: 0;
 }
 </style>
