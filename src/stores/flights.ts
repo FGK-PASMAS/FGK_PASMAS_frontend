@@ -129,7 +129,7 @@ export const flightsStore = defineStore("flights", () => {
         let etow = 0;
         let fuel = 0;
 
-        if (!virtualFlight.FuelAtDeparture) {
+        if (virtualFlight.FuelAtDeparture === undefined) {
             return etow;
         }
 

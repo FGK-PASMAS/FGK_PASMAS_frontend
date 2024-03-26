@@ -42,7 +42,7 @@ const etow = computed(() => {
     let etow = 0;
     let fuel = 0;
 
-    if (!props.flight?.Plane || !props.flight?.FuelAtDeparture) {
+    if (!props.flight?.Plane || props.flight?.FuelAtDeparture === undefined) {
         return etow;
     }
 

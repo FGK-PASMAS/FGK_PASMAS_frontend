@@ -25,7 +25,7 @@ export const bookingStore = defineStore("booking", () => {
         let etow = 0;
         let fuel = 0;
 
-        if (!flight.value?.Plane || !flight.value?.FuelAtDeparture) {
+        if (!flight.value?.Plane || flight.value?.FuelAtDeparture === undefined) {
             return etow;
         }
 
