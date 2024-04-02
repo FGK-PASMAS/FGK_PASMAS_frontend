@@ -50,7 +50,7 @@ const etow = computed(() => {
         fuel = props.flight.FuelAtDeparture * props.flight.Plane.FuelConversionFactor!;
     }
 
-    etow = props.flight.Plane.EmptyWeight! + totalPassengerWeight.value + fuel;
+    etow = props.flight.Plane.EmptyWeight! + totalPassengerWeight.value + fuel + props.flight.Pilot!.Weight!;
 
     return etow;
 });

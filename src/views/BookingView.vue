@@ -44,9 +44,14 @@ const items: MenuStepperItemInterface[] = [
 
 const isDataLoaded = ref(true);
 const isAllowedToLeave = ref(false);
-const isConfirmDialogOpen = ref(false);
+const isBookingExistsDialogOpen = ref(false);
+const isBookingValidDialogOpen = ref(false);
 const isNavDialogOpen = ref(false);
 const isNextNavEnabled = ref(false);
+
+const bookingDivisionInvalidMsg = "Durch die Änderung des Flugtypes wird die aktuelle Reservierung storniert. Fortfahren?";
+const bookingWeightInvalidMsg = "Durch die Gewichtsänderung ist die aktuelle Reservierung nicht mehr valide. Soll die Reservierung storniert werden?";
+const bookingInvalidMsg = ref("");
 
 onBeforeMount(async () => {
     booking.resetStore();
@@ -70,7 +75,7 @@ onBeforeMount(async () => {
     }
 
     if (!booking.isEmpty) {
-        isConfirmDialogOpen.value = true;
+        isBookingExistsDialogOpen.value = true;
     }
 });
 
@@ -116,6 +121,16 @@ async function onCancelExistingBooking(): Promise<void>
 // ToDo: If flight is reserved, validate weight again if changed after reservation
 function onBookingUpdate(currentStep?: string): void
 {
+    // ToDo Division Change
+    console.log(booking.division?.Name);
+    console.log(booking.flight);
+
+    if (!booking.isPassengerWeightOk) {
+        bookingInvalidMsg.value = bookingWeightInvalidMsg;
+        isBookingValidDialogOpen.value = true;
+        return;
+    }
+
     localStorage.setItem("booking", JSON.stringify({
         "division": booking.division,
         "seats": booking.seats,
@@ -158,6 +173,29 @@ function onBookingUpdate(currentStep?: string): void
 
             break;
     }
+}
+
+async function confirmFlightCancellation(): Promise<void>
+{
+    const deletedFlight = await booking.cancelFlight(toast);
+    const departure = deletedFlight!.DepartureTime!.toFormat("HH:mm dd.LL.yyyy");
+    
+    toast.add(new InfoToast({ detail: "Reservierung um " + departure + " wurde storniert." }));
+}
+
+function cancelFlightCancellation(): void
+{
+    let existingBooking = localStorage.getItem("booking");
+
+    if (!existingBooking) {
+        return;
+    }
+
+    const existingBookingParsed = parseAPIResponse(JSON.parse(existingBooking));
+    
+    booking.division = existingBookingParsed.division;
+    booking.seats = existingBookingParsed.seats ?? [];
+    booking.flight = existingBookingParsed.flight;
 }
 
 async function confirmBooking(): Promise<void>
@@ -217,10 +255,16 @@ function showCancelBookingToast(): void
         </div>
     </Transition>
     <ConfirmDialog
-        v-model:isOpen="isConfirmDialogOpen"
+        v-model:isOpen="isBookingExistsDialogOpen"
         description="Es ist eine Buchung vorhanden. Möchtest du mit dieser fortfahren?"
         @confirm="onContinueExistingBooking()"
         @cancel="onCancelExistingBooking()"
+    />
+    <ConfirmDialog
+        v-model:isOpen="isBookingValidDialogOpen"
+        :description="bookingInvalidMsg"
+        @confirm="confirmFlightCancellation()"
+        @cancel="cancelFlightCancellation()"
     />
     <NavigationGuardDialog 
         v-model:isOpen="isNavDialogOpen" 

@@ -25,7 +25,7 @@ export const bookingStore = defineStore("booking", () => {
         let etow = 0;
         let fuel = 0;
 
-        if (!flight.value?.Plane || flight.value?.FuelAtDeparture === undefined) {
+        if (!flight.value?.Plane || flight.value?.FuelAtDeparture === undefined || !flight.value.Pilot) {
             return etow;
         }
 
@@ -33,7 +33,7 @@ export const bookingStore = defineStore("booking", () => {
             fuel = flight.value.FuelAtDeparture * flight.value.Plane.FuelConversionFactor!;
         }
 
-        etow = flight.value.Plane.EmptyWeight! + totalPassengersWeight.value + fuel;
+        etow = flight.value.Plane.EmptyWeight! + totalPassengersWeight.value + fuel + flight.value.Pilot.Weight!;
 
         return etow;
     });
@@ -54,6 +54,31 @@ export const bookingStore = defineStore("booking", () => {
         return totalPassengersWeight.value > 0;
     });
 
+    const isPassengerWeightOk = computed(() => {
+        if (!flight.value) {
+            return true;
+        }
+
+        if (etow.value > flight.value.Plane!.MTOW!) {
+            return false;
+        }
+
+        if (!flight.value.Plane?.MaxSeatPayload || flight.value.Plane?.MaxSeatPayload < 0) {
+            return true;
+        }
+
+        let isValid = true;
+
+        passengers.value.every((passenger) => {
+            if (passenger.Weight! > flight.value!.Plane!.MaxSeatPayload!) {
+                isValid = false;
+                return false;
+            }
+        });
+
+        return isValid;
+    });
+
     const isFlightStepOk = computed(() => {
         return flight.value ? true : false;
     });
@@ -65,6 +90,21 @@ export const bookingStore = defineStore("booking", () => {
 
         return passengerCheck && isFlightStepOk;
     });
+
+    // ToDo: Is used in FlightTicket as well
+    async function cancelFlight(toast: ToastServiceMethods): Promise<Flight | undefined>
+    {
+        if (!flight.value) {
+            return;
+        }
+
+        const deletedFlight = flight.value;
+
+        await useValidateAPIData(deleteFlight(flight.value), toast);
+        flight.value = undefined;
+
+        return deletedFlight;
+    }
 
     async function confirmBooking(toast: ToastServiceMethods): Promise<Flight | undefined>
     {
@@ -100,5 +140,5 @@ export const bookingStore = defineStore("booking", () => {
         flight.value = undefined;
     }
 
-    return { division, flight, seats, passengers, totalPassengersWeight, etow, isEmpty, isPassengerStepOk, isFlightStepOk, isConfirmationStepOk, confirmBooking, cancelBooking, resetStore };
+    return { division, flight, seats, passengers, totalPassengersWeight, etow, isEmpty, isPassengerStepOk, isPassengerWeightOk, isFlightStepOk, isConfirmationStepOk, cancelFlight, confirmBooking, cancelBooking, resetStore };
 });
