@@ -69,7 +69,6 @@ export const fetchAPI = async ({ resource, id, method, data, params }: FetchAPIR
     }
 }
 
-// ToDo: Parses strings with pure integers to datetimes as well. See booking process and inputting a number as passenger name.
 export const parseAPIResponse = (data: any): any => {
     if (data === null || data === undefined || typeof data !== "object") {
         return data;
