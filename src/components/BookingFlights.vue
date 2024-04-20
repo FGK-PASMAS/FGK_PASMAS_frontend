@@ -92,9 +92,9 @@ function onFlightCancellation(): void
         <div class="relative w-full h-full overflow-auto">
             <Transition name="fade">
             <div v-if="isDataLoaded">
-                <FlightTicket v-for="(flight, index) in flights.flights" :key="index" :flight="flight" class="mt-1 mb-1" @showInfo="openFlightInfo(index)" />
+                <FlightTicket v-for="(flight, index) in flights.flights" :key="index" v-model:flight="flights.flights[index]" class="mt-1 mb-1" @showInfo="openFlightInfo(index)" />
                 <AppDialog v-model:isOpen="isFlightInfoOpen">
-                    <FlightInfo :division="booking.division" :passengers="booking.passengers" :flight="flights.flights[flightIndex]" @flightReserved="onFlightReservation()" @flightCanceled="onFlightCancellation()" />
+                    <FlightInfo :division="booking.division" :passengers="booking.passengers" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightReservation()" @flightCanceled="onFlightCancellation()" />
                 </AppDialog>
             </div>
             <div v-else class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">

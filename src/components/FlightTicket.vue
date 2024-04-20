@@ -3,6 +3,7 @@ import { useFlightStatusDisplayData, type FlightStatusDisplayData } from '@/comp
 import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { createFlight, deleteFlight } from '@/data/flight/flight.service';
+import { PassengerAction } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
 import { useToast } from 'primevue/usetoast';
 import { computed, type PropType } from 'vue';
@@ -11,15 +12,13 @@ const toast = useToast();
 
 const booking = bookingStore();
 
-const props = defineProps({
-    flight: {
-        type: Object as PropType<Flight>,
-        required: true
-    }
+const flight = defineModel("flight", {
+    type: Object as PropType<Flight>,
+    required: true
 });
 
 const displayedStatus = computed((): FlightStatusDisplayData => {
-    return useFlightStatusDisplayData(props.flight?.Status);
+    return useFlightStatusDisplayData(flight.value?.Status);
 });
 
 defineEmits([
@@ -28,13 +27,21 @@ defineEmits([
 
 async function reserveFlight(): Promise<void>
 {
-    const flight = await useValidateAPIData(createFlight(props.flight), toast);
-    booking.flight = flight;
+    flight.value.Passengers = booking.passengers;
+
+    const reservedFlight = await useValidateAPIData(createFlight(flight.value), toast);
+
+    reservedFlight.Passengers = undefined;
+
+    booking.flight = reservedFlight;
+    booking.passengers.forEach(passenger => {
+        passenger.Action = PassengerAction.UPDATE
+    });
 }
 
 async function cancelFlight(): Promise<void>
 {
-    const response = await useValidateAPIData(deleteFlight(props.flight), toast);
+    const response = await useValidateAPIData(deleteFlight(flight.value), toast);
 
     if (response) {
         booking.flight = undefined;

@@ -3,7 +3,7 @@ import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { Division } from '@/data/division/division.interface';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { createFlight, deleteFlight } from '@/data/flight/flight.service';
-import type { Passenger } from '@/data/passenger/passenger.interface';
+import { PassengerAction, type Passenger } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, type PropType } from 'vue';
@@ -16,15 +16,17 @@ const booking = bookingStore();
 
 const isButtonDisabled = ref(false);
 
+const flight = defineModel("flight", {
+    type: Object as PropType<Flight>,
+    required: true
+});
+
 const props = defineProps({
     division: {
         type: Object as PropType<Division>
     },
     passengers: {
         type: Array as PropType<Passenger[]>
-    },
-    flight: {
-        type: Object as PropType<Flight>
     }
 });
 
@@ -42,25 +44,25 @@ const etow = computed(() => {
     let etow = 0;
     let fuel = 0;
 
-    if (!props.flight?.Plane || props.flight?.FuelAtDeparture === undefined) {
+    if (!flight.value?.Plane || flight.value?.FuelAtDeparture === undefined) {
         return etow;
     }
 
-    if (props.flight.FuelAtDeparture > 0) {
-        fuel = props.flight.FuelAtDeparture * props.flight.Plane.FuelConversionFactor!;
+    if (flight.value.FuelAtDeparture > 0) {
+        fuel = flight.value.FuelAtDeparture * flight.value.Plane.FuelConversionFactor!;
     }
 
-    etow = props.flight.Plane.EmptyWeight! + totalPassengerWeight.value + fuel + props.flight.Pilot!.Weight!;
+    etow = flight.value.Plane.EmptyWeight! + totalPassengerWeight.value + fuel + flight.value.Pilot!.Weight!;
 
     return etow;
 });
 
 const overload = computed(() => {
-    if (!props.flight?.Plane?.MTOW) {
+    if (!flight.value?.Plane?.MTOW) {
         return -1;
     }
 
-    const overload = etow.value - props.flight.Plane.MTOW;
+    const overload = etow.value - flight.value.Plane.MTOW;
 
     if (overload > 0) {
         return overload;
@@ -75,25 +77,33 @@ const emit = defineEmits([
 ]);
 
 const isReserveable = computed(() => {
-    return !booking.flight && props.flight?.Status === FlightStatus.OK;
+    return !booking.flight && flight.value?.Status === FlightStatus.OK;
 });
 
 const isCanceable = computed(() => {
-    return booking.flight?.ID === props.flight?.ID && props.flight?.Status === FlightStatus.RESERVED;
+    return booking.flight?.ID === flight.value?.ID && flight.value?.Status === FlightStatus.RESERVED;
 });
 
 async function reserveFlight(): Promise<void>
 {
-    if (!props.flight) {
+    if (!flight.value) {
         return;
     }
 
     isButtonDisabled.value = true;
 
-    const reservedFlight = await useValidateAPIData(createFlight(props.flight), toast);
+    flight.value.Passengers = booking.passengers;
+
+    const reservedFlight = await useValidateAPIData(createFlight(flight.value), toast);
 
     if (reservedFlight) {
+        reservedFlight.Passengers = undefined;
+
         booking.flight = reservedFlight;
+        booking.passengers.forEach(passenger => {
+            passenger.Action = PassengerAction.UPDATE
+        });
+
         emit("flightReserved", reservedFlight);
     }
 
@@ -102,13 +112,13 @@ async function reserveFlight(): Promise<void>
 
 async function cancelFlight(): Promise<void>
 {
-    if (!props.flight) {
+    if (!flight.value) {
         return;
     }
 
     isButtonDisabled.value = true;
 
-    const response = await useValidateAPIData(deleteFlight(props.flight), toast);
+    const response = await useValidateAPIData(deleteFlight(flight.value), toast);
 
     if (response) {
         booking.flight = undefined;

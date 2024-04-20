@@ -63,7 +63,7 @@ function cancelFlight()
         </div>
     </div>
     <AppDialog v-model:isOpen="isOverviewDialogOpen">
-        <FlightInfo :division="booking.division" :passengers="booking.passengers" :flight="booking.flight" @flightCanceled="cancelFlight()" />
+        <FlightInfo :division="booking.division" :passengers="booking.passengers" v-model:flight="booking.flight" @flightCanceled="cancelFlight()" />
     </AppDialog>
 </div>
 </template>
