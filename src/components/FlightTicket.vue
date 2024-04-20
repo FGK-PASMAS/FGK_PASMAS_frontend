@@ -45,12 +45,13 @@ async function reserveFlight(): Promise<void>
 
     const reservedFlight = await useValidateAPIData(createFlight(flight.value), toast);
 
-    reservedFlight.Passengers = undefined;
-
-    booking.flight = reservedFlight;
+    booking.seats = reservedFlight.Passengers;
     booking.passengers.forEach(passenger => {
         passenger.Action = PassengerAction.UPDATE
     });
+
+    reservedFlight.Passengers = undefined;
+    booking.flight = reservedFlight;
 }
 
 async function cancelFlight(): Promise<void>

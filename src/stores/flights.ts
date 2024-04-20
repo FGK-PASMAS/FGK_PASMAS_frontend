@@ -14,8 +14,7 @@ export const flightsStore = defineStore("flights", () => {
     const eventStartTime: DateTime = config.eventStartTime!;
     const eventEndTime: DateTime = config.eventEndTime!;
 
-    const offsetStartTime: number = 10;
-    const upcomingStartTime: Ref<DateTime> = ref(DateTime.now().plus({ minutes: offsetStartTime }));
+    const upcomingStartTime: Ref<DateTime> = ref(DateTime.now());
 
     const planes: Ref<Plane[]> = ref([]);
     const existingFlights: Ref<Flight[]> = ref([]);
@@ -36,7 +35,7 @@ export const flightsStore = defineStore("flights", () => {
 
                 const arrival = departure.plus({ seconds: duration });
 
-                if (arrival < upcomingStartTime.value) {
+                if (departure < upcomingStartTime.value) {
                     i  = arrival;
 
                     continue;

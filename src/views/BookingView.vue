@@ -7,18 +7,24 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
+import type { Division } from "@/data/division/division.interface";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
+import type { Passenger } from "@/data/passenger/passenger.interface";
 import { bookingStore } from "@/stores/booking";
 import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import { parseAPIResponse } from "@/utils/services/fetch.service";
 import { InfoToast } from "@/utils/toasts/info.toast";
 import { DateTime } from "luxon";
 import { useToast } from "primevue/usetoast";
-import { onBeforeMount, ref, type Ref } from "vue";
+import { onBeforeMount, ref, toRaw, type Ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 const booking = bookingStore();
 const bookedFlight: Ref<Flight | undefined> = ref();
+
+// Remember previous setting to offer the possiblity to revert
+let prevDivision: Division | undefined;
+let prevSeats: Passenger[] | undefined;
 
 const stepper = ref();
 const toast = useToast();
@@ -67,6 +73,9 @@ onBeforeMount(async () => {
     booking.division = existingBookingParsed.division;
     booking.seats = existingBookingParsed.seats ?? [];
     booking.flight = existingBookingParsed.flight;
+
+    prevDivision = existingBookingParsed.division;
+    prevSeats = existingBookingParsed.seats ?? [];
 
     if (booking.flight) {
         if (DateTime.now() >= booking.flight.DepartureTime!) {
@@ -118,12 +127,16 @@ async function onCancelExistingBooking(): Promise<void>
     window.removeEventListener("beforeunload", onBeforeUnload);
 }
 
-// ToDo: If flight is reserved, validate weight again if changed after reservation
+// ToDo: Send Passengers changes to Backend
 function onBookingUpdate(currentStep?: string): void
 {
-    // ToDo Division Change
-    console.log(booking.division?.Name);
-    console.log(booking.flight);
+    if (booking.flight) {
+        if (!booking.division || booking.division.ID != prevDivision!.ID) {
+            bookingInvalidMsg.value = bookingDivisionInvalidMsg;
+            isBookingValidDialogOpen.value = true;
+            return;
+        }
+    }
 
     if (!booking.isPassengerWeightOk) {
         bookingInvalidMsg.value = bookingWeightInvalidMsg;
@@ -175,6 +188,14 @@ function onBookingUpdate(currentStep?: string): void
     }
 }
 
+function onStepChanged(currentStep: string): void
+{
+    prevDivision = structuredClone(toRaw(booking.division));
+    prevSeats = structuredClone(toRaw(booking.seats));
+
+    onBookingUpdate(currentStep);
+}
+
 async function confirmFlightCancellation(): Promise<void>
 {
     const deletedFlight = await booking.cancelFlight(toast);
@@ -185,17 +206,12 @@ async function confirmFlightCancellation(): Promise<void>
 
 function cancelFlightCancellation(): void
 {
-    let existingBooking = localStorage.getItem("booking");
-
-    if (!existingBooking) {
+    if (!prevDivision || !prevSeats) {
         return;
     }
 
-    const existingBookingParsed = parseAPIResponse(JSON.parse(existingBooking));
-    
-    booking.division = existingBookingParsed.division;
-    booking.seats = existingBookingParsed.seats ?? [];
-    booking.flight = existingBookingParsed.flight;
+    booking.division = structuredClone(prevDivision);
+    booking.seats = structuredClone(prevSeats) ?? [];
 }
 
 async function confirmBooking(): Promise<void>
@@ -212,6 +228,9 @@ async function confirmBooking(): Promise<void>
 async function cancelBooking(): Promise<void>
 {
     await booking.cancelBooking(toast);
+
+    prevDivision = undefined;
+    prevSeats = undefined;
 
     localStorage.removeItem("booking");
     window.removeEventListener("beforeunload", onBeforeUnload);
@@ -244,7 +263,7 @@ function showCancelBookingToast(): void
             :items="items" 
             :isNextNavEnabled="isNextNavEnabled" 
             class="flex-grow-1" 
-            @stepChanged="onBookingUpdate" 
+            @stepChanged="onStepChanged" 
             @confirm="confirmBooking()"
         />
         <BookingResult v-else-if="isDataLoaded && booking.flight!.Status === FlightStatus.BOOKED" :flight="bookedFlight" />
