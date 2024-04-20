@@ -13,12 +13,13 @@ export const flightsStore = defineStore("flights", () => {
 
     const eventStartTime: DateTime = config.eventStartTime!;
     const eventEndTime: DateTime = config.eventEndTime!;
-    const upcomingStartTime: DateTime = DateTime.now();
+
+    const offsetStartTime: number = 10;
+    const upcomingStartTime: Ref<DateTime> = ref(DateTime.now().plus({ minutes: offsetStartTime }));
 
     const planes: Ref<Plane[]> = ref([]);
     const existingFlights: Ref<Flight[]> = ref([]);
 
-    // ToDo: Recalculate slots or don't allow to reserve slots in the past
     const flights = computed(() => {
         const flights: Flight[] = [];
 
@@ -35,7 +36,7 @@ export const flightsStore = defineStore("flights", () => {
 
                 const arrival = departure.plus({ seconds: duration });
 
-                if (arrival < upcomingStartTime) {
+                if (arrival < upcomingStartTime.value) {
                     i  = arrival;
 
                     continue;
@@ -46,7 +47,7 @@ export const flightsStore = defineStore("flights", () => {
                 if (existingFlight) {
                     i = existingFlight.ArrivalTime!;
 
-                    if (i > upcomingStartTime) {
+                    if (i > upcomingStartTime.value) {
                         flights.push(existingFlight);
                     }
                 
@@ -255,5 +256,5 @@ export const flightsStore = defineStore("flights", () => {
         existingFlights.value = [];
     }
 
-    return { planes, existingFlights, flights, resetStore };
+    return { upcomingStartTime, planes, existingFlights, flights, resetStore };
 });
