@@ -78,16 +78,17 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <main>
+    <main class="flex flex-column overflow-hidden">
         <ContentHeader title="Passagiere" />
-        <div>
+        <div class="flex-grow-1 overflow-auto">
             <PrimeDataTable 
                 v-model:filters="filters" 
                 :value="passengers"
-                filterDisplay="row"
                 sortMode="multiple"
                 removableSort
                 stripedRows
+                scrollable
+                scrollHeight="flex"
             >
                 <template #header>
                     <div class="flex justify-content-end">
@@ -98,18 +99,13 @@ onUnmounted(() => {
                     </div>
                 </template>
                 <template #empty> Keine Passagiere gefunden. </template>
-                <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText class="filter-input p-column-filter" v-model="filterModel.value" type="text" @input="filterCallback()" />
-                    </template>
-                </PrimeColumn>
+                <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable />
             </PrimeDataTable>
         </div>
     </main>
 </template>
 
 <style scoped lang="scss">
-// ToDo: Fixed table headers / Show table headers when scrolling up
 .filter-input {
     min-width: 75px;
 }
