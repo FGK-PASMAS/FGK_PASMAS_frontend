@@ -7,6 +7,14 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "target": "ESNext",
+    "module": "ESNext",
+    "noImplicitAny": true,
+    "strict": true,
+    "lib": [
+        "DOM",
+        "ESNext"
+    ]
   }
 }

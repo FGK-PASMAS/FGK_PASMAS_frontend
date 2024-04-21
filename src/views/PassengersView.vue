@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import ContentHeader from "@/components/ContentHeader.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
+import { PassengerEventHandler } from "@/data/passenger/passenger.eventHandler";
 import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getPassengers, getPassengersStream } from "@/data/passenger/passenger.service";
-import { ErrorToast } from "@/utils/toasts/error.toast";
-import { InfoToast } from "@/utils/toasts/info.toast";
 import { FilterMatchMode } from "primevue/api";
 import { useToast } from "primevue/usetoast";
-import { onBeforeMount, onUnmounted, ref } from "vue";
+import { onBeforeMount, onUnmounted, ref, type Ref } from "vue";
 
 const toast = useToast();
 
-const passengers = ref<Passenger[]>([]);
+const passengers: Ref<Passenger[]> = ref([]);
 
+const eventHandler = new PassengerEventHandler();
 let eventSource: EventSource;
 
 const columns = [
@@ -62,15 +62,11 @@ onBeforeMount(async () => {
     }
 
     eventSource.onmessage = (event) => {
-        handleOnMessageEvent(event);
+        eventHandler.onEntityEvent(event, passengers.value, toast);
     }
 
     eventSource.onerror = () => {
-        toast.add(new ErrorToast({ 
-            summary: "Verbindung zum Server verloren", 
-            detail: "Es wird versucht eine Verbindung herzustellen...",
-            life: 5000
-        }));
+        eventHandler.onErrorEvent(toast);
     }
 });
 
@@ -79,30 +75,6 @@ onUnmounted(() => {
         eventSource.close();
     }
 });
-
-function handleOnMessageEvent(event: MessageEvent): void
-{
-    const json = JSON.parse(event.data);
-    const action: string = json.action;
-    const passengerData: Passenger = json.data;
-    
-    switch(action) {
-        case "CREATED":
-            passengers.value.push(passengerData);
-            
-            toast.add(new InfoToast({ detail: "Passagier " + passengerData.LastName + ", " + passengerData.FirstName + " wurde angelegt." }));
-
-            break;
-        case "DELETED":
-            passengers.value = passengers.value.filter((passenger) => {
-                return passenger.ID !== passengerData.ID;
-            });
-
-            toast.add(new InfoToast({ detail: "Passagier " + passengerData.LastName + ", " + passengerData.FirstName + " wurde gelöscht." }));
-
-            break;
-    }
-}
 </script>
 
 <template>
@@ -137,7 +109,7 @@ function handleOnMessageEvent(event: MessageEvent): void
 </template>
 
 <style scoped lang="scss">
-// ToDo Fixed table headers / Show table headers when scrolling up
+// ToDo: Fixed table headers / Show table headers when scrolling up
 .filter-input {
     min-width: 75px;
 }

@@ -4,8 +4,11 @@ import Toast from "primevue/toast";
 import { onBeforeMount, ref } from "vue";
 import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
-import MenuItem from "./components/MenuItem.vue";
+import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
+import { configStore } from "./stores/config";
+
+const config = configStore();
 
 const router = useRouter();
 
@@ -26,6 +29,8 @@ const isClosed = ref(false);
 const isNotFound = ref(false);
 
 onBeforeMount(() => {
+    config.init();
+
     localTheme = localStorage.getItem("theme");
 
     if (localTheme) {
@@ -90,20 +95,21 @@ function openDrawer(): void
     <div class="h-full flex">
         <Toast />
         <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
-            <MenuItem icon="bi-book" item="Buchen" to="/" />
-            <MenuItem icon="bi-airplane" item="Flüge" to="/flights" />
-            <MenuItem icon="bi-people" item="Passagiere" to="/passengers" />
-            <MenuItem icon="bi-gear" item="Einstellungen" to="/settings" />
+            <MenuDrawerItem icon="bi-house-door" item="Home" :to="{ name: 'home' }" />
+            <MenuDrawerItem icon="bi-book" item="Buchen" :to="{ name: 'booking' }" />
+            <MenuDrawerItem icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
+            <MenuDrawerItem icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
+            <MenuDrawerItem icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
-            <MenuTopbar v-if="!isNotFound" :is-menu-visible="isClosed" v-model="isDarkMode" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
+            <MenuTopbar v-if="!isNotFound" v-model:isDarkMode="isDarkMode" :isMenuVisible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <div class="flex-grow-1 flex flex-column overflow-auto">
-                <RouterView class="flex-grow-1 ml-2 md:ml-8 mr-2 md:mr-8 mb-4" />
+                <RouterView class="flex-grow-1 ml-2 md:ml-8 mr-2 md:mr-8 mb-2" />
             </div>
         </div>
     </div>
 </template>
 
 <style lang="scss">
-// ToDo Fix layout in mobile landscape - MenuDrawer doesnt overlay correctly on certain devices
+// ToDo: Fix layout in mobile landscape - MenuDrawer doesnt overlay correctly on certain devices
 </style>

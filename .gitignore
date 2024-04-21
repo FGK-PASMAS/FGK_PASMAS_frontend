@@ -32,3 +32,4 @@ coverage
 
 # Mockups (Krita)
 docs/mockups/*kra-autosave*
+docs/mockups/*.kra~

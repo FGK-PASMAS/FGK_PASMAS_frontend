@@ -13,7 +13,7 @@ defineProps({
     },
 
     to: {
-        type: String,
+        type: Object,
         required: true
     }
 });

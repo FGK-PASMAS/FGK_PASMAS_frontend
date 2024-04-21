@@ -2,7 +2,7 @@
 import InputSwitch from "primevue/inputswitch";
 import MenuLogo from "./MenuLogo.vue";
 
-const isDarkMode = defineModel({ 
+const isDarkMode = defineModel("isDarkMode", { 
     type: Boolean, 
     default: false 
 });
@@ -21,9 +21,9 @@ defineEmits([
 </script>
 
 <template>
-    <header class="topbar flex justify-content-between align-items-center p-2 z-2">
-        <div class="topbar-menu flex align-items-center" :class="{ 'topbar-menu-visible': isMenuVisible }">
-            <PrimeButton class="btn-no-shadow text-6xl" icon="bi-filter-left" text rounded @click="$emit('openDrawer')" />
+    <header class="topbar flex justify-content-between align-items-center pl-2 pr-2 z-2">
+        <div class="topbar-logo flex align-items-center" :class="{ 'visible': isMenuVisible }">
+            <PrimeButton type="Button" class="btn-no-shadow text-6xl" icon="bi-filter-left" text rounded @click="$emit('openDrawer')" />
             <MenuLogo />
         </div>
         <div class="flex align-items-center gap-2">
@@ -43,12 +43,8 @@ defineEmits([
 }
 
 @media screen and (min-width: $md) {
-    .topbar-menu {
+    .topbar-logo {
         visibility: hidden;
     }
-}
-
-.topbar-menu-visible {
-    visibility: visible;
 }
 </style>
