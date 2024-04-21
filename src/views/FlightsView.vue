@@ -120,12 +120,27 @@ async function changeTab(event: TabMenuChangeEvent) {
         includePilot: true,
         includePassengers: true,
     }), toast);
+
+    eventSource.close();
+
+    eventSource = getFlightsByDivisionStream(divisions.value[tabIndex.value]!.ID!);
+
+    eventSource.onmessage = async (event) => {
+        console.log(JSON.parse(event.data));
+
+        eventHandler.onEntityEvent(event, flights.value, toast);
+    }
+
+    eventSource.onerror = () => {
+        eventHandler.onErrorEvent(toast);
+    }
 }
 </script>
 
 <template>
     <main class="flex flex-column overflow-hidden">
         <ContentHeader title="Flüge" />
+        <!--BUG Display Tab Menu isn't full height all the time-->
         <TabMenu :model="divisions" @tab-change="changeTab($event)" class="h-10rem">
             <template #item="{ item, props }">
                 <a v-bind="props.action" class="flex align-items-center gap-2">
