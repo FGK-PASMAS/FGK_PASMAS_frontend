@@ -2,7 +2,7 @@ import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import type { Division } from "@/data/division/division.interface";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import { deleteFlight, updateFlight } from "@/data/flight/flight.service";
-import type { Passenger } from "@/data/passenger/passenger.interface";
+import { PassengerAction, type Passenger } from "@/data/passenger/passenger.interface";
 import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { computed, ref, type Ref } from "vue";
@@ -91,6 +91,32 @@ export const bookingStore = defineStore("booking", () => {
         return passengerCheck && isFlightStepOk;
     });
 
+    async function updateFlightData(toast: ToastServiceMethods): Promise<void>
+    {
+        if (!isFlightStepOk.value || !isPassengerStepOk.value || !isPassengerWeightOk.value) {
+            return;
+        }
+
+        // Hack due to non standardized API resources
+        // ToDo: Remove on API fix
+        const pilot = flight.value!.Pilot;
+
+        flight.value!.Passengers = passengers.value;
+
+        flight.value = await useValidateAPIData(updateFlight(flight.value!), toast);
+
+        // Hack due to non standardized API resources
+        // ToDo: Remove on API fix
+        flight.value!.Pilot = pilot;
+
+        seats.value = flight.value!.Passengers!;
+        seats.value.forEach(seat => {
+            seat.Action = PassengerAction.UPDATE;
+        });
+
+        flight.value!.Passengers = undefined;
+    }
+
     // ToDo: Is used in FlightTicket as well
     async function cancelFlight(toast: ToastServiceMethods): Promise<Flight | undefined>
     {
@@ -140,5 +166,22 @@ export const bookingStore = defineStore("booking", () => {
         flight.value = undefined;
     }
 
-    return { division, flight, seats, passengers, totalPassengersWeight, etow, isEmpty, isPassengerStepOk, isPassengerWeightOk, isFlightStepOk, isConfirmationStepOk, cancelFlight, confirmBooking, cancelBooking, resetStore };
+    return { 
+        division, 
+        flight, 
+        seats, 
+        passengers, 
+        totalPassengersWeight, 
+        etow, 
+        isEmpty, 
+        isPassengerStepOk, 
+        isPassengerWeightOk, 
+        isFlightStepOk, 
+        isConfirmationStepOk,
+        updateFlightData, 
+        cancelFlight, 
+        confirmBooking, 
+        cancelBooking, 
+        resetStore 
+    };
 });

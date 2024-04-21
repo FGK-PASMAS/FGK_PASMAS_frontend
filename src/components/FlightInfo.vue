@@ -113,8 +113,8 @@ async function reserveFlight(): Promise<void>
 
     if (reservedFlight) {
         booking.seats = reservedFlight.Passengers;
-        booking.passengers.forEach(passenger => {
-            passenger.Action = PassengerAction.UPDATE
+        booking.seats.forEach(seat => {
+            seat.Action = PassengerAction.UPDATE;
         });
 
         reservedFlight.Passengers = undefined;
@@ -138,6 +138,11 @@ async function cancelFlight(): Promise<void>
 
     if (response) {
         booking.flight = undefined;
+
+        booking.seats.forEach(seat => {
+            seat.Action = PassengerAction.CREATE;
+        });
+
         emit("flightCanceled");
     }
 

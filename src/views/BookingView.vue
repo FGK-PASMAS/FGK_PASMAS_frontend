@@ -9,7 +9,7 @@ import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import type { Division } from "@/data/division/division.interface";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
-import type { Passenger } from "@/data/passenger/passenger.interface";
+import { PassengerAction, type Passenger } from "@/data/passenger/passenger.interface";
 import { bookingStore } from "@/stores/booking";
 import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import { parseAPIResponse } from "@/utils/services/fetch.service";
@@ -77,6 +77,18 @@ onBeforeMount(async () => {
     prevDivision = existingBookingParsed.division;
     prevSeats = existingBookingParsed.seats ?? [];
 
+    if (!booking.flight) {
+        if (booking.seats) {
+            booking.seats.forEach(seat => {
+                seat.Action = PassengerAction.CREATE;
+            });
+
+            prevSeats!.forEach(seat => {
+                seat.Action = PassengerAction.CREATE;
+            });
+        }
+    }
+
     if (booking.flight) {
         if (DateTime.now() >= booking.flight.DepartureTime!) {
             await booking.cancelBooking(toast);
@@ -127,7 +139,6 @@ async function onCancelExistingBooking(): Promise<void>
     window.removeEventListener("beforeunload", onBeforeUnload);
 }
 
-// ToDo: Send Passengers changes to Backend
 function onBookingUpdate(currentStep?: string): void
 {
     if (booking.flight) {
@@ -190,8 +201,11 @@ function onBookingUpdate(currentStep?: string): void
 
 function onStepChanged(currentStep: string): void
 {
-    prevDivision = structuredClone(toRaw(booking.division));
-    prevSeats = structuredClone(toRaw(booking.seats));
+    booking.updateFlightData(toast);
+
+    // Clone object - structuredClone doesn't work on Luxon objects currently
+    prevDivision = parseAPIResponse(JSON.parse(JSON.stringify((toRaw(booking.division)))));
+    prevSeats = parseAPIResponse(JSON.parse(JSON.stringify((toRaw(booking.seats)))));
 
     onBookingUpdate(currentStep);
 }
@@ -210,8 +224,8 @@ function cancelFlightCancellation(): void
         return;
     }
 
-    booking.division = structuredClone(prevDivision);
-    booking.seats = structuredClone(prevSeats) ?? [];
+    booking.division = parseAPIResponse(JSON.parse(JSON.stringify(prevDivision)));
+    booking.seats = parseAPIResponse(JSON.parse(JSON.stringify(prevSeats)));
 }
 
 async function confirmBooking(): Promise<void>
