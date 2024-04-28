@@ -155,7 +155,10 @@ export const bookingStore = defineStore("booking", () => {
             return;
         }
 
-        await useValidateAPIData(deleteFlight(flight.value), toast);
+        if (flight.value.Status === FlightStatus.RESERVED) {
+            await useValidateAPIData(deleteFlight(flight.value), toast);
+        }
+
         resetStore();
     }
 

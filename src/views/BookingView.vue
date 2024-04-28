@@ -264,7 +264,7 @@ function showCancelBookingToast(): void
     <div class="flex-grow-1 flex flex-column overflow-hidden">
         <div class="flex justify-content-between mb-1">
             <ContentHeader title="Buchen" />
-            <PrimeButton v-if="isDataLoaded && (booking.flight?.Status === undefined || booking.flight.Status === FlightStatus.RESERVED)" 
+            <PrimeButton v-if="isDataLoaded && (booking.flight?.Status === undefined || booking.flight?.Status === FlightStatus.RESERVED)" 
                 type="button" 
                 text 
                 class="align-self-center text-color mr-1" 
@@ -272,7 +272,7 @@ function showCancelBookingToast(): void
                 Abbrechen
             </PrimeButton>
         </div>
-        <MenuStepper v-if="isDataLoaded && (booking.flight?.Status === undefined || booking.flight.Status === FlightStatus.RESERVED)"
+        <MenuStepper v-if="isDataLoaded && (booking.flight?.Status === undefined || booking.flight?.Status === FlightStatus.RESERVED)"
             ref="stepper" 
             :items="items" 
             :isNextNavEnabled="isNextNavEnabled" 
@@ -280,7 +280,7 @@ function showCancelBookingToast(): void
             @stepChanged="onStepChanged" 
             @confirm="confirmBooking()"
         />
-        <BookingResult v-else-if="isDataLoaded && booking.flight!.Status === FlightStatus.BOOKED" :flight="bookedFlight" />
+        <BookingResult v-else-if="isDataLoaded && booking.flight?.Status === FlightStatus.BOOKED" :flight="bookedFlight" />
     </div>
     <Transition name="fade">    
         <div v-if="!isDataLoaded" class="absolute top-0 left-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
