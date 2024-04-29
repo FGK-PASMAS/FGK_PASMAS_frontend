@@ -63,7 +63,7 @@ const auth = authStore();
                     </template>
                     <RouterLink :to="{ name: 'passengers' }" class="text-color no-underline">
                         <i class="bi-arrow-right text-primary mr-2" />
-                        <span>Hier findest du alle Passagier zu deinen Flüge!</span>
+                        <span>Hier findest du alle Passagiere zu deinen Flüge!</span>
                     </RouterLink>
                 </PrimePanel>
                 <PrimePanel v-if="auth.isAdmin">
