@@ -1,20 +1,41 @@
 import type { APIError } from "@/utils/errors/api.error";
-import { fetchDELETE, fetchGET, fetchPOST } from "@/utils/services/fetch.service";
+import { fetchAPI } from "@/utils/services/fetch.service";
 import { getStream } from "@/utils/services/stream.service";
 import type { Passenger } from "./passenger.interface";
 
-export const getPassengers = async (): Promise<Passenger[] | APIError> => {
-    return await fetchGET("/passengers");
+export const getPassengers = async (params?: Record<string, string | number | boolean>): Promise<Passenger[] | APIError> => {
+    return await fetchAPI({ 
+        resource: "passengers", 
+        method: "GET", 
+        params: params 
+    });
 }
 
 export const createPassenger = async (passenger: Passenger): Promise<Passenger | APIError> => {
-    return await fetchPOST("/passengers", JSON.stringify(passenger));
+    return await fetchAPI({ 
+        resource: "passengers", 
+        method: "POST", 
+        data: passenger 
+    });
 }
 
-export const deletePassenger = async (id: number): Promise<boolean | APIError> => {
-    return await fetchDELETE("/passengers/" + id);
+export const updatePassenger = async (passenger: Passenger): Promise<Passenger | APIError> => {
+    return await fetchAPI({ 
+        resource: "passengers", 
+        method: "PUT",
+        id: passenger.ID,
+        data: passenger
+     });
+}
+
+export const deletePassenger = async (passenger: Passenger): Promise<boolean | APIError> => {
+    return await fetchAPI({
+        resource: "passengers",
+        method: "DELETE",
+        id: passenger.ID
+    });
 }
 
 export const getPassengersStream = (): EventSource => {
-    return getStream("/passengers");
+    return getStream("passengers");
 }

@@ -15,8 +15,7 @@ export async function useValidateAPIData(
     promise: Promise<any> | Promise<any>[] | APIError,
     toast: ToastServiceMethods,
     errorMessage?: string | undefined
-): Promise<any>
-{
+): Promise<any> {
     const data = await promise;
 
     if (data instanceof APIError) {

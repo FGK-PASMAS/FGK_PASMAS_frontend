@@ -14,6 +14,14 @@ defineProps({
             FirstName: false,
             Weight: false
         }
+    },
+
+    disabled: {
+        default: {
+            LastName: false,
+            FirstName: false,
+            Weight: false
+        }
     }
 });
 
@@ -52,9 +60,9 @@ function setWeight(weight: number) {
 <div class="flex flex-column md:flex-row md:align-items-center gap-2">
     <span class="flex-shrink-0 w-full md:w-4rem">Sitz {{ seatNumber }}</span>
     <div class="flex flex-wrap gap-2">
-        <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.LastName" type="text" :placeholder="required.LastName ? 'Nachname*' : 'Nachname'" @input="$emit('passengerChanged')" />
-        <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.FirstName" type="text" :placeholder="required.FirstName ? 'Vorname*' : 'Vorname'" @input="$emit('passengerChanged')" />
-        <PrimeInputNumber class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.Weight" locale="de-DE" :min="0" :maxFractionDigits="2" suffix="kg" :placeholder="required.Weight ? 'Gewicht*' : 'Gewicht'" @input="setWeight($event.value)" />
+        <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.LastName" type="text" :placeholder="required.LastName ? 'Nachname*' : 'Nachname'" @input="$emit('passengerChanged')" :disabled="disabled.LastName" />
+        <PrimeInputText class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.FirstName" type="text" :placeholder="required.FirstName ? 'Vorname*' : 'Vorname'" @input="$emit('passengerChanged')" :disabled="disabled.FirstName" />
+        <PrimeInputNumber class="flex-shrink-0 w-full md:w-20rem" v-model="passenger.Weight" locale="de-DE" :min="0" :maxFractionDigits="2" suffix="kg" :placeholder="required.Weight ? 'Gewicht in kg*' : 'Gewicht in kg'" @input="setWeight($event.value)" :disabled="disabled.Weight" />
     </div>
 </div>
 </template>

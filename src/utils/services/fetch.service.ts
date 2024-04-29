@@ -1,81 +1,102 @@
+import { DateTime } from "luxon";
 import { APIError } from "../errors/api.error";
 import { FetchError } from "../errors/fetch.error";
 import { HTTPError } from "../errors/http.error";
 import { SyntaxError } from "../errors/syntax.error";
 
-const api = import.meta.env.VITE_API_URL;
+interface FetchAPIRequest {
+    resource: string,
+    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE",
+    id?: number | string,
+    data?: any,
+    params?: Record<string, string | number | boolean>
+}
 
-export const fetchGET = async (resourceURL: string): Promise<any> => {
-    try {
-        const response = await fetch(api + resourceURL, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json"
-            }
+export const fetchAPI = async ({ resource, id, method, data, params }: FetchAPIRequest): Promise<any> => {
+    const api = import.meta.env.VITE_API_URL;
+
+    let url = api + "/" + resource;
+
+    if (id) {
+        url += "/" + id;
+    }
+
+    if (params) {
+        const queryParams: Record<string, string> = {};
+
+        Object.entries(params).forEach(([key, value]) => {
+            queryParams[key] = value.toString();
         });
 
+        url += "?" + new URLSearchParams(queryParams);
+    }
+
+    const requestOptions = {
+        method: method,
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: data ? JSON.stringify(data) : undefined
+    };
+    
+    try {
+        const response = await fetch(url, requestOptions);
+        let apiResponse: any | undefined;
+
         if (!response.ok) {
-            throw new HTTPError(response.status);
+            apiResponse = await response.json()
+            
+            if (apiResponse.Success !== false) {
+                throw new HTTPError(response.status);
+            }
+
+            throw new HTTPError(response.status, apiResponse.Type, apiResponse.Message);
         }
 
-        const apiResponse = await response.json();
+        if (method === "DELETE") {
+            return true;
+        }
+
+        apiResponse = await response.json();
 
         if (apiResponse.Success !== true) {
             throw apiResponse as APIError;
         }
 
-        return apiResponse.Response;
+        return parseAPIResponse(apiResponse.Response);
     } catch (error) {
         return getAPIError(error);
     }
 }
 
-export const fetchPOST = async (resourceURL: string, body: any): Promise<any> => {
-    try {
-        const response = await fetch(api + resourceURL, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: body
-        });
-
-        if (!response.ok) {
-            throw new HTTPError(response.status);
-        }
-
-        const apiResponse = await response.json();
-
-        if (apiResponse.Success !== true) {
-            throw apiResponse as APIError;
-        }
-
-        return apiResponse.Response;
-    } catch (error) {
-        return getAPIError(error);
+export const parseAPIResponse = (data: any): any => {
+    if (data === null || data === undefined || typeof data !== "object") {
+        return data;
     }
+
+    if(DateTime.fromISO(data).isValid) {
+        return DateTime.fromISO(data);
+    }
+
+    Object.entries(data).forEach((entry) => {
+        const [key, value]: [any, any] = entry;
+        const date = DateTime.fromISO(value);
+
+        if (typeof value !== "object" && typeof value !== "string") {
+            return;
+        }
+
+        if (date.isValid) {
+            data[key] = date;
+        } else if (typeof value === "object") {
+            parseAPIResponse(value);
+        }
+    });
+
+    return data;
 }
 
-export const fetchDELETE = async (resourceURL: string): Promise<any> => {
-    try {
-        const response = await fetch(api + resourceURL, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-
-        if (!response.ok) {
-            throw new HTTPError(response.status);
-        }
-
-        return true;
-    } catch (error) {
-        return getAPIError(error);
-    }
-}
-
-// ToDo Fitting end user error messages
+// ToDo: Fitting end user error messages
 const getAPIError = (error: any): APIError => {
     if (error instanceof SyntaxError) {
         error = new SyntaxError();

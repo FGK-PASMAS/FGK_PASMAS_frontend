@@ -6,7 +6,7 @@ const appName = import.meta.env.VITE_APP_NAME;
 </script>
 
 <template>
-    <RouterLink class="menu-logo" to="/">
+    <RouterLink class="menu-logo" :to="{ name: 'home' }">
         <div class="flex align-items-center gap-2">
             <i :class="appIcon" />
             <span class="font-bold text-2xl">{{ appName }}</span>

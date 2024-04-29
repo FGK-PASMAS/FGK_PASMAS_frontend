@@ -1,83 +1,100 @@
 <script setup lang="ts">
-import type { PrimeMenuItem } from "@/utils/interfaces/menuItem.interface";
+import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import Steps from "primevue/steps";
-import { onBeforeMount, onBeforeUpdate, ref } from "vue";
-import { RouterView, useRouter } from "vue-router";
-
-const router = useRouter();
-const currentRoute = ref(router.currentRoute.value.name);
-const prevRoute = ref(router.currentRoute.value.meta.prev);
-const nextRoute = ref(router.currentRoute.value.meta.next);
+import { computed, onBeforeMount, onBeforeUpdate, ref } from "vue";
 
 const activeStep = ref(0);
 
 const props = defineProps({
     items: {
-        type: Array<PrimeMenuItem>,
+        type: Array<MenuStepperItemInterface>,
         required: true
     },
 
-    isNextDisabled: {
+    isNextNavEnabled: {
         type: Boolean,
         default: true
     }
 });
 
+const nextNavLabel = computed(() => {
+    if (activeStep.value === (props.items.length - 1)) {
+        return "Bestätigen";
+    }
+
+    return "Weiter";
+});
+
+const emit = defineEmits([
+    "confirm",
+    "stepChanged"
+]);
+
+defineExpose({
+    getCurrentStepKey,
+    resetStepper
+});
+
 onBeforeMount(() => {
     props.items.forEach((item) => {
-        item.command = (event) => { jumpToStep(event.item) };
+        item.command = () => { 
+            emit("stepChanged", item.key);
+        };
     });
 
-    setStepStates();
+    updateStepperState();
 });
 
 onBeforeUpdate(() => {
-    setStepStates();
+    updateStepperState();
 });
 
-router.afterEach(() => {
-    currentRoute.value = router.currentRoute.value.name;
-    prevRoute.value = router.currentRoute.value.meta.prev;
-    nextRoute.value = router.currentRoute.value.meta.next;
-});
-
-function setStepStates(): void
+function updateStepperState(): void
 {
-    let isCurrentRouteFound = false;
-
     props.items.forEach((item, index) => {
-        if (!isCurrentRouteFound) {
+        if (index <= activeStep.value) {
             item.disabled = false;
         } else {
             item.disabled = true;
         }
-
-        if (item.route === currentRoute.value) {
-            isCurrentRouteFound = true;
-            activeStep.value = index;
-        }
     });
 }
 
-function previousStep(): void 
+function previousStep(): void
 {
-    router.push({ name: prevRoute.value });
+    if (activeStep.value === 0) {
+        return;
+    }
+
+    activeStep.value--;
+    emit("stepChanged", props.items[activeStep.value].key);
 }
 
 function nextStep(): void
 {
-    router.push({ name: nextRoute.value });
+    if (activeStep.value === (props.items.length - 1)) {
+        emit("confirm");
+        return;
+    }
+
+    activeStep.value++;
+    emit("stepChanged", props.items[activeStep.value].key);
 }
 
-function jumpToStep(item: PrimeMenuItem): void
+function getCurrentStepKey(): string | undefined
 {
-    router.push({ name: item.route });
+    return props.items[activeStep.value].key;
+}
+
+function resetStepper(): void
+{
+    activeStep.value = 0;
 }
 </script>
 
 <template>
-    <div class="flex flex-column md:gap-4 overflow-hidden">
-        <Steps v-model:activeStep="activeStep" :model="props.items" :readonly="false">
+    <div class="flex flex-column overflow-hidden">
+        <Steps v-model:activeStep="activeStep" :model="props.items" :readonly="false" class="md:mb-4">
             <template #item="{ item, label, active }">
                 <div class="flex flex-column align-items-center gap-2">
                     <span class="mb-4 md:mb-0" :class="['inline-flex align-items-center justify-content-center align-items-center border-circle border-primary border-1 h-3rem w-3rem cursor-pointer z-1', { 'bg-primary': active, 'text-color': active , 'surface-50': !active, 'text-primary': !active }]">
@@ -87,19 +104,20 @@ function jumpToStep(item: PrimeMenuItem): void
                 </div>
             </template>
         </Steps>
-        <RouterView class="flex-grow-1 overflow-auto" />
+        <component :is="items[activeStep].component" class="flex-grow-1 overflow-auto" />
         <div class="flex flex-column">
             <PrimeDivider />
             <div class="flex justify-content-between">
-                <PrimeButton class="text-color" :class="{ 'not-visible': !prevRoute }" @click="previousStep()">Zurück</PrimeButton>
-                <PrimeButton class="text-color" :class="{ 'not-visible': !nextRoute }" @click="nextStep()" :disabled="isNextDisabled">Weiter</PrimeButton>
+                <!-- Custom icon button due to lag between visibility transistion when using PrimeVue icon property -->                
+                <PrimeButton type="button" text class="text-color mb-1 ml-1" :class="{ 'not-visible': activeStep === 0 }" @click="previousStep()">
+                    <i class="bi-arrow-left" />
+                    <span class="ml-2">Zurück</span>
+                </PrimeButton>
+                <PrimeButton type="button" class="text-color mb-1 mr-1" @click="nextStep()" :disabled="!isNextNavEnabled">{{ nextNavLabel }}</PrimeButton>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped lang="scss">
-.not-visible {
-    visibility: hidden;
-}
 </style>
