@@ -43,15 +43,6 @@ onMounted(async () => {
 
     eventSource = getFlightsByDivisionStream(booking.division!.ID!);
 
-    eventSource.onopen = async () => {
-            flights.existingFlights = await useValidateAPIData(getFlights({
-            byDivisionId: booking.division!.ID!,
-            includePlane: true,
-            includePilot: true,
-            includePassengers: true,
-        }), toast);
-    }
-
     eventSource.onmessage = (event) => {
         eventHandler.onEntityEvent(event, flights.existingFlights, toast);
     }

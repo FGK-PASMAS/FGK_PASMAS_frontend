@@ -5,8 +5,7 @@ const router = useRouter();
 
 defineProps({
     title: { 
-        type: String,
-        required: true 
+        type: String
     }
 });
 </script>

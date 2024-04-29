@@ -16,20 +16,20 @@ export enum FlightStatus {
 
 export enum FlightStatusColor {
     OK = "text-primary-400",
-    OVERLOADED = "text-orange-400",
-    OVERLOADED_SEAT = "text-orange-400",
-    RESERVED = "text-blue-400",
-    BOOKED = "text-blue-400",
+    OVERLOADED = "text-red-400",
+    OVERLOADED_SEAT = "text-red-400",
+    RESERVED = "text-cyan-400",
+    BOOKED = "text-indigo-400",
     BLOCKED = "text-yellow-400",
     UNKNOWN = "text-bluegray-400",
 }
 
 export enum FlightStatusBgColor {
     OK = "bg-primary-400",
-    OVERLOADED = "bg-orange-400",
-    OVERLOADED_SEAT = "bg-orange-400",
-    RESERVED = "bg-blue-400",
-    BOOKED = "bg-blue-400",
+    OVERLOADED = "bg-red-400",
+    OVERLOADED_SEAT = "bg-red-400",
+    RESERVED = "bg-cyan-400",
+    BOOKED = "bg-indigo-400",
     BLOCKED = "bg-yellow-400",
     UNKNOWN = "bg-bluegray-400",
 }
@@ -45,6 +45,7 @@ export enum FlightStatusDisplayName {
 }
 
 export interface Flight extends EntityInterface {
+    FlightNo?: string,
     Status?: FlightStatus;
     Description?: string;
     FuelAtDeparture?: number;

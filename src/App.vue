@@ -104,7 +104,7 @@ function openDrawer(): void
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
             <MenuTopbar v-if="!isNotFound" v-model:isDarkMode="isDarkMode" :isMenuVisible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <div class="flex-grow-1 flex flex-column overflow-auto">
-                <RouterView class="flex-grow-1 ml-2 md:ml-8 mr-2 md:mr-8 mb-2" />
+                <RouterView class="flex-grow-1 ml-2 md:ml-4 mr-2 md:mr-4 mb-2" />
             </div>
         </div>
     </div>
