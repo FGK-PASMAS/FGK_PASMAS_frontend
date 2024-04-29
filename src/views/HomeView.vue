@@ -22,7 +22,7 @@ const auth = authStore();
                     <p>{{ appName }} erlaubt es dir auf einfachen Wege deine Flüge und Passagiere zu verwalten!</p>
                     <p>
                         Um {{ appName }} jedoch nutzen zu können benötigst du Zugangsdaten.
-                        Falls du noch keine besitzt, kannst du diese bei deinem Systemadministrator deines Vertrauens anfragen.
+                        Falls du noch keine besitzt, kannst du diese bei deinem Systemadministrator anfragen.
                     </p>
                 </div>
             </PrimePanel>
@@ -63,7 +63,7 @@ const auth = authStore();
                     </template>
                     <RouterLink :to="{ name: 'passengers' }" class="text-color no-underline">
                         <i class="bi-arrow-right text-primary mr-2" />
-                        <span>Hier findest du alle Passagier zu deinen Flüge!</span>
+                        <span>Hier findest du alle Passagiere zu deinen Flüge!</span>
                     </RouterLink>
                 </PrimePanel>
                 <PrimePanel v-if="auth.isAdmin">
