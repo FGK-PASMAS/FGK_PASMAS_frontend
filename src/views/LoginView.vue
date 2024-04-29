@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import AppDialog from "@/components/AppDialog.vue";
 import MenuLogo from "@/components/MenuLogo.vue";
-import { useValidateAPIData } from "@/composables/useValidateAPIData";
-import { fetchAuth } from "@/utils/services/fetch.service";
+import { authStore } from "@/stores/auth";
 import InputGroup from 'primevue/inputgroup';
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { useToast } from "primevue/usetoast";
@@ -10,6 +9,7 @@ import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 
 const router = useRouter();
+const auth = authStore();
 const toast = useToast();
 
 const username = ref("");
@@ -17,13 +17,11 @@ const password = ref("");
 
 async function login(): Promise<void>
 {
-    const response = await useValidateAPIData(fetchAuth(username.value, password.value), toast);
-
-    if (!response) {
+    if (!(await auth.authenticate(username.value, password.value, toast))) {
         return;
     }
 
-    router.replace({ name: 'home' });
+    router.replace({ name: "home" });
 }
 </script>
 

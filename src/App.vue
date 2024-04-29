@@ -6,9 +6,11 @@ import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
+import { authStore } from "./stores/auth";
 import { configStore } from "./stores/config";
 
 const router = useRouter();
+const auth = authStore();
 const config = configStore();
 const PrimeVue = usePrimeVue();
 
@@ -27,6 +29,7 @@ const isClosed = ref(false);
 const hideMenu = ref(false);
 
 onBeforeMount(() => {
+    auth.init();
     config.init();
 
     localTheme = localStorage.getItem("theme");
@@ -94,10 +97,10 @@ function openDrawer(): void
         <Toast />
         <MenuDrawer v-if="!hideMenu" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
             <MenuDrawerItem icon="bi-house-door" item="Home" :to="{ name: 'home' }" />
-            <MenuDrawerItem icon="bi-book" item="Buchen" :to="{ name: 'booking' }" />
-            <MenuDrawerItem icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
-            <MenuDrawerItem icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
-            <MenuDrawerItem icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
+            <MenuDrawerItem v-if="auth.isVendor" icon="bi-book" item="Buchen" :to="{ name: 'booking' }" />
+            <MenuDrawerItem v-if="auth.isAuthenticated" icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
+            <MenuDrawerItem v-if="auth.isAdmin" icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
+            <MenuDrawerItem v-if="auth.isAdmin" icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
             <MenuTopbar v-if="!hideMenu" v-model:isDarkMode="isDarkMode" :isMenuVisible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
