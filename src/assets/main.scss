@@ -35,15 +35,14 @@ body {
     width: 10px;
   }
 
-  ::-webkit-scrollbar-track {
-    background: var(--surface-200);
-  }
-   
-  ::-webkit-scrollbar-thumb {
-    background: var(--surface-300);
-  }
+::-webkit-scrollbar-track {
+  background: var(--surface-200);
+}
   
-  ::-webkit-scrollbar-thumb:hover {
-    background: var(--surface-400);
-  }
-  
+::-webkit-scrollbar-thumb {
+  background: var(--surface-300);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--surface-400);
+}

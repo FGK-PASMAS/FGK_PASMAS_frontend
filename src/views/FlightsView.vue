@@ -8,12 +8,15 @@ import { getDivisions } from '@/data/division/division.service';
 import { FlightEventHandler } from '@/data/flight/flight.eventHandler';
 import type { Flight } from '@/data/flight/flight.interface';
 import { deleteFlight, getFlights, getFlightsByDivisionStream } from '@/data/flight/flight.service';
+import { authStore } from '@/stores/auth';
+import { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from 'primevue/api';
 import type DataTable from 'primevue/datatable';
 import TabMenu, { type TabMenuChangeEvent } from 'primevue/tabmenu';
 import { useToast } from 'primevue/usetoast';
 import { computed, onBeforeMount, onUnmounted, ref, type Ref } from 'vue';
 
+const auth = authStore();
 const toast = useToast();
 
 const divisions: Ref<Division[]> = ref([]);
@@ -246,7 +249,7 @@ function cancelFlightCancellation(): void
                         <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
                     </template>
                 </PrimeColumn>
-                <PrimeColumn header="Aktion">
+                <PrimeColumn v-if="auth.isAdmin" header="Aktion">
                     <template #body="slotProps">
                         <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.data.ID)" class="text-red-50" />
                     </template>

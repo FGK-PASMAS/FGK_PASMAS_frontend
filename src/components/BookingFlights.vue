@@ -8,6 +8,7 @@ import { getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.ser
 import { getPlanes } from "@/data/plane/plane.service";
 import { bookingStore } from "@/stores/booking";
 import { flightsStore } from "@/stores/flights";
+import { EventSource } from "extended-eventsource";
 import { useToast } from "primevue/usetoast";
 import { onMounted, onUnmounted, ref } from "vue";
 import FlightTicket from "./FlightTicket.vue";

@@ -10,12 +10,13 @@ import Divider from "primevue/divider";
 import Dropdown from "primevue/dropdown";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
+import Panel from "primevue/panel";
 import ProgressSpinner from "primevue/progressspinner";
 import ToastService from "primevue/toastservice";
 import { createApp } from "vue";
 import App from "./App.vue";
 import "./assets/main.scss";
-import router from "./router";
+import { router } from "./router";
 
 Settings.defaultLocale = "de";
 
@@ -53,6 +54,7 @@ app
     .component("PrimeDropdown", Dropdown)
     .component("PrimeInputNumber", InputNumber)
     .component("PrimeInputText", InputText)
+    .component("PrimePanel", Panel)
     .component("PrimeProgressSpinner", ProgressSpinner);
 
 app.mount("#app");
