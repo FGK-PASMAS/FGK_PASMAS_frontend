@@ -8,6 +8,7 @@ import { getDivisions } from '@/data/division/division.service';
 import { FlightEventHandler } from '@/data/flight/flight.eventHandler';
 import type { Flight } from '@/data/flight/flight.interface';
 import { deleteFlight, getFlights, getFlightsByDivisionStream } from '@/data/flight/flight.service';
+import { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from 'primevue/api';
 import type DataTable from 'primevue/datatable';
 import TabMenu, { type TabMenuChangeEvent } from 'primevue/tabmenu';
