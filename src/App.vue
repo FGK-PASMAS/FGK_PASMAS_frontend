@@ -8,10 +8,8 @@ import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
 import { configStore } from "./stores/config";
 
-const config = configStore();
-
 const router = useRouter();
-
+const config = configStore();
 const PrimeVue = usePrimeVue();
 
 // Theme
