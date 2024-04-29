@@ -1,6 +1,7 @@
 import BookingView from "@/views/BookingView.vue";
 import FlightsView from "@/views/FlightsView.vue";
-import HomeViewVue from "@/views/HomeView.vue";
+import HomeView from "@/views/HomeView.vue";
+import LoginView from "@/views/LoginView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import PassengersView from "@/views/PassengersView.vue";
 import SettingsView from "@/views/SettingsView.vue";
@@ -16,7 +17,11 @@ const router = createRouter({
         }, {
             path: "/",
             name: "home",
-            component: HomeViewVue
+            component: HomeView
+        }, {
+            path: "/login",
+            name: "login",
+            component: LoginView
         }, {
             path: "/booking",
             name: "booking",

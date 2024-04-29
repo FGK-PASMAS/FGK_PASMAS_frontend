@@ -25,8 +25,8 @@ let localTheme: string | null;
 const isOpen = ref(false);
 const isClosed = ref(false);
 
-// Not Found
-const isNotFound = ref(false);
+// Hide menu drawer and topbar
+const hideMenu = ref(false);
 
 onBeforeMount(() => {
     config.init();
@@ -53,10 +53,10 @@ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (ev
 });
 
 router.beforeEach((to) => {
-    if (to.name === "notFound") {
-        isNotFound.value = true;
+    if (to.name === "login" || to.name === "notFound") {
+        hideMenu.value = true;
     } else {
-        isNotFound.value = false;
+        hideMenu.value = false;
     }
 });
 
@@ -94,7 +94,7 @@ function openDrawer(): void
 <template>
     <div class="h-full flex">
         <Toast />
-        <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
+        <MenuDrawer v-if="!hideMenu" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
             <MenuDrawerItem icon="bi-house-door" item="Home" :to="{ name: 'home' }" />
             <MenuDrawerItem icon="bi-book" item="Buchen" :to="{ name: 'booking' }" />
             <MenuDrawerItem icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
@@ -102,7 +102,7 @@ function openDrawer(): void
             <MenuDrawerItem icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
-            <MenuTopbar v-if="!isNotFound" v-model:isDarkMode="isDarkMode" :isMenuVisible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
+            <MenuTopbar v-if="!hideMenu" v-model:isDarkMode="isDarkMode" :isMenuVisible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <div class="flex-grow-1 flex flex-column overflow-auto">
                 <RouterView class="flex-grow-1 ml-2 md:ml-4 mr-2 md:mr-4 mb-2" />
             </div>

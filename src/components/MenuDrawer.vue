@@ -26,7 +26,7 @@ function closeDrawer(): void
         <div class="shade md:hidden" :class="{ 'hidden': !isOpen }" @click="closeDrawer()"></div>
         <div class="drawer h-full md:static fixed flex-shrink-0 flex flex-column justify-content-between min-w-max" :class="{ 'closed': isClosed, 'open': isOpen }">
             <div class="flex flex-column">
-                <div class="flex justify-content-between align-items-center pl-2 pr-2">
+                <div class="flex justify-content-between align-items-center pt-1 pr-2 pb-1 pl-2">
                     <MenuLogo />
                     <PrimeButton type="button" class="btn-no-shadow" icon="bi-x-lg" text rounded @click="closeDrawer()" />
                 </div>
