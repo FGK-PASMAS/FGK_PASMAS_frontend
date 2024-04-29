@@ -22,7 +22,7 @@ const auth = authStore();
                     <p>{{ appName }} erlaubt es dir auf einfachen Wege deine Flüge und Passagiere zu verwalten!</p>
                     <p>
                         Um {{ appName }} jedoch nutzen zu können benötigst du Zugangsdaten.
-                        Falls du noch keine besitzt, kannst du diese bei deinem Systemadministrator deines Vertrauens anfragen.
+                        Falls du noch keine besitzt, kannst du diese bei deinem Systemadministrator anfragen.
                     </p>
                 </div>
             </PrimePanel>
