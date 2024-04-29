@@ -52,7 +52,7 @@ async function login(): Promise<void>
                 </div>
                 <div>
                     <RouterLink :to="{ name: 'home' }" class="flex gap-2 text-color">
-                        <i class="bi-arrow-left" />
+                        <i class="bi-arrow-left text-primary" />
                         <span>Zurück zur Homepage</span>
                     </RouterLink>
                 </div>

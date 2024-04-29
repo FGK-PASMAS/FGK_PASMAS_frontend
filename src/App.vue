@@ -8,6 +8,7 @@ import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
 import { authStore } from "./stores/auth";
 import { configStore } from "./stores/config";
+import { RouteGuard } from "./router";
 
 const router = useRouter();
 const auth = authStore();
@@ -54,6 +55,29 @@ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (ev
 });
 
 router.beforeEach((to) => {
+    const routeAuth = to.meta.auth;
+    const routeGuard = to.meta.guard;
+
+    if (!routeAuth && routeGuard === RouteGuard.NON_AUTH && auth.isAuthenticated) {
+        router.replace({ name: "home" });
+        return false;
+    }
+
+    if (routeAuth && !auth.isAuthenticated) {
+        router.replace({ name: "home" });
+        return false;
+    }
+
+    if (routeGuard === RouteGuard.VENDOR && !auth.isVendor) {
+        router.replace({ name: "home" });
+        return false;
+    }
+
+    if (routeGuard === RouteGuard.ADMIN && !auth.isAdmin) {
+        router.replace({ name: "home" });
+        return false;
+    }
+
     if (to.name === "login" || to.name === "notFound") {
         hideMenu.value = true;
     } else {
