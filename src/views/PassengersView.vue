@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import ContentHeader from "@/components/ContentHeader.vue";
+import DataTableViewHeader from "@/components/DataTableViewHeader.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import { PassengerEventHandler } from "@/data/passenger/passenger.eventHandler";
 import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getPassengers, getPassengersStream } from "@/data/passenger/passenger.service";
 import { FilterMatchMode } from "primevue/api";
+import type DataTable from "primevue/datatable";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, onUnmounted, ref, type Ref } from "vue";
 
@@ -15,6 +16,15 @@ const passengers: Ref<Passenger[]> = ref([]);
 const eventHandler = new PassengerEventHandler();
 let eventSource: EventSource;
 
+const dt: Ref<DataTable | undefined> = ref();
+const filters = ref({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    ID: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    LastName: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    FirstName: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    Weight: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    "Flight.ID": { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
 const columns = [
     {
         field: "ID",
@@ -33,33 +43,15 @@ const columns = [
         header: "Gewicht (kg)",
     },
     {
-        field: "CreatedAt",
-        header: "Erstellt am",
-    },
-    {
-        field: "UpdatedAt",
-        header: "Aktualisiert am",
+        field: "Flight.ID",
+        header: "Flug",
     },
 ];
 
-const filters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    ID: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    LastName: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    FirstName: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    Weight: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    CreatedAt: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    UpdatedAt: { value: null, matchMode: FilterMatchMode.CONTAINS }
-});
-
 onBeforeMount(async () => {
     passengers.value = await useValidateAPIData(getPassengers(), toast);
-    
-    eventSource = getPassengersStream();
 
-    eventSource.onopen = async () => {
-        passengers.value = await useValidateAPIData(getPassengers(), toast);
-    }
+    eventSource = getPassengersStream();
 
     eventSource.onmessage = (event) => {
         eventHandler.onEntityEvent(event, passengers.value, toast);
@@ -79,34 +71,31 @@ onUnmounted(() => {
 
 <template>
     <main class="flex flex-column overflow-hidden">
-        <ContentHeader title="Passagiere" />
+        <DataTableViewHeader title="Passagiere" v-model:filters="filters" :dt="dt" />
         <div class="flex-grow-1 overflow-auto">
             <PrimeDataTable 
-                v-model:filters="filters" 
                 :value="passengers"
+                ref="dt"
+                exportFilename="export_passengers"
+                csvSeparator=";"
+                v-model:filters="filters"
+                filterDisplay="row" 
                 sortMode="multiple"
                 removableSort
                 stripedRows
                 scrollable
                 scrollHeight="flex"
             >
-                <template #header>
-                    <div class="flex justify-content-end">
-                        <span class="p-input-icon-left">
-                            <i class="bi-search" />
-                            <PrimeInputText v-model="filters['global'].value" placeholder="Suche..." />
-                        </span>
-                    </div>
-                </template>
                 <template #empty> Keine Passagiere gefunden. </template>
-                <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable />
+                <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable>
+                    <template #filter="{ filterModel, filterCallback }">
+                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Filter..." />
+                    </template>
+                </PrimeColumn>
             </PrimeDataTable>
         </div>
     </main>
 </template>
 
 <style scoped lang="scss">
-.filter-input {
-    min-width: 75px;
-}
 </style>
