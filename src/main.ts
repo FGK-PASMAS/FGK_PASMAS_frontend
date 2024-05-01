@@ -8,6 +8,7 @@ import PrimeVue from "primevue/config";
 import DataTable from "primevue/datatable";
 import Divider from "primevue/divider";
 import Dropdown from "primevue/dropdown";
+import InputGroup from "primevue/inputgroup";
 import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
 import Panel from "primevue/panel";
@@ -52,6 +53,7 @@ app
     .component("PrimeDataTable", DataTable)
     .component("PrimeDivider", Divider)
     .component("PrimeDropdown", Dropdown)
+    .component("PrimeInputGroup", InputGroup)
     .component("PrimeInputNumber", InputNumber)
     .component("PrimeInputText", InputText)
     .component("PrimePanel", Panel)

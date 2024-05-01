@@ -73,7 +73,7 @@ const auth = authStore();
                             <span class="font-bold">Einstellungen</span>
                         </div>
                     </template>
-                    <RouterLink :to="{ name: 'settings' }" class="text-color no-underline">
+                    <RouterLink :to="{ name: 'settings.overview' }" class="text-color no-underline">
                         <i class="bi-arrow-right text-primary mr-2" />
                         <span>Hier kannst du Änderungen an {{ appName }} vornehmen, wie z.B. das Ändern von Flugzeugstammdaten!</span>
                     </RouterLink>

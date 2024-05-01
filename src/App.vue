@@ -124,7 +124,7 @@ function openDrawer(): void
             <MenuDrawerItem v-if="auth.isVendor" icon="bi-book" item="Buchen" :to="{ name: 'booking' }" />
             <MenuDrawerItem v-if="auth.isAuthenticated" icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
             <MenuDrawerItem v-if="auth.isAdmin" icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
-            <MenuDrawerItem v-if="auth.isAdmin" icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
+            <MenuDrawerItem v-if="auth.isAdmin" icon="bi-gear" item="Einstellungen" :to="{ name: 'settings.overview' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
             <MenuTopbar v-if="!hideMenu" v-model:isDarkMode="isDarkMode" :isMenuVisible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
