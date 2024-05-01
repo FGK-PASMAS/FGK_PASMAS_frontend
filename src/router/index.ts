@@ -4,6 +4,9 @@ import HomeView from "@/views/HomeView.vue";
 import LoginView from "@/views/LoginView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import PassengersView from "@/views/PassengersView.vue";
+import SettingsBlockerView from "@/views/SettingsBlockerView.vue";
+import SettingsPlaneView from "@/views/SettingsPlaneView.vue";
+import SettingsUserView from "@/views/SettingsUserView.vue";
 import SettingsView from "@/views/SettingsView.vue";
 import { createRouter, createWebHistory } from "vue-router";
 
@@ -69,6 +72,32 @@ export const router = createRouter({
             path: "/settings",
             name: "settings",
             component: SettingsView,
+            meta: {
+                auth: true,
+                guard: RouteGuard.ADMIN
+            }
+        }, {
+            path: "/settings/users",
+            name: "settings-user",
+            component: SettingsUserView,
+            meta: {
+                auth: true,
+                guard: RouteGuard.ADMIN
+            }
+        },
+        {
+            path: "/settings/blockers",
+            name: "settings-blocker",
+            component: SettingsBlockerView,
+            meta: {
+                auth: true,
+                guard: RouteGuard.ADMIN
+            }
+        },
+        {
+            path: "/settings/planes",
+            name: "settings-plane",
+            component: SettingsPlaneView,
             meta: {
                 auth: true,
                 guard: RouteGuard.ADMIN
