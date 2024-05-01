@@ -22,7 +22,7 @@ function cancelFlight()
 
 <template>
 <div class="flex flex-column">
-    <div class="flex justify-content-between align-items-center border-1 border-round border-primary surface-100 p-3 cursor-pointer" @click="openOverview()">
+    <div class="flex justify-content-between align-items-center border-1 border-round border-primary surface-200 p-3 cursor-pointer" @click="openOverview()">
         <div class="flex flex-wrap column-gap-4 row-gap-2 ">
             <div class="flex align-items-center gap-2">
                 <i class="bi-ticket-detailed-fill text-xl" />

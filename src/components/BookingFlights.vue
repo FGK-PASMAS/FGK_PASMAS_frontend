@@ -89,7 +89,7 @@ function onFlightCancellation(): void
                     <FlightInfo :division="booking.division" :passengers="booking.passengers" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightReservation()" @flightCanceled="onFlightCancellation()" />
                 </AppDialog>
             </div>
-            <div v-else class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
+            <div v-else class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-200 border-round">
                 <PrimeProgressSpinner strokeWidth="4" />
             </div>
             </Transition>

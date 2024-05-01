@@ -31,7 +31,7 @@ async function login(): Promise<void>
             <div class="h-full flex flex-column justify-content-between">
                 <div>
                     <MenuLogo />
-                    <div class="flex flex-column gap-4 mt-8 surface-100">
+                    <div class="flex flex-column gap-4 mt-8 surface-200">
                         <h1>Login</h1>
                         <div class="flex flex-column gap-1">
                             <InputGroup>

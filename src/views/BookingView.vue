@@ -283,7 +283,7 @@ function showCancelBookingToast(): void
         <BookingResult v-else-if="isDataLoaded && booking.flight?.Status === FlightStatus.BOOKED" :flight="bookedFlight" />
     </div>
     <Transition name="fade">    
-        <div v-if="!isDataLoaded" class="absolute top-0 left-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
+        <div v-if="!isDataLoaded" class="absolute top-0 left-0 w-full h-full flex justify-content-center align-items-center surface-200 border-round">
             <PrimeProgressSpinner strokeWidth="4" />
         </div>
     </Transition>
