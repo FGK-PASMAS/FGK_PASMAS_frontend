@@ -6,7 +6,7 @@ import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { Division } from '@/data/division/division.interface';
 import { getDivisions } from '@/data/division/division.service';
 import { FlightEventHandler } from '@/data/flight/flight.eventHandler';
-import type { Flight } from '@/data/flight/flight.interface';
+import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { deleteFlight, getFlights, getFlightsByDivisionStream } from '@/data/flight/flight.service';
 import { authStore } from '@/stores/auth';
 import { EventSource } from "extended-eventsource";
@@ -28,9 +28,14 @@ const flightsComputed = computed(() => {
 
     flights.value.forEach(flight => {
         const status = useFlightStatusDisplayData(flight.Status);
+        let pilot = "-"
         const passengers = {
             computed: "",
             raw: [] as {}[]
+        }
+
+        if (flight.Pilot?.LastName && flight.Pilot?.FirstName) {
+            pilot = flight.Pilot?.LastName + " " + flight.Pilot?.FirstName;
         }
         
         flight.Passengers?.forEach(passenger => {
@@ -53,7 +58,7 @@ const flightsComputed = computed(() => {
             ArrivalTime: flight.ArrivalTime?.toFormat("HH:mm - dd.LL.yyyy"),
             Registration: flight.Plane?.Registration,
             AircraftType: flight.Plane?.AircraftType,
-            Pilot: flight.Pilot?.LastName + " " + flight.Pilot?.FirstName,
+            Pilot: pilot,
             PassengersComputed: passengers.computed,
             PassengersRaw: passengers.raw
         });
@@ -150,7 +155,18 @@ function cancelFlight(flightId: number): void
         return flightId === flight.ID;
     });
 
-    flightCancellationMsg = "Soll Flug " + flightToDelete?.ID + " wirklich storniert werden?";
+    let subject = "Blocker";
+
+    switch (flightToDelete?.Status) {
+        case FlightStatus.BOOKED:
+            subject = "Flug";
+            break;
+        case FlightStatus.RESERVED:
+            subject = "Reservierung";
+            break;
+    }
+
+    flightCancellationMsg = "Soll " + subject + " um " + flightToDelete?.DepartureTime?.toFormat("HH:mm - dd.LL.yyyy") + " wirklich storniert werden?";
     
     isDeleteDialogOpen.value = true;
 }
@@ -243,7 +259,8 @@ function cancelFlightCancellation(): void
                 </PrimeColumn>
                 <PrimeColumn field="PassengersComputed" header="Passagiere" sortable>
                     <template #body="slotProps">
-                        <p v-for="passenger in slotProps.data.PassengersRaw" :key="passenger.ID">{{ passenger.LastName }}, {{ passenger.FirstName }}</p>
+                        <p v-if="slotProps.data.PassengersRaw.length <= 0">-</p>
+                        <p v-else v-for="passenger in slotProps.data.PassengersRaw" :key="passenger.ID">{{ passenger.LastName }}, {{ passenger.FirstName }}</p>
                     </template>
                     <template #filter="{ filterModel, filterCallback }">
                         <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
