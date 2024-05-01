@@ -312,7 +312,6 @@ function showCancelBookingToast(): void
 .fade-enter-active,
 .fade-leave-active {
     transition: opacity 0.5s ease;
-    transition-delay: 0.3s;
 }
 
 .fade-enter-from,

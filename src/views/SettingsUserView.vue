@@ -38,7 +38,7 @@ function addUser(): void
     isAddUserOpen.value = true;
 }
 
-function closeAddUser(): void
+function onAddUserEmit(): void
 {
     isAddUserOpen.value = false;
 }
@@ -82,7 +82,7 @@ function removeUser(data: any): void
                 </PrimeColumn>
             </PrimeDataTable>
             <AppDialog v-model:isOpen="isAddUserOpen">
-                <UserCreation @confirm="closeAddUser()" @cancel="closeAddUser()" />
+                <UserCreation @confirm="onAddUserEmit()" @cancel="onAddUserEmit()" />
             </AppDialog>
         </div>
     </main>
