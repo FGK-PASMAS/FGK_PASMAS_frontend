@@ -71,28 +71,30 @@ function cancel(): void
 </script>
 
 <template>
-    <div class="flex flex-column pr-2 overflow-auto">
-        <div>
-            <h1 class="m-0">Benutzer hinzufügen</h1>
-            <PrimeDivider />
+    <div>
+        <div class="flex flex-column pr-2 overflow-auto">
+            <div>
+                <h1 class="m-0">Benutzer hinzufügen</h1>
+                <PrimeDivider />
+            </div>
         </div>
-    </div>
-    <div class="flex flex-column gap-6">
-        <div class="flex flex-column gap-2">
-            <PrimeInputText type="text" v-model="username" placeholder="Benutzer" @input="onInput()" />
-            <PrimeDropdown ref="dropDown" v-model="selectedRole" :options="roles" placeholder="Rolle" showClear @change="onInput()" />
-            <PrimeInputGroup>
-                <PrimeInputText :type="inputPassword" v-model="password" placeholder="Passwort" @input="onInput()"/>
-                <PrimeButton :icon="iconPassword" severity="secondary" @click="togglePassword()" />
-            </PrimeInputGroup>
-            <PrimeInputGroup>
-                <PrimeInputText :type="inputPassword" v-model="passwordConfirm" placeholder="Passwort wiederholen" @input="onInput()"/>
-                <PrimeButton :icon="iconPassword" severity="secondary" @click="togglePassword()" />
-            </PrimeInputGroup>
-        </div>
-        <div class="flex flex-column gap-2">
-            <PrimeButton label="Hinzufügen" :disabled="isConfirmButtonDisabled" @click="confirm()" class="text-color"></PrimeButton>
-            <PrimeButton label="Abbrechen" severity="danger" @click="cancel()" class="text-color" />
+        <div class="flex flex-column gap-6">
+            <div class="flex flex-column gap-2">
+                <PrimeInputText type="text" v-model="username" placeholder="Benutzer" @input="onInput()" />
+                <PrimeDropdown ref="dropDown" v-model="selectedRole" :options="roles" placeholder="Rolle" showClear @change="onInput()" />
+                <PrimeInputGroup>
+                    <PrimeInputText :type="inputPassword" v-model="password" placeholder="Passwort" @input="onInput()"/>
+                    <PrimeButton :icon="iconPassword" severity="secondary" @click="togglePassword()" />
+                </PrimeInputGroup>
+                <PrimeInputGroup>
+                    <PrimeInputText :type="inputPassword" v-model="passwordConfirm" placeholder="Passwort wiederholen" @input="onInput()"/>
+                    <PrimeButton :icon="iconPassword" severity="secondary" @click="togglePassword()" />
+                </PrimeInputGroup>
+            </div>
+            <div class="flex flex-column gap-2">
+                <PrimeButton label="Hinzufügen" :disabled="isConfirmButtonDisabled" @click="confirm()" class="text-color"></PrimeButton>
+                <PrimeButton label="Abbrechen" severity="danger" @click="cancel()" class="text-color" />
+            </div>
         </div>
     </div>
 </template>
