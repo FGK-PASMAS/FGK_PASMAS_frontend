@@ -71,12 +71,10 @@ function cancel(): void
 </script>
 
 <template>
-    <div>
-        <div class="flex flex-column pr-2 overflow-auto">
-            <div>
-                <h1 class="m-0">Benutzer hinzufügen</h1>
-                <PrimeDivider />
-            </div>
+    <div class="flex flex-column pr-2 overflow-auto">
+        <div>
+            <h1 class="m-0">Benutzer hinzufügen</h1>
+            <PrimeDivider />
         </div>
         <div class="flex flex-column gap-6">
             <div class="flex flex-column gap-2">

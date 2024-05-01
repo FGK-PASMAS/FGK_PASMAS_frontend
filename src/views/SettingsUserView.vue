@@ -81,7 +81,7 @@ function removeUser(data: any): void
                     </template>
                 </PrimeColumn>
             </PrimeDataTable>
-            <AppDialog v-model:isOpen="isAddUserOpen">
+            <AppDialog v-model:isOpen="isAddUserOpen" :isStrictClose="true">
                 <UserCreation @confirm="onAddUserEmit()" @cancel="onAddUserEmit()" />
             </AppDialog>
         </div>
