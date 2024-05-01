@@ -76,7 +76,7 @@ function cancel(): void
             <h1 class="m-0">Benutzer hinzufügen</h1>
             <PrimeDivider />
         </div>
-        <div class="flex flex-column gap-6">
+        <div class="flex flex-column gap-5">
             <div class="flex flex-column gap-2">
                 <PrimeInputText type="text" v-model="username" placeholder="Benutzer" @input="onInput()" />
                 <PrimeDropdown ref="dropDown" v-model="selectedRole" :options="roles" placeholder="Rolle" showClear @change="onInput()" />
