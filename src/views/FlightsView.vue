@@ -12,7 +12,7 @@ import { authStore } from '@/stores/auth';
 import { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from 'primevue/api';
 import type DataTable from 'primevue/datatable';
-import TabMenu, { type TabMenuChangeEvent } from 'primevue/tabmenu';
+import { type TabMenuChangeEvent } from 'primevue/tabmenu';
 import { useToast } from 'primevue/usetoast';
 import { computed, onBeforeMount, onUnmounted, ref, type Ref } from 'vue';
 
@@ -120,7 +120,8 @@ onUnmounted(() => {
     }
 });
 
-async function changeTab(event: TabMenuChangeEvent): Promise<void> {
+async function changeTab(event: TabMenuChangeEvent): Promise<void>
+{
     event.originalEvent.stopPropagation();
 
     if (event.index === tabIndex.value) {
@@ -191,13 +192,13 @@ function cancelFlightCancellation(): void
 <template>
     <main class="flex flex-column overflow-hidden">
         <DataTableViewHeader title="Flüge" v-model:filters="filters" :dt="dt" />
-        <TabMenu :model="divisions" @tab-change="changeTab($event)" class="flex-grow-0">
+        <PrimeTabMenu :model="divisions" @tab-change="changeTab($event)" class="flex-grow-0">
             <template #item="{ item, props }">
                 <a v-bind="props.action" class="flex align-items-center gap-2">
                     <span class="font-bold">{{ item.Name }}</span>
                 </a>
             </template>
-        </TabMenu>
+        </PrimeTabMenu>
         <div class="flex-grow-1 overflow-auto">
             <PrimeDataTable
                 :value="flightsComputed"

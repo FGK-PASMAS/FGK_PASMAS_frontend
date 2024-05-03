@@ -13,6 +13,7 @@ import InputNumber from "primevue/inputnumber";
 import InputText from "primevue/inputtext";
 import Panel from "primevue/panel";
 import ProgressSpinner from "primevue/progressspinner";
+import TabMenu from "primevue/tabmenu";
 import ToastService from "primevue/toastservice";
 import { createApp } from "vue";
 import App from "./App.vue";
@@ -67,6 +68,7 @@ app
     .component("PrimeInputNumber", InputNumber)
     .component("PrimeInputText", InputText)
     .component("PrimePanel", Panel)
-    .component("PrimeProgressSpinner", ProgressSpinner);
+    .component("PrimeProgressSpinner", ProgressSpinner)
+    .component("PrimeTabMenu", TabMenu);
 
 app.mount("#app");
