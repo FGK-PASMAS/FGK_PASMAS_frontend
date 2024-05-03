@@ -34,10 +34,6 @@ defineProps({
         text-decoration: none;
     }
 
-    .menu-item:hover div {
-        background-color: var(--surface-200);
-    }
-
     .router-link-active div {
         background-color: var(--primary-color);
     }

@@ -17,13 +17,4 @@ const icon = import.meta.env.VITE_APP_ICON;
 </template>
 
 <style scoped lang="scss">
-    .error-page i {
-        font-size: 8rem;
-    }
-
-    .error-page p {
-        font-size: 1.5rem;
-        font-weight: bold;
-        margin: 0px;
-    }
 </style>

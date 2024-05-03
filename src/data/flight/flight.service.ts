@@ -1,6 +1,7 @@
 import type { APIError } from "@/utils/errors/api.error";
 import { fetchAPI } from "@/utils/services/fetch.service";
 import { getStream } from "@/utils/services/stream.service";
+import { EventSource } from "extended-eventsource";
 import type { Flight } from "./flight.interface";
 
 export const getFlights = async (params?: Record<string, string | number | boolean>): Promise<Flight[] | APIError> => {
@@ -49,6 +50,6 @@ export const getFlightsStream = (): EventSource => {
     return getStream("flights");
 }
 
-export const getFlightsByDivisionStream = (divisionId: number) => {
+export const getFlightsByDivisionStream = (divisionId: number): EventSource => {
     return getStream("divisions/" + divisionId + "/flights");
 }

@@ -6,12 +6,13 @@ import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
+import { authStore } from "./stores/auth";
 import { configStore } from "./stores/config";
-
-const config = configStore();
+import { RouteGuard } from "./router";
 
 const router = useRouter();
-
+const auth = authStore();
+const config = configStore();
 const PrimeVue = usePrimeVue();
 
 // Theme
@@ -25,10 +26,11 @@ let localTheme: string | null;
 const isOpen = ref(false);
 const isClosed = ref(false);
 
-// Not Found
-const isNotFound = ref(false);
+// Hide menu drawer and topbar
+const hideMenu = ref(false);
 
 onBeforeMount(() => {
+    auth.init();
     config.init();
 
     localTheme = localStorage.getItem("theme");
@@ -53,10 +55,33 @@ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (ev
 });
 
 router.beforeEach((to) => {
-    if (to.name === "notFound") {
-        isNotFound.value = true;
+    const routeAuth = to.meta.auth;
+    const routeGuard = to.meta.guard;
+
+    if (!routeAuth && routeGuard === RouteGuard.NON_AUTH && auth.isAuthenticated) {
+        router.replace({ name: "home" });
+        return false;
+    }
+
+    if (routeAuth && !auth.isAuthenticated) {
+        router.replace({ name: "home" });
+        return false;
+    }
+
+    if (routeGuard === RouteGuard.VENDOR && !auth.isVendor) {
+        router.replace({ name: "home" });
+        return false;
+    }
+
+    if (routeGuard === RouteGuard.ADMIN && !auth.isAdmin) {
+        router.replace({ name: "home" });
+        return false;
+    }
+
+    if (to.name === "login" || to.name === "notFound") {
+        hideMenu.value = true;
     } else {
-        isNotFound.value = false;
+        hideMenu.value = false;
     }
 });
 
@@ -94,15 +119,15 @@ function openDrawer(): void
 <template>
     <div class="h-full flex">
         <Toast />
-        <MenuDrawer v-if="!isNotFound" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
+        <MenuDrawer v-if="!hideMenu" v-model:isOpen="isOpen" v-model:isClosed="isClosed" >
             <MenuDrawerItem icon="bi-house-door" item="Home" :to="{ name: 'home' }" />
-            <MenuDrawerItem icon="bi-book" item="Buchen" :to="{ name: 'booking' }" />
-            <MenuDrawerItem icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
-            <MenuDrawerItem icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
-            <MenuDrawerItem icon="bi-gear" item="Einstellungen" :to="{ name: 'settings' }" />
+            <MenuDrawerItem v-if="auth.isVendor" icon="bi-book" item="Buchen" :to="{ name: 'booking' }" />
+            <MenuDrawerItem v-if="auth.isAuthenticated" icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
+            <MenuDrawerItem v-if="auth.isAdmin" icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
+            <MenuDrawerItem v-if="auth.isAdmin" icon="bi-gear" item="Einstellungen" :to="{ name: 'settings.overview' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">
-            <MenuTopbar v-if="!isNotFound" v-model:isDarkMode="isDarkMode" :isMenuVisible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
+            <MenuTopbar v-if="!hideMenu" v-model:isDarkMode="isDarkMode" :isMenuVisible="isClosed" @toggleTheme="toggleTheme()" @openDrawer="openDrawer()" />
             <div class="flex-grow-1 flex flex-column overflow-auto">
                 <RouterView class="flex-grow-1 ml-2 md:ml-4 mr-2 md:mr-4 mb-2" />
             </div>

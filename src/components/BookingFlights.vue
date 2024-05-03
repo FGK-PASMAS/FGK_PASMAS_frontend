@@ -8,9 +8,11 @@ import { getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.ser
 import { getPlanes } from "@/data/plane/plane.service";
 import { bookingStore } from "@/stores/booking";
 import { flightsStore } from "@/stores/flights";
+import { EventSource } from "extended-eventsource";
 import { useToast } from "primevue/usetoast";
 import { onMounted, onUnmounted, ref } from "vue";
 import FlightTicket from "./FlightTicket.vue";
+import TransitionLoading from "./TransitionLoading.vue";
 
 const toast = useToast();
 
@@ -80,31 +82,16 @@ function onFlightCancellation(): void
 <template>
     <div class="flex flex-column gap-3 overflow-hidden">
         <FlightInfoMinimal />
-        <div class="relative w-full h-full overflow-auto">
-            <Transition name="fade">
-            <div v-if="isDataLoaded">
+        <div class="relative flex-grow-1 overflow-auto">
+            <TransitionLoading :isDataLoaded="isDataLoaded">
                 <FlightTicket v-for="(flight, index) in flights.flights" :key="index" v-model:flight="flights.flights[index]" class="mt-1 mb-1" @showInfo="openFlightInfo(index)" />
-                <AppDialog v-model:isOpen="isFlightInfoOpen">
-                    <FlightInfo :division="booking.division" :passengers="booking.passengers" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightReservation()" @flightCanceled="onFlightCancellation()" />
-                </AppDialog>
-            </div>
-            <div v-else class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
-                <PrimeProgressSpinner strokeWidth="4" />
-            </div>
-            </Transition>
+            </TransitionLoading>
         </div>
+        <AppDialog v-model:isOpen="isFlightInfoOpen">
+            <FlightInfo :division="booking.division" :passengers="booking.passengers" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightReservation()" @flightCanceled="onFlightCancellation()" />
+        </AppDialog>
     </div>
 </template>
 
 <style scoped lang="scss">
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s ease;
-    transition-delay: 0.3s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
 </style>

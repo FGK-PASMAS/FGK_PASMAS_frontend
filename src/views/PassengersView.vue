@@ -4,6 +4,7 @@ import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import { PassengerEventHandler } from "@/data/passenger/passenger.eventHandler";
 import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getPassengers, getPassengersStream } from "@/data/passenger/passenger.service";
+import { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from "primevue/api";
 import type DataTable from "primevue/datatable";
 import { useToast } from "primevue/usetoast";
@@ -89,7 +90,7 @@ onUnmounted(() => {
                 <template #empty> Keine Passagiere gefunden. </template>
                 <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable>
                     <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter" placeholder="Filter..." />
+                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
                     </template>
                 </PrimeColumn>
             </PrimeDataTable>
@@ -98,4 +99,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
+.min-w-5rem {
+    min-width: 5rem;
+}
 </style>
