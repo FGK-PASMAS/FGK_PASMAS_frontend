@@ -2,6 +2,7 @@
 import AppDialog from "@/components/AppDialog.vue";
 import BlockerCreation from "@/components/BlockerCreation.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
+import TransitionLoading from "@/components/TransitionLoading.vue";
 import { useFlightStatusDisplayData } from "@/composables/useFlightStatusDisplayData";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import type { Division } from "@/data/division/division.interface";
@@ -168,7 +169,7 @@ function onCreateBlockerCancel(): void
 </script>
 
 <template>
-    <main class="w-full h-full flex flex-column overflow-hidden">
+    <main class="flex flex-column overflow-hidden">
         <ContentHeader title="Flugblocker" />
         <div class="flex flex-wrap md:flex-nowrap gap-2 mb-3">
             <PrimeDropdown 
@@ -195,9 +196,8 @@ function onCreateBlockerCancel(): void
             <PrimeButton icon="bi-plus-circle-fill" label="Erstellen" :disabled="!selectedPlane" @click="createBlocker()" class="w-full md:w-12rem text-color" />
         </div>
         <div class="relative flex-grow-1 overflow-auto">
-            <Transition name="fade">
+            <TransitionLoading :isDataLoaded="isDataLoaded">
                 <PrimeDataTable
-                    v-if="isDataLoaded"
                     :value="flightsComputed"
                     ref="dt"
                     v-model:filters="filters"
@@ -226,10 +226,7 @@ function onCreateBlockerCancel(): void
                         </template>
                     </PrimeColumn>
                 </PrimeDataTable>
-                <div v-else class="absolute top-0 w-full h-full flex justify-content-center align-items-center surface-200">
-                    <PrimeProgressSpinner strokeWidth="4" />
-                </div>
-            </Transition>
+            </TransitionLoading>
         </div>
         <AppDialog v-model:isOpen="isCreateBlockerOpen" :isStrictClose="true">
             <BlockerCreation :plane="selectedPlane!" @confirm="onCreateBlockerConfirm()" @cancel="onCreateBlockerCancel()" />
@@ -240,15 +237,5 @@ function onCreateBlockerCancel(): void
 <style scoped lang="scss">
 .min-w-5rem {
     min-width: 5rem;
-}
-
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
 }
 </style>
