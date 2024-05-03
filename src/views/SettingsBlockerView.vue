@@ -8,12 +8,15 @@ import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
 import type { Flight } from "@/data/flight/flight.interface";
 import { getFlights } from "@/data/flight/flight.service";
+import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
 import type { Plane } from "@/data/plane/plane.interface";
-import { getPlanes } from "@/data/plane/plane.service";
+import { getPlanes, getPlanesStream } from "@/data/plane/plane.service";
+import { WarningToast } from "@/utils/toasts/warning.toast";
+import type { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from "primevue/api";
 import type DataTable from "primevue/datatable";
 import { useToast } from "primevue/usetoast";
-import { computed, onBeforeMount, ref, type Ref } from "vue";
+import { computed, onBeforeMount, onUnmounted, ref, type Ref } from "vue";
 
 const divisions: Ref<Division[]> = ref([]);
 const selectedDivision: Ref<Division | undefined> = ref();
@@ -39,6 +42,10 @@ const flightsComputed = computed(() => {
 
     return computed;
 });
+
+// ToDo: Add flights py plane SSE if it exists
+const eventHandler = new PlaneEventHandler();
+let eventSource: EventSource;
 
 const dt: Ref<DataTable | undefined> = ref();
 const filters = ref({
@@ -68,7 +75,44 @@ const isCreateBlockerOpen = ref(false);
 
 onBeforeMount(async () => {
     divisions.value = await useValidateAPIData(getDivisions(), toast);
+
+    eventSource = getPlanesStream();
+
+    eventSource.onmessage = async (event) => {
+        onPlaneEvent(event);
+        eventHandler.onEntityEvent(event, planes.value, toast);
+    }
+
+    eventSource.onerror = () => {
+        eventHandler.onErrorEvent(toast);
+    }
 });
+
+onUnmounted(() => {
+    if (eventSource) {
+        eventSource.close();
+    }
+});
+
+/**
+ * Additional event handler for plane events.
+ * Cancel blocker creation if selected plane got changed.
+ * 
+ * @param event 
+ */
+async function onPlaneEvent(event: MessageEvent<any>): Promise<void>
+{
+    const message = JSON.parse(event.data);
+
+    if (selectedPlane.value?.ID !== message?.data?.ID) {
+        return;
+    }
+
+    onCreateBlockerCancel();
+    await onDivisionChange();
+
+    toast.add(new WarningToast({ detail: "Vorgang wird abgebrochen." }));
+}
 
 async function onDivisionChange(): Promise<void>
 {
