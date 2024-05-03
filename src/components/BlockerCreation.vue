@@ -136,7 +136,7 @@ function cancel(): void
                     <Textarea v-model="description" rows="5" cols="20" placeholder="Info" @input="onInput()" class="w-full" />
                 </div>
                 <div class="flex flex-column gap-2">
-                    <PrimeButton label="Erstellen" :disabled="isConfirmButtonDisabled" @click="confirm()" class="text-color"></PrimeButton>
+                    <PrimeButton label="Erstellen" :disabled="isConfirmButtonDisabled" @click="confirm()" class="text-color" />
                     <PrimeButton label="Abbrechen" severity="danger" @click="cancel()" class="text-color" />
                 </div>
             </div>
