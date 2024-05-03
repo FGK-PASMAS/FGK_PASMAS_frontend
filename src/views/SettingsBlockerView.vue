@@ -80,8 +80,8 @@ onBeforeMount(async () => {
     eventSource = getPlanesStream();
 
     eventSource.onmessage = async (event) => {
-        onPlaneEvent(event);
         eventHandler.onEntityEvent(event, planes.value, toast);
+        onPlaneEvent(event);
     }
 
     eventSource.onerror = () => {
