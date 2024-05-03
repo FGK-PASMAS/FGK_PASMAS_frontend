@@ -177,7 +177,9 @@ function confirmFlightCancellation(): void
         return;
     }
 
-    deleteFlight(flightToDelete);
+    useValidateAPIData(deleteFlight(flightToDelete), toast);
+
+    flightToDelete = undefined;
 }
 
 function cancelFlightCancellation(): void
