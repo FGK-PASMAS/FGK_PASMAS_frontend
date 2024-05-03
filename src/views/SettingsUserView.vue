@@ -2,10 +2,13 @@
 import AppDialog from '@/components/AppDialog.vue';
 import DataTableViewHeader from '@/components/DataTableViewHeader.vue';
 import UserCreation from '@/components/UserCreation.vue';
+import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { User } from '@/data/user/user.interface';
+import { getUsers } from '@/data/user/user.service';
 import { FilterMatchMode } from 'primevue/api';
 import type DataTable from 'primevue/datatable';
-import { ref, type Ref } from 'vue';
+import { useToast } from 'primevue/usetoast';
+import { onBeforeMount, ref, type Ref } from 'vue';
 
 const users: Ref<User[]> = ref([]);
 
@@ -31,15 +34,22 @@ const columns = [
     }
 ];
 
+const toast = useToast();
 const isAddUserOpen = ref(false);
+
+onBeforeMount(async () => {
+    users.value = await useValidateAPIData(getUsers(), toast);
+});
 
 function addUser(): void
 {
     isAddUserOpen.value = true;
 }
 
-function onAddUserEmit(): void
+async function onAddUserEmit(): Promise<void>
 {
+    // ToDo: This isn't needed if User offers a SSE endpoint
+    users.value = await useValidateAPIData(getUsers(), toast);
     isAddUserOpen.value = false;
 }
 
