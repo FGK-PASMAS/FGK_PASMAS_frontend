@@ -12,6 +12,15 @@ export const getPlanes = async (params?: Record<string, string | number | boolea
     });
 }
 
+export const updatePlane = async (plane: Plane): Promise<Plane | APIError> => {
+    return await fetchAPI({
+        resource: "planes",
+        method: "PATCH",
+        id: plane.ID,
+        data: plane
+    });
+}
+
 export const getPlanesStream = (): EventSource => {
     return getStream("planes");
 }
