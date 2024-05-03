@@ -112,7 +112,7 @@ async function onPlaneEvent(event: MessageEvent<any>): Promise<void>
     onCreateBlockerCancel();
     await onDivisionChange();
 
-    toast.add(new WarningToast({ detail: "Vorgang wird abgebrochen." }));
+    toast.add(new WarningToast({ detail: "Vorgang wurde abgebrochen." }));
 }
 
 async function onDivisionChange(): Promise<void>
