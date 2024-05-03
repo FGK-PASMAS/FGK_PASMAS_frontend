@@ -54,8 +54,8 @@ const flightsComputed = computed(() => {
             Status: status.status,
             StatusColor: status.color,
             Description: flight.Description ?? "-",
-            DepartureTime: flight.DepartureTime?.toFormat("HH:mm - dd.LL.yyyy"),
-            ArrivalTime: flight.ArrivalTime?.toFormat("HH:mm - dd.LL.yyyy"),
+            DepartureTime: flight.DepartureTime?.toFormat("HH:mm, dd.LL.yyyy"),
+            ArrivalTime: flight.ArrivalTime?.toFormat("HH:mm, dd.LL.yyyy"),
             Registration: flight.Plane?.Registration,
             AircraftType: flight.Plane?.AircraftType,
             Pilot: pilot,
@@ -167,7 +167,7 @@ function cancelFlight(flightId: number): void
             break;
     }
 
-    flightCancellationMsg = "Soll " + subject + " um " + flightToDelete?.DepartureTime?.toFormat("HH:mm - dd.LL.yyyy") + " wirklich storniert werden?";
+    flightCancellationMsg = "Soll " + subject + " um " + flightToDelete?.DepartureTime?.toFormat("HH:mm, dd.LL.yyyy") + " wirklich storniert werden?";
     
     isDeleteDialogOpen.value = true;
 }

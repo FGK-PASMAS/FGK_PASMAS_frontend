@@ -63,7 +63,7 @@ async function confirm(): Promise<void>
     await useValidateAPIData(createFlight(blocker), toast);
 
     // ToDo: Can be removed if there is a suitable flights per plane SSE endpoint
-    toast.add(new InfoToast({ detail: "Blocker um " + blocker.DepartureTime!.toFormat("HH:mm - dd.LL.yyyy") + " wurde erfolgreich angelegt."}));
+    toast.add(new InfoToast({ detail: "Blocker um " + blocker.DepartureTime!.toFormat("HH:mm, dd.LL.yyyy") + " wurde erfolgreich angelegt."}));
 
     emit("confirm");
 }
@@ -89,8 +89,8 @@ function cancel(): void
                     </div>
                     <div class="flex gap-2">
                         <i class="bi-clock-fill" />
-                        <span>Von {{ plane.SlotStartTime?.toFormat("HH:mm - dd.LL.yyyy") }}</span>
-                        <span>bis {{ plane.SlotEndTime?.toFormat("HH:mm - dd.LL.yyyy") }}</span>
+                        <span>Von {{ plane.SlotStartTime?.toFormat("HH:mm, dd.LL.yyyy") }}</span>
+                        <span>bis {{ plane.SlotEndTime?.toFormat("HH:mm, dd.LL.yyyy") }}</span>
                     </div>
                 </div>
                 <div class="flex flex-column gap-2">

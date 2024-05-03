@@ -35,8 +35,8 @@ const flightsComputed = computed(() => {
             FlightNo: flight.FlightNo ?? "-",
             Status: status.status,
             StatusColor: status.color,
-            DepartureTime: flight.DepartureTime?.toFormat("HH:mm - dd.LL.yyyy"),
-            ArrivalTime: flight.ArrivalTime?.toFormat("HH:mm - dd.LL.yyyy")
+            DepartureTime: flight.DepartureTime?.toFormat("HH:mm, dd.LL.yyyy"),
+            ArrivalTime: flight.ArrivalTime?.toFormat("HH:mm, dd.LL.yyyy")
         });
     });
 
