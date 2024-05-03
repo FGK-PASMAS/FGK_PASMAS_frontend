@@ -18,7 +18,7 @@ export const createUser = async (user: User): Promise<User | APIError> => {
     });
 }
 
-export const deleteFlight = async(user: User): Promise<boolean | APIError> => {
+export const deleteUser = async(user: User): Promise<boolean | APIError> => {
     return await fetchAPI({
         resource: "users",
         method: "DELETE",
