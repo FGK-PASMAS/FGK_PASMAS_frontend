@@ -62,7 +62,7 @@ $menu-drawer-width: 256px;
 
 .drawer {
     width: $menu-drawer-width;
-    background-color: var(--surface-100);
+    background-color: var(--surface-200);
     margin-left: calc(-1 * $menu-drawer-width);
     transition: margin-left 0.3s ease;
 }

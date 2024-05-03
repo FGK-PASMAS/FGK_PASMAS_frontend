@@ -45,8 +45,8 @@ export enum FlightStatusDisplayName {
 }
 
 export interface Flight extends EntityInterface {
-    FlightNo?: string,
     Status?: FlightStatus;
+    FlightNo?: string,
     Description?: string;
     FuelAtDeparture?: number;
     DepartureTime?: DateTimeMaybeValid;

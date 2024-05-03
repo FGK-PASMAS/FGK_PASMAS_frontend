@@ -7,7 +7,8 @@ export enum Role {
 }
 
 export interface User extends EntityInterface {
-    iss?: string;
-    username?: string;
-    role?: Role;
+    Iss?: string;
+    Username?: string;
+    Role?: Role;
+    Password?: string;
 }

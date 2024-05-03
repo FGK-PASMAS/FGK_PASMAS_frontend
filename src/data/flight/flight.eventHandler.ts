@@ -33,7 +33,9 @@ export class FlightEventHandler extends EntityEventHandler
     protected onEntityDeletedEvent(subject: Flight, toast: ToastServiceMethods): void {
         const departure = subject.DepartureTime!.toFormat("HH:mm dd.LL.yyyy");
 
-        if (subject.Status === FlightStatus.BOOKED) {
+        if (subject.Status === FlightStatus.BLOCKED) {
+            toast.add(new InfoToast({ detail: "Blocker um " + departure + " wurde storniert." }));
+        } else if (subject.Status === FlightStatus.BOOKED) {
             toast.add(new InfoToast({ detail: "Flug um " + departure + " wurde storniert." }));
         } else {
             toast.add(new InfoToast({ detail: "Reservierung um " + departure + " wurde storniert." }));

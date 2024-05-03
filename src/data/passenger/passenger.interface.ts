@@ -12,6 +12,7 @@ export interface Passenger extends EntityInterface {
     LastName?: string;
     FirstName?: string;
     Weight?: number;
+    PassNo?: number;
     FlightID?: number;
     Flight?: Flight;
 }

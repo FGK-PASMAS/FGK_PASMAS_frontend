@@ -6,13 +6,13 @@ import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { Division } from '@/data/division/division.interface';
 import { getDivisions } from '@/data/division/division.service';
 import { FlightEventHandler } from '@/data/flight/flight.eventHandler';
-import type { Flight } from '@/data/flight/flight.interface';
+import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { deleteFlight, getFlights, getFlightsByDivisionStream } from '@/data/flight/flight.service';
 import { authStore } from '@/stores/auth';
 import { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from 'primevue/api';
 import type DataTable from 'primevue/datatable';
-import TabMenu, { type TabMenuChangeEvent } from 'primevue/tabmenu';
+import { type TabMenuChangeEvent } from 'primevue/tabmenu';
 import { useToast } from 'primevue/usetoast';
 import { computed, onBeforeMount, onUnmounted, ref, type Ref } from 'vue';
 
@@ -28,9 +28,14 @@ const flightsComputed = computed(() => {
 
     flights.value.forEach(flight => {
         const status = useFlightStatusDisplayData(flight.Status);
+        let pilot = "-"
         const passengers = {
             computed: "",
             raw: [] as {}[]
+        }
+
+        if (flight.Pilot?.LastName && flight.Pilot?.FirstName) {
+            pilot = flight.Pilot?.LastName + " " + flight.Pilot?.FirstName;
         }
         
         flight.Passengers?.forEach(passenger => {
@@ -49,11 +54,11 @@ const flightsComputed = computed(() => {
             Status: status.status,
             StatusColor: status.color,
             Description: flight.Description ?? "-",
-            DepartureTime: flight.DepartureTime?.toFormat("HH:mm - dd.LL.yyyy"),
-            ArrivalTime: flight.ArrivalTime?.toFormat("HH:mm - dd.LL.yyyy"),
+            DepartureTime: flight.DepartureTime?.toFormat("HH:mm, dd.LL.yyyy"),
+            ArrivalTime: flight.ArrivalTime?.toFormat("HH:mm, dd.LL.yyyy"),
             Registration: flight.Plane?.Registration,
             AircraftType: flight.Plane?.AircraftType,
-            Pilot: flight.Pilot?.LastName + " " + flight.Pilot?.FirstName,
+            Pilot: pilot,
             PassengersComputed: passengers.computed,
             PassengersRaw: passengers.raw
         });
@@ -115,7 +120,8 @@ onUnmounted(() => {
     }
 });
 
-async function changeTab(event: TabMenuChangeEvent): Promise<void> {
+async function changeTab(event: TabMenuChangeEvent): Promise<void>
+{
     event.originalEvent.stopPropagation();
 
     if (event.index === tabIndex.value) {
@@ -150,7 +156,18 @@ function cancelFlight(flightId: number): void
         return flightId === flight.ID;
     });
 
-    flightCancellationMsg = "Soll Flug " + flightToDelete?.ID + " wirklich storniert werden?";
+    let subject = "Blocker";
+
+    switch (flightToDelete?.Status) {
+        case FlightStatus.BOOKED:
+            subject = "Flug";
+            break;
+        case FlightStatus.RESERVED:
+            subject = "Reservierung";
+            break;
+    }
+
+    flightCancellationMsg = "Soll " + subject + " um " + flightToDelete?.DepartureTime?.toFormat("HH:mm, dd.LL.yyyy") + " wirklich storniert werden?";
     
     isDeleteDialogOpen.value = true;
 }
@@ -161,7 +178,9 @@ function confirmFlightCancellation(): void
         return;
     }
 
-    deleteFlight(flightToDelete);
+    useValidateAPIData(deleteFlight(flightToDelete), toast);
+
+    flightToDelete = undefined;
 }
 
 function cancelFlightCancellation(): void
@@ -173,13 +192,13 @@ function cancelFlightCancellation(): void
 <template>
     <main class="flex flex-column overflow-hidden">
         <DataTableViewHeader title="Flüge" v-model:filters="filters" :dt="dt" />
-        <TabMenu :model="divisions" @tab-change="changeTab($event)" class="flex-grow-0">
+        <PrimeTabMenu :model="divisions" @tab-change="changeTab($event)" class="flex-grow-0">
             <template #item="{ item, props }">
                 <a v-bind="props.action" class="flex align-items-center gap-2">
                     <span class="font-bold">{{ item.Name }}</span>
                 </a>
             </template>
-        </TabMenu>
+        </PrimeTabMenu>
         <div class="flex-grow-1 overflow-auto">
             <PrimeDataTable
                 :value="flightsComputed"
@@ -195,6 +214,11 @@ function cancelFlightCancellation(): void
                 scrollHeight="flex"
             >
                 <template #empty> Keine Flüge gefunden. </template>
+                <PrimeColumn v-if="auth.isAdmin" header="Aktion">
+                    <template #body="slotProps">
+                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.data.ID)" class="text-color" />
+                    </template>
+                </PrimeColumn>
                 <PrimeColumn field="Status" header="Status" sortable>
                     <template #body="slotProps">
                         <div class="flex align-items-center gap-2">
@@ -243,15 +267,11 @@ function cancelFlightCancellation(): void
                 </PrimeColumn>
                 <PrimeColumn field="PassengersComputed" header="Passagiere" sortable>
                     <template #body="slotProps">
-                        <p v-for="passenger in slotProps.data.PassengersRaw" :key="passenger.ID">{{ passenger.LastName }}, {{ passenger.FirstName }}</p>
+                        <p v-if="slotProps.data.PassengersRaw.length <= 0">-</p>
+                        <p v-else v-for="passenger in slotProps.data.PassengersRaw" :key="passenger.ID">{{ passenger.LastName }}, {{ passenger.FirstName }}</p>
                     </template>
                     <template #filter="{ filterModel, filterCallback }">
                         <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn v-if="auth.isAdmin" header="Aktion">
-                    <template #body="slotProps">
-                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.data.ID)" class="text-red-50" />
                     </template>
                 </PrimeColumn>
             </PrimeDataTable>

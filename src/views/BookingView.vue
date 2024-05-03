@@ -7,6 +7,7 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
+import TransitionLoading from "@/components/TransitionLoading.vue";
 import type { Division } from "@/data/division/division.interface";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import { PassengerAction, type Passenger } from "@/data/passenger/passenger.interface";
@@ -261,7 +262,7 @@ function showCancelBookingToast(): void
 
 <template>
 <main class="flex flex-column overflow-hidden">
-    <div class="flex-grow-1 flex flex-column overflow-hidden">
+    <div class="flex-grow-1 flex flex-column overflow-auto">
         <div class="flex justify-content-between mb-1">
             <ContentHeader title="Buchen" />
             <PrimeButton v-if="isDataLoaded && (booking.flight?.Status === undefined || booking.flight?.Status === FlightStatus.RESERVED)" 
@@ -272,21 +273,18 @@ function showCancelBookingToast(): void
                 Abbrechen
             </PrimeButton>
         </div>
-        <MenuStepper v-if="isDataLoaded && (booking.flight?.Status === undefined || booking.flight?.Status === FlightStatus.RESERVED)"
-            ref="stepper" 
-            :items="items" 
-            :isNextNavEnabled="isNextNavEnabled" 
-            class="flex-grow-1" 
-            @stepChanged="onStepChanged" 
-            @confirm="confirmBooking()"
-        />
-        <BookingResult v-else-if="isDataLoaded && booking.flight?.Status === FlightStatus.BOOKED" :flight="bookedFlight" />
+        <TransitionLoading :isDataLoaded="isDataLoaded" class="flex-grow-1 flex overflow-hidden">
+            <MenuStepper v-if="isDataLoaded && (booking.flight?.Status === undefined || booking.flight?.Status === FlightStatus.RESERVED)"
+                ref="stepper" 
+                :items="items" 
+                :isNextNavEnabled="isNextNavEnabled"  
+                @stepChanged="onStepChanged" 
+                @confirm="confirmBooking()"
+                class="flex-grow-1"
+            />
+            <BookingResult v-else-if="isDataLoaded && booking.flight?.Status === FlightStatus.BOOKED" :flight="bookedFlight" />
+        </TransitionLoading>
     </div>
-    <Transition name="fade">    
-        <div v-if="!isDataLoaded" class="absolute top-0 left-0 w-full h-full flex justify-content-center align-items-center surface-100 border-round">
-            <PrimeProgressSpinner strokeWidth="4" />
-        </div>
-    </Transition>
     <ConfirmDialog
         v-model:isOpen="isBookingExistsDialogOpen"
         description="Es ist eine Buchung vorhanden. Möchtest du mit dieser fortfahren?"
@@ -309,14 +307,4 @@ function showCancelBookingToast(): void
 </template>
 
 <style scoped lang="scss">
-.fade-enter-active,
-.fade-leave-active {
-    transition: opacity 0.5s ease;
-    transition-delay: 0.3s;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-    opacity: 0;
-}
 </style>
