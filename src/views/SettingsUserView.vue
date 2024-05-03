@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import AppDialog from '@/components/AppDialog.vue';
+import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import DataTableViewHeader from '@/components/DataTableViewHeader.vue';
 import UserCreation from '@/components/UserCreation.vue';
 import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { User } from '@/data/user/user.interface';
-import { getUsers } from '@/data/user/user.service';
+import { deleteUser, getUsers } from '@/data/user/user.service';
+import { InfoToast } from '@/utils/toasts/info.toast';
 import { FilterMatchMode } from 'primevue/api';
 import type DataTable from 'primevue/datatable';
 import { useToast } from 'primevue/usetoast';
@@ -36,6 +38,9 @@ const columns = [
 
 const toast = useToast();
 const isAddUserOpen = ref(false);
+const isRemoveUserOpen = ref(false);
+let userToRemove: User | undefined;
+let userRemovalMsg = "Soll der Benutzer wirklich gelöscht werden?";
 
 onBeforeMount(async () => {
     users.value = await useValidateAPIData(getUsers(), toast);
@@ -53,10 +58,35 @@ async function onAddUserEmit(): Promise<void>
     isAddUserOpen.value = false;
 }
 
-function removeUser(data: any): void
+function removeUser(userId: number): void
 {
-    console.log(data);
-    alert("NO API ENDPOINT AVAILABLE!");
+    userToRemove = users.value.find((user) => {
+        return userId === user.ID;
+    });
+
+    userRemovalMsg = "Soll Benutzer " + userToRemove?.Username + " wirklich gelöscht werden?";
+
+    isRemoveUserOpen.value = true;
+}
+
+async function confirmUserRemoval(): Promise<void>
+{
+    if (!userToRemove) {
+        return;
+    }
+
+    await useValidateAPIData(deleteUser(userToRemove), toast);
+
+    // ToDo: This isn't needed if User offers a SSE endpoint
+    users.value = await useValidateAPIData(getUsers(), toast);
+    toast.add(new InfoToast({ detail: "Benutzer " + userToRemove.Username + " wurde erfolgreich gelöscht." }));
+    
+    userToRemove = undefined;
+}
+
+function cancelUserRemoval(): void
+{
+    userToRemove = undefined;
 }
 </script>
 
@@ -87,13 +117,19 @@ function removeUser(data: any): void
                 </PrimeColumn>
                 <PrimeColumn header="Aktion">
                     <template #body="slotProps">
-                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="removeUser(slotProps.data)" class="text-red-50" />
+                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="removeUser(slotProps.data.ID)" class="text-red-50" />
                     </template>
                 </PrimeColumn>
             </PrimeDataTable>
             <AppDialog v-model:isOpen="isAddUserOpen" :isStrictClose="true">
                 <UserCreation @confirm="onAddUserEmit()" @cancel="onAddUserEmit()" />
             </AppDialog>
+            <ConfirmDialog 
+                v-model:isOpen="isRemoveUserOpen"
+                :description="userRemovalMsg"
+                @confirm="confirmUserRemoval()"
+                @cancel="cancelUserRemoval()"
+            />
         </div>
     </main>
 </template>
