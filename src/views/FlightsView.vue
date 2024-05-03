@@ -214,6 +214,11 @@ function cancelFlightCancellation(): void
                 scrollHeight="flex"
             >
                 <template #empty> Keine Flüge gefunden. </template>
+                <PrimeColumn v-if="auth.isAdmin" header="Aktion">
+                    <template #body="slotProps">
+                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.data.ID)" class="text-color" />
+                    </template>
+                </PrimeColumn>
                 <PrimeColumn field="Status" header="Status" sortable>
                     <template #body="slotProps">
                         <div class="flex align-items-center gap-2">
@@ -267,11 +272,6 @@ function cancelFlightCancellation(): void
                     </template>
                     <template #filter="{ filterModel, filterCallback }">
                         <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn v-if="auth.isAdmin" header="Aktion">
-                    <template #body="slotProps">
-                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.data.ID)" class="text-color" />
                     </template>
                 </PrimeColumn>
             </PrimeDataTable>

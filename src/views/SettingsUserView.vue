@@ -18,15 +18,10 @@ const users: Ref<User[]> = ref([]);
 const dt: Ref<DataTable | undefined> = ref();
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    ID: { value: null, matchMode: FilterMatchMode.CONTAINS },
     Username: { value: null, matchMode: FilterMatchMode.CONTAINS },
     Role: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const columns = [
-    {
-        field: "ID",
-        header: "ID"
-    },
     {
         field: "Username",
         header: "Benutzer"
@@ -115,14 +110,14 @@ function cancelUserRemoval(): void
                     scrollHeight="flex"
                 >
                     <template #empty> Keine Benutzer gefunden. </template>
-                    <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable>
-                        <template #filter="{ filterModel, filterCallback }">
-                            <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                        </template>
-                    </PrimeColumn>
                     <PrimeColumn header="Aktion">
                         <template #body="slotProps">
                             <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="removeUser(slotProps.data.ID)" class="text-color" />
+                        </template>
+                    </PrimeColumn>
+                    <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable>
+                        <template #filter="{ filterModel, filterCallback }">
+                            <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
                         </template>
                     </PrimeColumn>
                 </PrimeDataTable>
