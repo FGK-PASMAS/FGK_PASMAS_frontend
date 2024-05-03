@@ -121,16 +121,16 @@ function cancelUserRemoval(): void
                     </template>
                 </PrimeColumn>
             </PrimeDataTable>
-            <AppDialog v-model:isOpen="isAddUserOpen" :isStrictClose="true">
-                <UserCreation @confirm="onAddUserEmit()" @cancel="onAddUserEmit()" />
-            </AppDialog>
-            <ConfirmDialog 
-                v-model:isOpen="isRemoveUserOpen"
-                :description="userRemovalMsg"
-                @confirm="confirmUserRemoval()"
-                @cancel="cancelUserRemoval()"
-            />
         </div>
+        <AppDialog v-model:isOpen="isAddUserOpen" :isStrictClose="true">
+            <UserCreation @confirm="onAddUserEmit()" @cancel="onAddUserEmit()" />
+        </AppDialog>
+        <ConfirmDialog 
+            v-model:isOpen="isRemoveUserOpen"
+            :description="userRemovalMsg"
+            @confirm="confirmUserRemoval()"
+            @cancel="cancelUserRemoval()"
+        />
     </main>
 </template>
 

@@ -4,7 +4,7 @@ import ContentHeader from '@/components/ContentHeader.vue';
 </script>
 
 <template>
-    <div>
+    <main>
         <ContentHeader title="Einstellungen" />
         <div class="flex flex-column md:flex-row flex-wrap gap-4">
             <RouterLink :to="{ name: 'settings.user' }" class="no-underline">
@@ -17,7 +17,7 @@ import ContentHeader from '@/components/ContentHeader.vue';
                 <AppTile icon="bi-airplane-fill" title="Flugzeuge" />
             </RouterLink>
         </div>
-    </div>    
+    </main>    
 </template>
 
 <style scoped lang="scss">
