@@ -7,12 +7,8 @@ export enum Role {
 }
 
 export interface User extends EntityInterface {
-    iss?: string;
-    username?: string;
-    role?: Role;
-    
-    // ToDo: Additional fields due to API user model being different during authentication and app context 
-    Name?: string;
-    Role?: string;
+    Iss?: string;
+    Username?: string;
+    Role?: Role;
     Password?: string;
 }

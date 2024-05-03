@@ -33,7 +33,7 @@ export const authStore = defineStore("auth", () => {
     });
 
     const isAdmin = computed((): boolean => {
-        if (user.value?.role === Role.ADMIN) {
+        if (user.value?.Role === Role.ADMIN) {
             return true;
         }
 
@@ -41,11 +41,11 @@ export const authStore = defineStore("auth", () => {
     });
 
     const isVendor = computed((): boolean => {
-        if (user.value?.role === Role.ADMIN) {
+        if (user.value?.Role === Role.ADMIN) {
             return true;
         }
 
-        if (user.value?.role === Role.VENDOR) {
+        if (user.value?.Role === Role.VENDOR) {
             return true;
         }
 

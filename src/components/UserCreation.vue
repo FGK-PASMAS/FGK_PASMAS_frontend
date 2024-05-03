@@ -51,7 +51,7 @@ function togglePassword(): void
 async function confirm(): Promise<void> 
 {
     const user: User = {
-        Name: username.value,
+        Username: username.value,
         Role: selectedRole.value,
         Password: password.value
     };

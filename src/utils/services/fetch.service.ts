@@ -14,7 +14,7 @@ interface FetchAPIRequest {
 
 export const fetchAuth = async (username: String, password: String): Promise<boolean | APIError>  => {
     const api = import.meta.env.VITE_API_URL;
-    const url = api + "/user";
+    const url = api + "/auth";
     const credentials = btoa(username + ":" + password);
 
     const requestOptions = {

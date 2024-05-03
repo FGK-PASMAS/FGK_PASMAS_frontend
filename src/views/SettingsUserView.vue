@@ -13,8 +13,8 @@ const dt: Ref<DataTable | undefined> = ref();
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     ID: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    username: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    role: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    Username: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    Role: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 const columns = [
     {
@@ -22,11 +22,11 @@ const columns = [
         header: "ID"
     },
     {
-        field: "username",
+        field: "Username",
         header: "Benutzer"
     },
     {
-        field: "role",
+        field: "Role",
         header: "Rolle"
     }
 ];

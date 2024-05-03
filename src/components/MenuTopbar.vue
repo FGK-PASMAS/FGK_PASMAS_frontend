@@ -52,7 +52,7 @@ function logout(): void
                 <PrimeButton icon="bi-person-fill" label="Login" rounded class="text-color" />
             </RouterLink>
             <div v-else class="flex align-items-center gap-2">
-                <span>{{ auth.user?.username }}</span>
+                <span>{{ auth.user?.Username }}</span>
                 <PrimeButton icon="bi-box-arrow-right" severity="danger" rounded @click="logout()" class="text-color" />
             </div>
         </div>
