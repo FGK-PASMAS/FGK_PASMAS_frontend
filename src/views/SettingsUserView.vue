@@ -117,7 +117,7 @@ function cancelUserRemoval(): void
                 </PrimeColumn>
                 <PrimeColumn header="Aktion">
                     <template #body="slotProps">
-                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="removeUser(slotProps.data.ID)" class="text-red-50" />
+                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="removeUser(slotProps.data.ID)" class="text-color" />
                     </template>
                 </PrimeColumn>
             </PrimeDataTable>

@@ -271,7 +271,7 @@ function cancelFlightCancellation(): void
                 </PrimeColumn>
                 <PrimeColumn v-if="auth.isAdmin" header="Aktion">
                     <template #body="slotProps">
-                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.data.ID)" class="text-red-50" />
+                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.data.ID)" class="text-color" />
                     </template>
                 </PrimeColumn>
             </PrimeDataTable>
