@@ -82,15 +82,26 @@ function cancel(): void
                 <PrimeDivider />
             </div>
             <div class="flex flex-column gap-5">
-                <div class="flex flex-column gap-2">
-                    <div class="flex gap-2">
-                        <i class="bi-airplane-fill" />
-                        <span>{{ plane.Registration }} ({{ plane.AircraftType }})</span>
+                <div class="flex flex-column gap-4">
+                    <div>
+                        <div class="flex align-items-center gap-2 mb-1">
+                            <i class="bi-airplane-fill" />
+                            <h3 class="m-0">Flugzeug</h3>
+                        </div>
+                        <span class="ml-3">{{ plane.Registration }} ({{ plane.AircraftType }})</span>
                     </div>
-                    <div class="flex gap-2">
-                        <i class="bi-clock-fill" />
-                        <span>Von {{ plane.SlotStartTime?.toFormat("HH:mm, dd.LL.yyyy") }}</span>
-                        <span>bis {{ plane.SlotEndTime?.toFormat("HH:mm, dd.LL.yyyy") }}</span>
+                    <div>
+                        <div class="flex align-items-center gap-2 mb-1">
+                            <i class="bi-clock-fill" />
+                            <h3 class="m-0">Zeitraum</h3>
+                        </div>
+                        <div class="flex flex-wrap gap-2 ml-3">
+                            <span>{{ plane.SlotStartTime?.toFormat("HH:mm") }}</span>
+                            <span>-</span>
+                            <span>{{ plane.SlotEndTime?.toFormat("HH:mm") }}</span>
+                            <span>|</span>
+                            <span>{{ plane.SlotStartTime?.toFormat("cccc, dd LLLL yyyy") }}</span>
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-column gap-2">

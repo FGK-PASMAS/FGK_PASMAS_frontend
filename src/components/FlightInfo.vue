@@ -212,8 +212,8 @@ async function cancelFlight(): Promise<void>
                     <h3 class="m-0">Flugzeug</h3>
                 </div>
                 <div v-if="flight" class="flex flex-column gap-1 ml-3">
-                    <span><span class="font-bold">Typ:</span> {{ flight.Plane!.AircraftType }}</span>
                     <span><span class="font-bold">Kennzeichen:</span> {{ flight.Plane!.Registration }}</span>
+                    <span><span class="font-bold">Typ:</span> {{ flight.Plane!.AircraftType }}</span>
                     <span><span class="font-bold">Leergewicht:</span> {{ flight.Plane!.EmptyWeight }}kg</span>
                     <span v-if="flight.FuelAtDeparture && flight.FuelAtDeparture >= 0"><span class="font-bold">Treibstoff:</span> {{ flight.FuelAtDeparture }}L</span>
                 </div>
