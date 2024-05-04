@@ -1,20 +1,11 @@
 <script setup lang="ts">
 import { useFlightStatusDisplayData, type FlightStatusDisplayData } from '@/composables/useFlightStatusDisplayData';
-import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
-import { createFlight, deleteFlight } from '@/data/flight/flight.service';
-import { PassengerAction } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
-import { flightsStore } from '@/stores/flights';
-import { InfoToast } from '@/utils/toasts/info.toast';
-import { DateTime } from 'luxon';
 import { useToast } from 'primevue/usetoast';
 import { computed, type PropType } from 'vue';
 
-const toast = useToast();
-
 const booking = bookingStore();
-const flights = flightsStore();
 
 const flight = defineModel("flight", {
     type: Object as PropType<Flight>,
@@ -29,42 +20,16 @@ defineEmits([
     "showInfo"
 ]);
 
-// ToDo Move reserve action to own function
+const toast = useToast();
+
 async function reserveFlight(): Promise<void>
 {
-    const now = DateTime.now();
-
-    if (now > flight.value.DepartureTime!) {
-        flights.upcomingStartTime = now;
-        toast.add(new InfoToast({ detail: "Flug liegt in der Vergangenheit. Reservierung kann nicht durchgeführt werden." }));
-
-        return;
-    }
-
-    flight.value.Passengers = booking.passengers;
-
-    const reservedFlight = await useValidateAPIData(createFlight(flight.value), toast);
-
-    booking.seats = reservedFlight.Passengers;
-    booking.seats.forEach(seat => {
-        seat.Action = PassengerAction.UPDATE;
-    });
-
-    reservedFlight.Passengers = undefined;
-    booking.flight = reservedFlight;
+    await booking.reserveFlight(flight.value, toast);
 }
 
 async function cancelFlight(): Promise<void>
 {
-    const response = await useValidateAPIData(deleteFlight(flight.value), toast);
-
-    if (response) {
-        booking.flight = undefined;
-
-        booking.seats.forEach(seat => {
-            seat.Action = PassengerAction.CREATE;
-        });
-    }
+    await booking.cancelFlight(toast);
 }
 </script>
 
@@ -103,7 +68,7 @@ async function cancelFlight(): Promise<void>
                 Reservieren
             </PrimeButton>
         </div>
-        <div v-else class="status-box w-3 min-width flex justify-content-center align-items-center text-color border-round-right" :class="displayedStatus.bgColor" @click.stop>{{ displayedStatus.status }}</div>
+        <div v-else class="status-box w-3 min-width flex justify-content-center align-items-center text-center text-color border-round-right" :class="displayedStatus.bgColor" @click.stop>{{ displayedStatus.status }}</div>
     </div>
 </template>
 

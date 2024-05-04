@@ -1,24 +1,15 @@
 <script setup lang="ts">
-import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { Division } from '@/data/division/division.interface';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
-import { createFlight, deleteFlight } from '@/data/flight/flight.service';
-import { PassengerAction, type Passenger } from '@/data/passenger/passenger.interface';
+import { type Passenger } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
-import { flightsStore } from '@/stores/flights';
-import { InfoToast } from '@/utils/toasts/info.toast';
-import { DateTime } from 'luxon';
+import { getETOW, getTotalPassengersWeight } from '@/utils/services/flightCalculation.service';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, type PropType } from 'vue';
 import FlightStatusInfo from './FlightStatusInfo.vue';
 import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
 
-const toast = useToast();
-
 const booking = bookingStore();
-const flights = flightsStore();
-
-const isButtonDisabled = ref(false);
 
 const flight = defineModel("flight", {
     type: Object as PropType<Flight>
@@ -33,31 +24,16 @@ const props = defineProps({
     }
 });
 
-// ToDo: This calculation is used in the booking store as well
-const totalPassengerWeight = computed(() => {
-    if (!props.passengers) {
+const totalPassengersWeight = computed(() => {
+    return getTotalPassengersWeight(props.passengers);
+});
+
+const etow = computed(() => {
+    if (!flight.value) {
         return 0;
     }
 
-    return props.passengers.reduce(( accumulator, passenger) => accumulator + (passenger.Weight ?? 0), 0);
-});
-
-// ToDo: This calculation is used in the flight store for virtual flights as well
-const etow = computed(() => {
-    let etow = 0;
-    let fuel = 0;
-
-    if (!flight.value?.Plane || flight.value?.FuelAtDeparture === undefined) {
-        return etow;
-    }
-
-    if (flight.value.FuelAtDeparture > 0) {
-        fuel = flight.value.FuelAtDeparture * flight.value.Plane.FuelConversionFactor!;
-    }
-
-    etow = flight.value.Plane.EmptyWeight! + totalPassengerWeight.value + fuel + flight.value.Pilot!.Weight!;
-
-    return etow;
+    return getETOW(flight.value, props.passengers);
 });
 
 const overload = computed(() => {
@@ -74,11 +50,6 @@ const overload = computed(() => {
     return 0;
 });
 
-const emit = defineEmits([
-    "flightReserved",
-    "flightCanceled"
-]);
-
 const isReserveable = computed(() => {
     return !booking.flight && flight.value?.Status === FlightStatus.OK;
 });
@@ -87,64 +58,34 @@ const isCanceable = computed(() => {
     return booking.flight?.ID === flight.value?.ID && flight.value?.Status === FlightStatus.RESERVED;
 });
 
-// ToDo Move reserve action to own function
+const emit = defineEmits([
+    "flightReserved",
+    "flightCanceled"
+]);
+
+const toast = useToast();
+const isButtonDisabled = ref(false);
+
 async function reserveFlight(): Promise<void>
 {
     if (!flight.value) {
         return;
     }
 
-    const now = DateTime.now();
-
-    if (now > flight.value.DepartureTime!) {
-        flights.upcomingStartTime = now;
-        toast.add(new InfoToast({ detail: "Flug liegt in der Vergangenheit. Reservierung kann nicht durchgeführt werden." }));
-
-        emit("flightCanceled");
-
-        return;
-    }
-
     isButtonDisabled.value = true;
 
-    flight.value.Passengers = booking.passengers;
-
-    const reservedFlight = await useValidateAPIData(createFlight(flight.value), toast);
-
-    if (reservedFlight) {
-        booking.seats = reservedFlight.Passengers;
-        booking.seats.forEach(seat => {
-            seat.Action = PassengerAction.UPDATE;
-        });
-
-        reservedFlight.Passengers = undefined;
-        booking.flight = reservedFlight;
-
-        emit("flightReserved", reservedFlight);
-    }
+    await booking.reserveFlight(flight.value, toast);
+    emit("flightReserved");
 
     isButtonDisabled.value = false;
 }
 
 async function cancelFlight(): Promise<void>
 {
-    if (!flight.value) {
-        return;
-    }
-
     isButtonDisabled.value = true;
 
-    const response = await useValidateAPIData(deleteFlight(flight.value), toast);
-
-    if (response) {
-        booking.flight = undefined;
-
-        booking.seats.forEach(seat => {
-            seat.Action = PassengerAction.CREATE;
-        });
-
-        emit("flightCanceled");
-    }
+    await booking.cancelFlight(toast);
+    emit("flightCanceled");
 
     isButtonDisabled.value = false;
 }
@@ -176,7 +117,7 @@ async function cancelFlight(): Promise<void>
                     <div class="flex flex-column gap-1">
                         <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :passenger="passenger" :seatNumber="index + 1" :seatPayload="flight?.Plane?.MaxSeatPayload" />
                     </div>
-                    <span><span class="font-bold">Gesamt:</span> {{ totalPassengerWeight }}kg</span>
+                    <span><span class="font-bold">Gesamt:</span> {{ totalPassengersWeight }}kg</span>
                 </div>
             </div>
             <div>
@@ -215,7 +156,7 @@ async function cancelFlight(): Promise<void>
                     <span><span class="font-bold">Kennzeichen:</span> {{ flight.Plane!.Registration }}</span>
                     <span><span class="font-bold">Typ:</span> {{ flight.Plane!.AircraftType }}</span>
                     <span><span class="font-bold">Leergewicht:</span> {{ flight.Plane!.EmptyWeight }}kg</span>
-                    <span v-if="flight.FuelAtDeparture && flight.FuelAtDeparture >= 0"><span class="font-bold">Treibstoff:</span> {{ flight.FuelAtDeparture }}L</span>
+                    <span v-if="flight.Plane!.FuelMaxCapacity! > 0"><span class="font-bold">Treibstoff:</span> {{ flight.FuelAtDeparture }}L</span>
                 </div>
                 <span v-else>-</span>
             </div>

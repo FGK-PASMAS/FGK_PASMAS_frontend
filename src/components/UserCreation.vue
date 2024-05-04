@@ -58,7 +58,7 @@ async function confirm(): Promise<void>
 
     await useValidateAPIData(createUser(user), toast );
 
-    // ToDo: Can be removed if there is a user SSE endpoint
+    // ToDo: Can be removed if there is a suitable users SSE endpoint
     toast.add(new InfoToast({ detail: "Benutzer wurde erfolgreich angelegt." }));
 
     emit("confirm");
