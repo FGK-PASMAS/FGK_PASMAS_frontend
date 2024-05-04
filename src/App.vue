@@ -7,12 +7,10 @@ import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
 import { authStore } from "./stores/auth";
-import { configStore } from "./stores/config";
 import { RouteGuard } from "./router";
 
 const router = useRouter();
 const auth = authStore();
-const config = configStore();
 const PrimeVue = usePrimeVue();
 
 // Theme
@@ -31,7 +29,6 @@ const hideMenu = ref(false);
 
 onBeforeMount(() => {
     auth.init();
-    config.init();
 
     localTheme = localStorage.getItem("theme");
 

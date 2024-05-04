@@ -5,16 +5,9 @@ import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import { computed, ref, type Ref } from "vue";
 import { bookingStore } from "./booking";
-import { configStore } from "./config";
 
 export const flightsStore = defineStore("flights", () => {
-    const config = configStore();
     const booking = bookingStore();
-
-    const eventStartTime: DateTime = config.eventStartTime!;
-    const eventEndTime: DateTime = config.eventEndTime!;
-
-    const upcomingStartTime: Ref<DateTime> = ref(DateTime.now());
 
     const planes: Ref<Plane[]> = ref([]);
     const existingFlights: Ref<Flight[]> = ref([]);
@@ -23,19 +16,27 @@ export const flightsStore = defineStore("flights", () => {
         const flights: Flight[] = [];
 
         planes.value.forEach((plane) => {
-            const duration = plane.FlightDuration! / 1000000000;
-            let i = eventStartTime;
+            const slotStartTime = plane.SlotStartTime;
+            const slotEndTime = plane.SlotEndTime;
+            const upcomingStartTime = DateTime.now();
 
-            while (i < eventEndTime) {
+            if (!slotStartTime || !slotEndTime) {
+                return;
+            }
+
+            const duration = plane.FlightDuration! / 1000000000;
+            let i = slotStartTime;
+
+            while (i < slotEndTime) {
                 let departure: DateTime = i;
 
-                if (!i.equals(eventStartTime)) {
+                if (!i.equals(slotStartTime)) {
                     departure = departure.plus({ minutes: 1 });
                 }
 
                 const arrival = departure.plus({ seconds: duration });
 
-                if (departure < upcomingStartTime.value) {
+                if (departure < upcomingStartTime) {
                     i  = arrival;
 
                     continue;
@@ -46,7 +47,7 @@ export const flightsStore = defineStore("flights", () => {
                 if (existingFlight) {
                     i = existingFlight.ArrivalTime!;
 
-                    if (i > upcomingStartTime.value) {
+                    if (i > upcomingStartTime) {
                         flights.push(existingFlight);
                     }
                 
@@ -255,5 +256,5 @@ export const flightsStore = defineStore("flights", () => {
         existingFlights.value = [];
     }
 
-    return { upcomingStartTime, planes, existingFlights, flights, resetStore };
+    return { planes, existingFlights, flights, resetStore };
 });

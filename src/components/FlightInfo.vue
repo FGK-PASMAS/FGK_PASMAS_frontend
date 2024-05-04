@@ -5,9 +5,6 @@ import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { createFlight, deleteFlight } from '@/data/flight/flight.service';
 import { PassengerAction, type Passenger } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
-import { flightsStore } from '@/stores/flights';
-import { InfoToast } from '@/utils/toasts/info.toast';
-import { DateTime } from 'luxon';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, type PropType } from 'vue';
 import FlightStatusInfo from './FlightStatusInfo.vue';
@@ -16,7 +13,6 @@ import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
 const toast = useToast();
 
 const booking = bookingStore();
-const flights = flightsStore();
 
 const isButtonDisabled = ref(false);
 
@@ -91,17 +87,6 @@ const isCanceable = computed(() => {
 async function reserveFlight(): Promise<void>
 {
     if (!flight.value) {
-        return;
-    }
-
-    const now = DateTime.now();
-
-    if (now > flight.value.DepartureTime!) {
-        flights.upcomingStartTime = now;
-        toast.add(new InfoToast({ detail: "Flug liegt in der Vergangenheit. Reservierung kann nicht durchgeführt werden." }));
-
-        emit("flightCanceled");
-
         return;
     }
 

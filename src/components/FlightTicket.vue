@@ -5,16 +5,12 @@ import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { createFlight, deleteFlight } from '@/data/flight/flight.service';
 import { PassengerAction } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
-import { flightsStore } from '@/stores/flights';
-import { InfoToast } from '@/utils/toasts/info.toast';
-import { DateTime } from 'luxon';
 import { useToast } from 'primevue/usetoast';
 import { computed, type PropType } from 'vue';
 
 const toast = useToast();
 
 const booking = bookingStore();
-const flights = flightsStore();
 
 const flight = defineModel("flight", {
     type: Object as PropType<Flight>,
@@ -32,15 +28,6 @@ defineEmits([
 // ToDo Move reserve action to own function
 async function reserveFlight(): Promise<void>
 {
-    const now = DateTime.now();
-
-    if (now > flight.value.DepartureTime!) {
-        flights.upcomingStartTime = now;
-        toast.add(new InfoToast({ detail: "Flug liegt in der Vergangenheit. Reservierung kann nicht durchgeführt werden." }));
-
-        return;
-    }
-
     flight.value.Passengers = booking.passengers;
 
     const reservedFlight = await useValidateAPIData(createFlight(flight.value), toast);
