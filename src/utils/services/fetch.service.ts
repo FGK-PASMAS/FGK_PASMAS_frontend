@@ -129,6 +129,12 @@ export const parseAPIResponse = (data: any): any => {
             return;
         }
 
+        if (typeof value === "string") {
+            if (!isValidDateFormat(value)) {
+                return;
+            }
+        }
+
         if (date.isValid) {
             data[key] = date;
         } else if (typeof value === "object") {
@@ -137,6 +143,12 @@ export const parseAPIResponse = (data: any): any => {
     });
 
     return data;
+}
+
+const isValidDateFormat = (str: string): boolean => {
+    const regex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/;
+    
+    return regex.test(str);
 }
 
 const getAPIError = (error: any): APIError => {

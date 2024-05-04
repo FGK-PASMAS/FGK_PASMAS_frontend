@@ -28,7 +28,7 @@ function newBooking(): void
                 </div>
                 <div v-for="(passenger, index) in flight!.Passengers!" :key="index" class="flex align-items-center gap-2 ml-3">
                     <i class="bi-ticket-detailed-fill text-xl" />
-                    <span class="font-bold">#{{ passenger.ID }}</span>
+                    <span class="font-bold">#{{ passenger.PassNo }}</span>
                     <span>-</span>
                     <span>{{ passenger.LastName }}, {{ passenger.FirstName }}</span>
                 </div>
@@ -36,7 +36,7 @@ function newBooking(): void
             <div class="flex flex-column gap-1">
                 <div class="flex align-items-center gap-2">
                     <i class="bi-clock-fill text-xl" />
-                    <h4 class="m-0">Flug #{{ flight!.ID }}</h4>
+                    <h4 class="m-0">Flug #{{ flight!.FlightNo }}</h4>
                 </div>
                 <div class="flex flex-wrap gap-2 ml-3">
                     <span>{{ flight!.DepartureTime!.toFormat("HH:mm") }}</span>
