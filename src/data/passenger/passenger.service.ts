@@ -12,31 +12,6 @@ export const getPassengers = async (params?: Record<string, string | number | bo
     });
 }
 
-export const createPassenger = async (passenger: Passenger): Promise<Passenger | APIError> => {
-    return await fetchAPI({ 
-        resource: "passengers", 
-        method: "POST", 
-        data: passenger 
-    });
-}
-
-export const updatePassenger = async (passenger: Passenger): Promise<Passenger | APIError> => {
-    return await fetchAPI({ 
-        resource: "passengers", 
-        method: "PUT",
-        id: passenger.ID,
-        data: passenger
-     });
-}
-
-export const deletePassenger = async (passenger: Passenger): Promise<boolean | APIError> => {
-    return await fetchAPI({
-        resource: "passengers",
-        method: "DELETE",
-        id: passenger.ID
-    });
-}
-
 export const getPassengersStream = (): EventSource => {
     return getStream("passengers");
 }
