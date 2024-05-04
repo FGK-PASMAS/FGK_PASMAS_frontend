@@ -68,7 +68,7 @@ async function cancelFlight(): Promise<void>
                 Reservieren
             </PrimeButton>
         </div>
-        <div v-else class="status-box w-3 min-width flex justify-content-center align-items-center text-color border-round-right" :class="displayedStatus.bgColor" @click.stop>{{ displayedStatus.status }}</div>
+        <div v-else class="status-box w-3 min-width flex justify-content-center align-items-center text-center text-color border-round-right" :class="displayedStatus.bgColor" @click.stop>{{ displayedStatus.status }}</div>
     </div>
 </template>
 

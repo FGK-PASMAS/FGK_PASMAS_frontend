@@ -44,6 +44,11 @@ export function useFlightStatusDisplayData(status?: FlightStatus): FlightStatusD
             displayedColor = FlightStatusColor.OVERLOADED_SEAT;
             displayedBgColor = FlightStatusBgColor.OVERLOADED_SEAT;
             break;
+        case FlightStatus.NO_FUEL:
+            displayedStatus = FlightStatusDisplayName.NO_FUEL;
+            displayedColor = FlightStatusColor.NO_FUEL;
+            displayedBgColor = FlightStatusBgColor.NO_FUEL;
+            break;
         case FlightStatus.RESERVED:
             displayedStatus = FlightStatusDisplayName.RESERVED;
             displayedColor = FlightStatusColor.RESERVED;
