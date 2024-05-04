@@ -9,19 +9,32 @@ import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
 import type { Division } from "@/data/division/division.interface";
+import { FlightEventHandler } from "@/data/flight/flight.eventHandler";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
+import { getFlightsByDivisionStream } from "@/data/flight/flight.service";
 import { type Passenger } from "@/data/passenger/passenger.interface";
+import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
+import { getPlanesStream } from "@/data/plane/plane.service";
 import { bookingStore } from "@/stores/booking";
 import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import { parseAPIResponse } from "@/utils/services/fetch.service";
 import { InfoToast } from "@/utils/toasts/info.toast";
+import { WarningToast } from "@/utils/toasts/warning.toast";
+import type { EventSource } from "extended-eventsource";
 import { DateTime } from "luxon";
 import { useToast } from "primevue/usetoast";
-import { onBeforeMount, ref, toRaw, type Ref } from "vue";
+import { onBeforeMount, onUnmounted, ref, toRaw, type Ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 const booking = bookingStore();
 const bookedFlight: Ref<Flight | undefined> = ref();
+
+// Observers to watch changes to the booking state due to administrator intervention
+let bookedFlightEventSource: EventSource;
+const bookedFlightEventHandler = new FlightEventHandler();
+
+let bookedPlaneEventSource: EventSource;
+const bookedPlaneEventHandler = new PlaneEventHandler();
 
 // Remember previous setting to offer the possiblity to revert
 let prevDivision: Division | undefined;
@@ -89,6 +102,10 @@ onBeforeMount(async () => {
     }
 });
 
+onUnmounted(() => {
+    stopBookingOberservers();
+});
+
 onBeforeRouteLeave(async () => {
     if (booking.isEmpty) {
         isAllowedToLeave.value = true;
@@ -104,9 +121,77 @@ onBeforeRouteLeave(async () => {
     }
 });
 
-booking.$subscribe(() => {
+booking.$subscribe((mutation, state) => {
+    if(state.flight) {
+        startBookingOberservers();
+    }
+
+    if(!state.flight) {
+        stopBookingOberservers();
+    }
+
     onBookingUpdate();
 });
+
+function startBookingOberservers(): void
+{
+    if (bookedFlightEventSource || bookedPlaneEventSource) {
+        return;
+    }
+
+    // Obeserve flights
+    bookedFlightEventSource = getFlightsByDivisionStream(booking.division!.ID!);
+
+    bookedFlightEventSource.onmessage = async (event) => {
+        const message = JSON.parse(event.data);
+
+        if (booking.flight?.ID !== message?.data?.ID) {
+            return;
+        }
+
+        if (message.action === "DELETED") {
+            booking.resetStore();
+        }
+
+        await cancelBooking();
+
+        toast.add(new WarningToast({ detail: "Vorgang wurde durch einen Administrator abgebrochen." }));
+    }
+
+    bookedFlightEventSource.onerror = () => {
+        bookedFlightEventHandler.onErrorEvent(toast);
+    }
+
+    // Observe planes
+    bookedPlaneEventSource = getPlanesStream();
+
+    bookedPlaneEventSource.onmessage = async (event) => {
+        const message = JSON.parse(event.data);
+
+        if (booking.flight?.Plane?.ID !== message?.data?.ID) {
+            return;
+        }
+
+        await cancelBooking();
+
+        toast.add(new WarningToast({ detail: "Vorgang wurde durch einen Administrator abgebrochen." }));
+    }
+
+    bookedPlaneEventSource.onerror = () => {
+        bookedPlaneEventHandler.onErrorEvent(toast);
+    }
+}
+
+function stopBookingOberservers(): void
+{
+    if (bookedFlightEventSource) {
+        bookedFlightEventSource.close();
+    }
+
+    if (bookedPlaneEventSource) {
+        bookedPlaneEventSource.close();
+    }
+}
 
 function onBeforeUnload(event: BeforeUnloadEvent): void
 {
@@ -217,6 +302,8 @@ function cancelFlightCancellation(): void
 
 async function confirmBooking(): Promise<void>
 {
+    stopBookingOberservers();
+
     isDataLoaded.value = false;
     bookedFlight.value = await booking.confirmBooking(toast);
     isDataLoaded.value = true;
