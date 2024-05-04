@@ -4,7 +4,6 @@ import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import { createFlight, deleteFlight, updateFlight } from "@/data/flight/flight.service";
 import { type Passenger } from "@/data/passenger/passenger.interface";
 import { getETOW, getTotalPassengersWeight } from "@/utils/services/flightCalculation.service";
-import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { computed, ref, type Ref } from "vue";
@@ -72,15 +71,7 @@ export const bookingStore = defineStore("booking", () => {
     });
 
     const isFlightOk = computed(() => {
-        if (!flight.value?.DepartureTime) {
-            return false;
-        }
-
-        if (flight.value.DepartureTime <= DateTime.now()) {
-            return false;
-        }
-
-        return true;
+        return flight.value ? true : false;
     });
 
     const isConfirmationOk = computed(() => {
@@ -159,7 +150,7 @@ export const bookingStore = defineStore("booking", () => {
         isEmpty, 
         isPassengersOk, 
         isPassengersWeightOk, 
-        isFlightOk, 
+        isFlightOk,
         isConfirmationOk,
         reserveFlight, 
         cancelFlight, 
