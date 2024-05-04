@@ -113,6 +113,22 @@ export const setOptimalPilot = (flight: Flight, passengers?: Passenger[]): void 
     });
 }
 
+export const isFuelEnough = (flight: Flight): boolean => {
+    if (!flight.Plane?.FuelMaxCapacity || flight.Plane.FuelMaxCapacity === -1) {
+        return true;
+    }
+
+    if (!flight.FuelAtDeparture || !flight.Plane.FuelburnPerFlight) {
+        return false;
+    }
+
+    if ((flight.FuelAtDeparture - flight.Plane.FuelburnPerFlight) < 0) {
+        return false;
+    }
+
+    return true;
+}
+
 export const compareFlights = (a: Flight, b: Flight): number => {
     if (!a.DepartureTime && !b.DepartureTime) {
         return 0;

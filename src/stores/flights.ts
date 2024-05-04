@@ -1,6 +1,6 @@
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import type { Plane } from "@/data/plane/plane.interface";
-import { compareFlights, getETOW, getITOW, isSeatPayloadValid, setOptimalPilot } from "@/utils/services/flightCalculation.service";
+import { compareFlights, getETOW, getITOW, isFuelEnough, isSeatPayloadValid, setOptimalPilot } from "@/utils/services/flightCalculation.service";
 import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import { computed, ref, type Ref } from "vue";
@@ -14,11 +14,11 @@ export const flightsStore = defineStore("flights", () => {
 
     const flights = computed(() => {
         const flights: Flight[] = [];
+        const upcomingStartTime = DateTime.now();
 
         planes.value.forEach((plane) => {
             const slotStartTime = plane.SlotStartTime;
             const slotEndTime = plane.SlotEndTime;
-            const upcomingStartTime = DateTime.now();
 
             if (!slotStartTime || !slotEndTime) {
                 return;
@@ -139,6 +139,11 @@ export const flightsStore = defineStore("flights", () => {
 
         virtualFlight.Pilot = virtualFlight.Plane.PrefPilot;
         setOptimalPilot(virtualFlight, booking.passengers);
+
+        if (!isFuelEnough(virtualFlight)) {
+            virtualFlight.Status = FlightStatus.NO_FUEL;
+            return virtualFlight;
+        }
 
         if (getETOW(virtualFlight, booking.passengers) > virtualFlight.Plane!.MTOW!) {
             virtualFlight.Status = FlightStatus.OVERLOADED;
