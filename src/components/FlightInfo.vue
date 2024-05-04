@@ -1,20 +1,14 @@
 <script setup lang="ts">
-import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { Division } from '@/data/division/division.interface';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
-import { createFlight, deleteFlight } from '@/data/flight/flight.service';
-import { PassengerAction, type Passenger } from '@/data/passenger/passenger.interface';
+import { type Passenger } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, type PropType } from 'vue';
 import FlightStatusInfo from './FlightStatusInfo.vue';
 import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
 
-const toast = useToast();
-
 const booking = bookingStore();
-
-const isButtonDisabled = ref(false);
 
 const flight = defineModel("flight", {
     type: Object as PropType<Flight>
@@ -70,11 +64,6 @@ const overload = computed(() => {
     return 0;
 });
 
-const emit = defineEmits([
-    "flightReserved",
-    "flightCanceled"
-]);
-
 const isReserveable = computed(() => {
     return !booking.flight && flight.value?.Status === FlightStatus.OK;
 });
@@ -83,7 +72,14 @@ const isCanceable = computed(() => {
     return booking.flight?.ID === flight.value?.ID && flight.value?.Status === FlightStatus.RESERVED;
 });
 
-// ToDo Move reserve action to own function
+const emit = defineEmits([
+    "flightReserved",
+    "flightCanceled"
+]);
+
+const toast = useToast();
+const isButtonDisabled = ref(false);
+
 async function reserveFlight(): Promise<void>
 {
     if (!flight.value) {
@@ -92,44 +88,18 @@ async function reserveFlight(): Promise<void>
 
     isButtonDisabled.value = true;
 
-    flight.value.Passengers = booking.passengers;
-
-    const reservedFlight = await useValidateAPIData(createFlight(flight.value), toast);
-
-    if (reservedFlight) {
-        booking.seats = reservedFlight.Passengers;
-        booking.seats.forEach(seat => {
-            seat.Action = PassengerAction.UPDATE;
-        });
-
-        reservedFlight.Passengers = undefined;
-        booking.flight = reservedFlight;
-
-        emit("flightReserved", reservedFlight);
-    }
+    await booking.reserveFlight(flight.value, toast);
+    emit("flightReserved");
 
     isButtonDisabled.value = false;
 }
 
 async function cancelFlight(): Promise<void>
 {
-    if (!flight.value) {
-        return;
-    }
-
     isButtonDisabled.value = true;
 
-    const response = await useValidateAPIData(deleteFlight(flight.value), toast);
-
-    if (response) {
-        booking.flight = undefined;
-
-        booking.seats.forEach(seat => {
-            seat.Action = PassengerAction.CREATE;
-        });
-
-        emit("flightCanceled");
-    }
+    await booking.cancelFlight(toast);
+    emit("flightCanceled");
 
     isButtonDisabled.value = false;
 }

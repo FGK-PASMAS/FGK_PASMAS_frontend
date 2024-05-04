@@ -1,14 +1,9 @@
 <script setup lang="ts">
 import { useFlightStatusDisplayData, type FlightStatusDisplayData } from '@/composables/useFlightStatusDisplayData';
-import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
-import { createFlight, deleteFlight } from '@/data/flight/flight.service';
-import { PassengerAction } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
 import { useToast } from 'primevue/usetoast';
 import { computed, type PropType } from 'vue';
-
-const toast = useToast();
 
 const booking = bookingStore();
 
@@ -25,33 +20,16 @@ defineEmits([
     "showInfo"
 ]);
 
-// ToDo Move reserve action to own function
+const toast = useToast();
+
 async function reserveFlight(): Promise<void>
 {
-    flight.value.Passengers = booking.passengers;
-
-    const reservedFlight = await useValidateAPIData(createFlight(flight.value), toast);
-
-    booking.seats = reservedFlight.Passengers;
-    booking.seats.forEach(seat => {
-        seat.Action = PassengerAction.UPDATE;
-    });
-
-    reservedFlight.Passengers = undefined;
-    booking.flight = reservedFlight;
+    await booking.reserveFlight(flight.value, toast);
 }
 
 async function cancelFlight(): Promise<void>
 {
-    const response = await useValidateAPIData(deleteFlight(flight.value), toast);
-
-    if (response) {
-        booking.flight = undefined;
-
-        booking.seats.forEach(seat => {
-            seat.Action = PassengerAction.CREATE;
-        });
-    }
+    await booking.cancelFlight(toast);
 }
 </script>
 

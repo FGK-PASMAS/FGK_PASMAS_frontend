@@ -3,7 +3,6 @@ import PassengerEditMinimal from "@/components/PassengerEditMinimal.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
-import { PassengerAction } from "@/data/passenger/passenger.interface";
 import { bookingStore } from "@/stores/booking";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, ref, type Ref } from "vue";
@@ -32,7 +31,6 @@ function initPassengers(): void
 
     for (let i = 0; i < booking.division.PassengerCapacity; i++) {
         booking.seats.push({
-            Action: PassengerAction.CREATE,
             LastName: undefined,
             FirstName: undefined,
             Weight: undefined

@@ -10,7 +10,7 @@ import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
 import type { Division } from "@/data/division/division.interface";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
-import { PassengerAction, type Passenger } from "@/data/passenger/passenger.interface";
+import { type Passenger } from "@/data/passenger/passenger.interface";
 import { bookingStore } from "@/stores/booking";
 import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import { parseAPIResponse } from "@/utils/services/fetch.service";
@@ -78,18 +78,6 @@ onBeforeMount(async () => {
     prevDivision = existingBookingParsed.division;
     prevSeats = existingBookingParsed.seats ?? [];
 
-    if (!booking.flight) {
-        if (booking.seats) {
-            booking.seats.forEach(seat => {
-                seat.Action = PassengerAction.CREATE;
-            });
-
-            prevSeats!.forEach(seat => {
-                seat.Action = PassengerAction.CREATE;
-            });
-        }
-    }
-
     if (booking.flight) {
         if (DateTime.now() >= booking.flight.DepartureTime!) {
             await booking.cancelBooking(toast);
@@ -127,7 +115,7 @@ function onBeforeUnload(event: BeforeUnloadEvent): void
 
 function onContinueExistingBooking(): void
 {
-    if (booking.isPassengerStepOk) {
+    if (booking.isPassengersOk) {
         isNextNavEnabled.value = true;
     }
 }
@@ -150,7 +138,7 @@ function onBookingUpdate(currentStep?: string): void
         }
     }
 
-    if (!booking.isPassengerWeightOk) {
+    if (!booking.isPassengersWeightOk) {
         bookingInvalidMsg.value = bookingWeightInvalidMsg;
         isBookingValidDialogOpen.value = true;
         return;
@@ -180,7 +168,7 @@ function onBookingUpdate(currentStep?: string): void
 
     switch (currentStep) {
         case "passengers":
-            if (booking.isPassengerStepOk) {
+            if (booking.isPassengersOk) {
                 isNextNavEnabled.value = true;
             }
 
@@ -202,8 +190,6 @@ function onBookingUpdate(currentStep?: string): void
 
 function onStepChanged(currentStep: string): void
 {
-    booking.updateFlightData(toast);
-
     // Clone object - structuredClone doesn't work on Luxon objects currently
     prevDivision = parseAPIResponse(JSON.parse(JSON.stringify((toRaw(booking.division)))));
     prevSeats = parseAPIResponse(JSON.parse(JSON.stringify((toRaw(booking.seats)))));
