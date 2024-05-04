@@ -1,8 +1,9 @@
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import type { Division } from "@/data/division/division.interface";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
-import { deleteFlight, updateFlight } from "@/data/flight/flight.service";
-import { PassengerAction, type Passenger } from "@/data/passenger/passenger.interface";
+import { createFlight, deleteFlight, updateFlight } from "@/data/flight/flight.service";
+import { type Passenger } from "@/data/passenger/passenger.interface";
+import { getETOW, getTotalPassengersWeight } from "@/utils/services/flightCalculation.service";
 import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { computed, ref, type Ref } from "vue";
@@ -17,25 +18,15 @@ export const bookingStore = defineStore("booking", () => {
     });
 
     const totalPassengersWeight = computed(() => {
-        return passengers.value.reduce((accumulator, passenger) => accumulator + (passenger.Weight ?? 0), 0);
+        return getTotalPassengersWeight(passengers.value);
     });
 
-    // ToDo: This calculation is used in the flight store for virtual flights as well
     const etow = computed(() => {
-        let etow = 0;
-        let fuel = 0;
-
-        if (!flight.value?.Plane || flight.value?.FuelAtDeparture === undefined || !flight.value.Pilot) {
-            return etow;
+        if (!flight.value) {
+            return 0;
         }
 
-        if (flight.value.FuelAtDeparture > 0) {
-            fuel = flight.value.FuelAtDeparture * flight.value.Plane.FuelConversionFactor!;
-        }
-
-        etow = flight.value.Plane.EmptyWeight! + totalPassengersWeight.value + fuel + flight.value.Pilot.Weight!;
-
-        return etow;
+        return getETOW(flight.value, passengers.value);
     });
     
     const isEmpty = computed(() => {
@@ -50,11 +41,11 @@ export const bookingStore = defineStore("booking", () => {
         return true;
     });
 
-    const isPassengerStepOk = computed(() => {
-        return totalPassengersWeight.value > 0;
+    const isPassengersOk = computed(() => {
+        return passengers.value.length > 0 && totalPassengersWeight.value > 0;
     });
 
-    const isPassengerWeightOk = computed(() => {
+    const isPassengersWeightOk = computed(() => {
         if (!flight.value) {
             return true;
         }
@@ -79,45 +70,31 @@ export const bookingStore = defineStore("booking", () => {
         return isValid;
     });
 
-    const isFlightStepOk = computed(() => {
+    const isFlightOk = computed(() => {
         return flight.value ? true : false;
     });
 
-    const isConfirmationStepOk = computed(() => {
+    const isConfirmationOk = computed(() => {
         const passengerCheck = passengers.value.every((passenger) => {
             return passenger.Weight && passenger.LastName && passenger.FirstName;
         });
 
-        return passengerCheck && isFlightStepOk;
+        return passengerCheck && isFlightOk;
     });
 
-    async function updateFlightData(toast: ToastServiceMethods): Promise<void>
+    async function reserveFlight(flightToReserve: Flight, toast: ToastServiceMethods): Promise<void>
     {
-        if (!isFlightStepOk.value || !isPassengerStepOk.value || !isPassengerWeightOk.value) {
+        flightToReserve.Passengers = passengers.value;
+
+        const reservedFlight = await useValidateAPIData(createFlight(flightToReserve), toast);
+
+        if (!reservedFlight) {
             return;
         }
 
-        // Hack due to non standardized API resources
-        // ToDo: Remove on API fix
-        const pilot = flight.value!.Pilot;
-
-        flight.value!.Passengers = passengers.value;
-
-        flight.value = await useValidateAPIData(updateFlight(flight.value!), toast);
-
-        // Hack due to non standardized API resources
-        // ToDo: Remove on API fix
-        flight.value!.Pilot = pilot;
-
-        seats.value = flight.value!.Passengers!;
-        seats.value.forEach(seat => {
-            seat.Action = PassengerAction.UPDATE;
-        });
-
-        flight.value!.Passengers = undefined;
+        flight.value = reservedFlight;
     }
 
-    // ToDo: Is used in FlightTicket as well
     async function cancelFlight(toast: ToastServiceMethods): Promise<Flight | undefined>
     {
         if (!flight.value) {
@@ -134,18 +111,12 @@ export const bookingStore = defineStore("booking", () => {
 
     async function confirmBooking(toast: ToastServiceMethods): Promise<Flight | undefined>
     {
-        if(!isConfirmationStepOk.value) {
-            return;
-        }
-
         flight.value!.Status = FlightStatus.BOOKED;
         flight.value!.Passengers = passengers.value;
 
-        flight.value = await useValidateAPIData(updateFlight(flight.value!), toast);
+        const bookedFlight = await useValidateAPIData(updateFlight(flight.value!), toast);
 
-        seats.value = flight.value!.Passengers!;
-
-        return flight.value;
+        return bookedFlight;
     }
 
     async function cancelBooking(toast: ToastServiceMethods): Promise<void>
@@ -177,11 +148,11 @@ export const bookingStore = defineStore("booking", () => {
         totalPassengersWeight, 
         etow, 
         isEmpty, 
-        isPassengerStepOk, 
-        isPassengerWeightOk, 
-        isFlightStepOk, 
-        isConfirmationStepOk,
-        updateFlightData, 
+        isPassengersOk, 
+        isPassengersWeightOk, 
+        isFlightOk,
+        isConfirmationOk,
+        reserveFlight, 
         cancelFlight, 
         confirmBooking, 
         cancelBooking, 

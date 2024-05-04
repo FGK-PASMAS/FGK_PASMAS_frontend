@@ -22,7 +22,7 @@ export class WarningToast implements ToastMessageOptions
     constructor({
         summary = "Warnung",
         detail = undefined,
-        life = 3000
+        life = 6000
     }: { summary?: string, detail?: any | undefined, life?: number } = {}) {
         this.severity = "warn";
         this.summary = summary;

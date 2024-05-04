@@ -9,19 +9,32 @@ import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
 import type { Division } from "@/data/division/division.interface";
+import { FlightEventHandler } from "@/data/flight/flight.eventHandler";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
-import { PassengerAction, type Passenger } from "@/data/passenger/passenger.interface";
+import { getFlightsByDivisionStream } from "@/data/flight/flight.service";
+import { type Passenger } from "@/data/passenger/passenger.interface";
+import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
+import { getPlanesStream } from "@/data/plane/plane.service";
 import { bookingStore } from "@/stores/booking";
 import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import { parseAPIResponse } from "@/utils/services/fetch.service";
 import { InfoToast } from "@/utils/toasts/info.toast";
+import { WarningToast } from "@/utils/toasts/warning.toast";
+import type { EventSource } from "extended-eventsource";
 import { DateTime } from "luxon";
 import { useToast } from "primevue/usetoast";
-import { onBeforeMount, ref, toRaw, type Ref } from "vue";
+import { onBeforeMount, onUnmounted, ref, toRaw, type Ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
 const booking = bookingStore();
 const bookedFlight: Ref<Flight | undefined> = ref();
+
+// Observers to watch changes to the booking state due to administrator intervention
+let bookedFlightEventSource: EventSource | undefined;
+const bookedFlightEventHandler = new FlightEventHandler();
+
+let bookedPlaneEventSource: EventSource | undefined;
+const bookedPlaneEventHandler = new PlaneEventHandler();
 
 // Remember previous setting to offer the possiblity to revert
 let prevDivision: Division | undefined;
@@ -78,18 +91,6 @@ onBeforeMount(async () => {
     prevDivision = existingBookingParsed.division;
     prevSeats = existingBookingParsed.seats ?? [];
 
-    if (!booking.flight) {
-        if (booking.seats) {
-            booking.seats.forEach(seat => {
-                seat.Action = PassengerAction.CREATE;
-            });
-
-            prevSeats!.forEach(seat => {
-                seat.Action = PassengerAction.CREATE;
-            });
-        }
-    }
-
     if (booking.flight) {
         if (DateTime.now() >= booking.flight.DepartureTime!) {
             await booking.cancelBooking(toast);
@@ -99,6 +100,10 @@ onBeforeMount(async () => {
     if (!booking.isEmpty) {
         isBookingExistsDialogOpen.value = true;
     }
+});
+
+onUnmounted(() => {
+    stopBookingOberservers();
 });
 
 onBeforeRouteLeave(async () => {
@@ -116,9 +121,79 @@ onBeforeRouteLeave(async () => {
     }
 });
 
-booking.$subscribe(() => {
+booking.$subscribe((mutation, state) => {
+    if(state.flight) {
+        startBookingOberservers();
+    }
+
+    if(!state.flight) {
+        stopBookingOberservers();
+    }
+
     onBookingUpdate();
 });
+
+function startBookingOberservers(): void
+{
+    if (bookedFlightEventSource || bookedPlaneEventSource) {
+        return;
+    }
+
+    // Obeserve flights
+    bookedFlightEventSource = getFlightsByDivisionStream(booking.division!.ID!);
+
+    bookedFlightEventSource.onmessage = async (event) => {
+        const message = JSON.parse(event.data);
+
+        if (booking.flight?.ID !== message?.data?.ID) {
+            return;
+        }
+
+        if (message.action === "DELETED") {
+            booking.resetStore();
+        }
+
+        await cancelBooking();
+
+        toast.add(new WarningToast({ detail: "Vorgang wurde durch einen Administrator abgebrochen." }));
+    }
+
+    bookedFlightEventSource.onerror = () => {
+        bookedFlightEventHandler.onErrorEvent(toast);
+    }
+
+    // Observe planes
+    bookedPlaneEventSource = getPlanesStream();
+
+    bookedPlaneEventSource.onmessage = async (event) => {
+        const message = JSON.parse(event.data);
+
+        if (booking.flight?.Plane?.ID !== message?.data?.ID) {
+            return;
+        }
+
+        await cancelBooking();
+
+        toast.add(new WarningToast({ detail: "Vorgang wurde durch einen Administrator abgebrochen." }));
+    }
+
+    bookedPlaneEventSource.onerror = () => {
+        bookedPlaneEventHandler.onErrorEvent(toast);
+    }
+}
+
+function stopBookingOberservers(): void
+{
+    if (bookedFlightEventSource) {
+        bookedFlightEventSource.close();
+        bookedFlightEventSource = undefined;
+    }
+
+    if (bookedPlaneEventSource) {
+        bookedPlaneEventSource.close();
+        bookedPlaneEventSource = undefined;
+    }
+}
 
 function onBeforeUnload(event: BeforeUnloadEvent): void
 {
@@ -127,7 +202,7 @@ function onBeforeUnload(event: BeforeUnloadEvent): void
 
 function onContinueExistingBooking(): void
 {
-    if (booking.isPassengerStepOk) {
+    if (booking.isPassengersOk) {
         isNextNavEnabled.value = true;
     }
 }
@@ -150,7 +225,7 @@ function onBookingUpdate(currentStep?: string): void
         }
     }
 
-    if (!booking.isPassengerWeightOk) {
+    if (!booking.isPassengersWeightOk) {
         bookingInvalidMsg.value = bookingWeightInvalidMsg;
         isBookingValidDialogOpen.value = true;
         return;
@@ -180,19 +255,19 @@ function onBookingUpdate(currentStep?: string): void
 
     switch (currentStep) {
         case "passengers":
-            if (booking.isPassengerStepOk) {
+            if (booking.isPassengersOk) {
                 isNextNavEnabled.value = true;
             }
 
             break;
         case "flights":
-            if(booking.isFlightStepOk) {
+            if(booking.isFlightOk) {
                 isNextNavEnabled.value = true;
             }
 
             break;
         case "confirmation":
-            if (booking.isConfirmationStepOk) {
+            if (booking.isConfirmationOk) {
                 isNextNavEnabled.value = true;
             }
 
@@ -202,8 +277,6 @@ function onBookingUpdate(currentStep?: string): void
 
 function onStepChanged(currentStep: string): void
 {
-    booking.updateFlightData(toast);
-
     // Clone object - structuredClone doesn't work on Luxon objects currently
     prevDivision = parseAPIResponse(JSON.parse(JSON.stringify((toRaw(booking.division)))));
     prevSeats = parseAPIResponse(JSON.parse(JSON.stringify((toRaw(booking.seats)))));
@@ -231,6 +304,8 @@ function cancelFlightCancellation(): void
 
 async function confirmBooking(): Promise<void>
 {
+    stopBookingOberservers();
+
     isDataLoaded.value = false;
     bookedFlight.value = await booking.confirmBooking(toast);
     isDataLoaded.value = true;

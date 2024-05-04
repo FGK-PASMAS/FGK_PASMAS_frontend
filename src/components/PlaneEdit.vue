@@ -171,7 +171,7 @@ function cancel(): void
                             </div>
                             <PrimeInputNumber v-model="planeUpdate.FlightDuration" locale="de-DE" :min="0" suffix="min" placeholder="Flugdauer" />
                         </PrimeInputGroup>
-                        <PrimeInputGroup v-if="plane.FuelburnPerFlight! > 0" class="flex">
+                        <PrimeInputGroup v-if="plane.FuelMaxCapacity! > 0" class="flex">
                             <div class="align-self-stretch input-label flex align-items-center font-bold text-color surface-200">
                                 <span>Spritvebrauch:</span>
                             </div>

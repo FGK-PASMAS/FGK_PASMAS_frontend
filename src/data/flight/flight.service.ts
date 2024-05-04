@@ -12,15 +12,6 @@ export const getFlights = async (params?: Record<string, string | number | boole
     });
 }
 
-/**
- * Note: Flight creation endpoint shouldn't create passengers due to possible side effects 
- * and making the whole process way more complex due to every possible change has to be 
- * communicated with the backend even if it isn't necessary. Passengers should only be created 
- * after booking/finalizing a flight. This was rejected by the backend developer because of time constraints. 
- * 
- * @param flight 
- * @returns Promise<Flight | APIError>
- */
 export const createFlight = async (flight: Flight): Promise<Flight | APIError> => {
     return await fetchAPI({
         resource: "flights",
@@ -32,7 +23,7 @@ export const createFlight = async (flight: Flight): Promise<Flight | APIError> =
 export const updateFlight = async (flight: Flight): Promise<Flight | APIError> => {
     return await fetchAPI({
         resource: "flights",
-        method: "PATCH",
+        method: "POST",
         id: flight.ID,
         data: flight
     });

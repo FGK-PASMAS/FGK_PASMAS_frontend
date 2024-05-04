@@ -68,12 +68,7 @@ function openFlightInfo(index: number): void
     isFlightInfoOpen.value = true;
 }
 
-function onFlightReservation(): void
-{
-    isFlightInfoOpen.value = false;
-}
-
-function onFlightCancellation(): void
+function onFlightInfoEvent(): void
 {
     isFlightInfoOpen.value = false;
 }
@@ -88,7 +83,7 @@ function onFlightCancellation(): void
             </TransitionLoading>
         </div>
         <AppDialog v-model:isOpen="isFlightInfoOpen">
-            <FlightInfo :division="booking.division" :passengers="booking.passengers" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightReservation()" @flightCanceled="onFlightCancellation()" />
+            <FlightInfo :division="booking.division" :passengers="booking.passengers" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightInfoEvent()" @flightCanceled="onFlightInfoEvent()" />
         </AppDialog>
     </div>
 </template>

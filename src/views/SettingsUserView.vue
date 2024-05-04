@@ -52,7 +52,7 @@ function addUser(): void
 
 async function onAddUserEmit(): Promise<void>
 {
-    // ToDo: This isn't needed if User offers a SSE endpoint
+    // ToDo: Can be removed if there is a suitable users SSE endpoint
     users.value = await useValidateAPIData(getUsers(), toast);
     isAddUserOpen.value = false;
 }
@@ -76,7 +76,7 @@ async function confirmUserRemoval(): Promise<void>
 
     await useValidateAPIData(deleteUser(userToRemove), toast);
 
-    // ToDo: This isn't needed if User offers a SSE endpoint
+    // ToDo: Can be removed if there is a suitable users SSE endpoint
     users.value = await useValidateAPIData(getUsers(), toast);
     toast.add(new InfoToast({ detail: "Benutzer " + userToRemove.Username + " wurde erfolgreich gelöscht." }));
     

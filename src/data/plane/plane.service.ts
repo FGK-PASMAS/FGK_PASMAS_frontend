@@ -12,6 +12,15 @@ export const getPlanes = async (params?: Record<string, string | number | boolea
     });
 }
 
+export const getPlaneById = async (id: number, params?: Record<string, string | number | boolean>): Promise<Plane[] | APIError> => {
+    return await fetchAPI({
+        resource: "planes",
+        method: "GET",
+        id: id,
+        params: params
+    });
+}
+
 export const updatePlane = async (plane: Plane): Promise<Plane | APIError> => {
     return await fetchAPI({
         resource: "planes",
