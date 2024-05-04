@@ -30,10 +30,10 @@ const booking = bookingStore();
 const bookedFlight: Ref<Flight | undefined> = ref();
 
 // Observers to watch changes to the booking state due to administrator intervention
-let bookedFlightEventSource: EventSource;
+let bookedFlightEventSource: EventSource | undefined;
 const bookedFlightEventHandler = new FlightEventHandler();
 
-let bookedPlaneEventSource: EventSource;
+let bookedPlaneEventSource: EventSource | undefined;
 const bookedPlaneEventHandler = new PlaneEventHandler();
 
 // Remember previous setting to offer the possiblity to revert
@@ -186,10 +186,12 @@ function stopBookingOberservers(): void
 {
     if (bookedFlightEventSource) {
         bookedFlightEventSource.close();
+        bookedFlightEventSource = undefined;
     }
 
     if (bookedPlaneEventSource) {
         bookedPlaneEventSource.close();
+        bookedPlaneEventSource = undefined;
     }
 }
 
