@@ -17,9 +17,9 @@ export enum FlightStatus {
 
 export enum FlightStatusColor {
     OK = "text-primary-400",
-    OVERLOADED = "text-red-400",
-    OVERLOADED_SEAT = "text-red-400",
-    NO_FUEL = "text-red-400",
+    OVERLOADED = "text-orange-400",
+    OVERLOADED_SEAT = "text-orange-400",
+    NO_FUEL = "text-orange-400",
     RESERVED = "text-cyan-400",
     BOOKED = "text-indigo-400",
     BLOCKED = "text-yellow-400",
@@ -28,9 +28,9 @@ export enum FlightStatusColor {
 
 export enum FlightStatusBgColor {
     OK = "bg-primary-400",
-    OVERLOADED = "bg-red-400",
-    OVERLOADED_SEAT = "bg-red-400",
-    NO_FUEL = "bg-red-400",
+    OVERLOADED = "bg-orange-400",
+    OVERLOADED_SEAT = "bg-orange-400",
+    NO_FUEL = "bg-orange-400",
     RESERVED = "bg-cyan-400",
     BOOKED = "bg-indigo-400",
     BLOCKED = "bg-yellow-400",
