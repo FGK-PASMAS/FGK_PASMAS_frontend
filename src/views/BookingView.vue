@@ -174,13 +174,13 @@ function onBookingUpdate(currentStep?: string): void
 
             break;
         case "flights":
-            if(booking.isFlightStepOk) {
+            if(booking.isFlightOk) {
                 isNextNavEnabled.value = true;
             }
 
             break;
         case "confirmation":
-            if (booking.isConfirmationStepOk) {
+            if (booking.isConfirmationOk) {
                 isNextNavEnabled.value = true;
             }
 

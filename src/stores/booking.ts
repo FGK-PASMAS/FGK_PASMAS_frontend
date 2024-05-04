@@ -4,6 +4,7 @@ import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import { createFlight, deleteFlight, updateFlight } from "@/data/flight/flight.service";
 import { type Passenger } from "@/data/passenger/passenger.interface";
 import { getETOW, getTotalPassengersWeight } from "@/utils/services/flightCalculation.service";
+import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { computed, ref, type Ref } from "vue";
@@ -70,16 +71,24 @@ export const bookingStore = defineStore("booking", () => {
         return isValid;
     });
 
-    const isFlightStepOk = computed(() => {
-        return flight.value ? true : false;
+    const isFlightOk = computed(() => {
+        if (!flight.value?.DepartureTime) {
+            return false;
+        }
+
+        if (flight.value.DepartureTime <= DateTime.now()) {
+            return false;
+        }
+
+        return true;
     });
 
-    const isConfirmationStepOk = computed(() => {
+    const isConfirmationOk = computed(() => {
         const passengerCheck = passengers.value.every((passenger) => {
             return passenger.Weight && passenger.LastName && passenger.FirstName;
         });
 
-        return passengerCheck && isFlightStepOk;
+        return passengerCheck && isFlightOk;
     });
 
     async function reserveFlight(flightToReserve: Flight, toast: ToastServiceMethods): Promise<void>
@@ -150,8 +159,8 @@ export const bookingStore = defineStore("booking", () => {
         isEmpty, 
         isPassengersOk, 
         isPassengersWeightOk, 
-        isFlightStepOk, 
-        isConfirmationStepOk,
+        isFlightOk, 
+        isConfirmationOk,
         reserveFlight, 
         cancelFlight, 
         confirmBooking, 
