@@ -139,7 +139,6 @@ export const parseAPIResponse = (data: any): any => {
     return data;
 }
 
-// ToDo: Fitting end user error messages
 const getAPIError = (error: any): APIError => {
     if (error instanceof SyntaxError) {
         error = new SyntaxError();
