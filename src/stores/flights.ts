@@ -1,6 +1,6 @@
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
-import type { Pilot } from "@/data/pilot/pilot.interface";
 import type { Plane } from "@/data/plane/plane.interface";
+import { compareFlights, getETOW, getITOW, isSeatPayloadValid, setOptimalPilot } from "@/utils/services/flightCalculation.service";
 import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import { computed, ref, type Ref } from "vue";
@@ -86,61 +86,19 @@ export const flightsStore = defineStore("flights", () => {
         return false;
     }
 
-    function calculateVirtualFlight(virtualFlight: Flight): Flight
+    function getPreviousExistingFlight(virtualFlight: Flight): Flight | undefined
     {
-        let etow = 0;
+        return existingFlights.value.findLast((existingFlight) => {
+            if (!existingFlight.ArrivalTime || !virtualFlight.DepartureTime) {
+                return false;
+            }
 
-        virtualFlight.Status = FlightStatus.UNKNOWN;
-        virtualFlight.FuelAtDeparture = getFuelOfVirtualFlight(virtualFlight);
+            if (existingFlight.PlaneId === virtualFlight.PlaneId && existingFlight.ArrivalTime < virtualFlight.DepartureTime) {
+                return true;
+            }
 
-        etow = getETOWOfVirutalFlight(virtualFlight);
-
-        if (etow === 0) {
-            return virtualFlight;
-        }
-
-        virtualFlight.Pilot = getPilotOfVirtualFlight(virtualFlight, etow);
-
-        if (!virtualFlight.Pilot) {
-            return virtualFlight;
-        }
-
-        virtualFlight.PilotId = virtualFlight.Pilot!.ID;
-        etow = etow + virtualFlight.Pilot.Weight!;
-
-        if (etow > virtualFlight.Plane!.MTOW!) {
-            virtualFlight.Status = FlightStatus.OVERLOADED;
-            return virtualFlight;
-        }
-
-        if (!isSeatPayloadValid(virtualFlight)) {
-            virtualFlight.Status = FlightStatus.OVERLOADED_SEAT;
-            return virtualFlight;
-        }
-
-        virtualFlight.Status = FlightStatus.OK;
-
-        return virtualFlight;
-    }
-
-    function getETOWOfVirutalFlight(virtualFlight: Flight): number
-    {
-        const plane = virtualFlight.Plane!;
-        const passengersWeight = booking.totalPassengersWeight;
-        let etow = 0;
-        let fuel = 0;
-
-        if (virtualFlight.FuelAtDeparture === undefined) {
-            return etow;
-        }
-
-        if (virtualFlight.FuelAtDeparture > 0) {
-            fuel = virtualFlight.FuelAtDeparture * plane.FuelConversionFactor!;
-        }
-
-        etow = plane.EmptyWeight! + passengersWeight + fuel;
-
-        return etow;
+            return false;
+        });
     }
 
     function getFuelOfVirtualFlight(virtualFlight: Flight): number
@@ -164,90 +122,37 @@ export const flightsStore = defineStore("flights", () => {
         return fuel;
     }
 
-    function getPreviousExistingFlight(virtualFlight: Flight): Flight | undefined
+    function calculateVirtualFlight(virtualFlight: Flight): Flight
     {
-        return existingFlights.value.findLast((existingFlight) => {
-            if (!existingFlight.ArrivalTime || !virtualFlight.DepartureTime) {
-                return false;
-            }
+        virtualFlight.Status = FlightStatus.UNKNOWN;
+        virtualFlight.FuelAtDeparture = getFuelOfVirtualFlight(virtualFlight);
 
-            if (existingFlight.PlaneId === virtualFlight.PlaneId && existingFlight.ArrivalTime < virtualFlight.DepartureTime) {
-                return true;
-            }
+        const itow = getITOW(virtualFlight, booking.passengers);
 
-            return false;
-        });
-    }
-
-    function getPilotOfVirtualFlight(virtualFlight: Flight, etow: number): Pilot | undefined
-    {
-        const plane = virtualFlight.Plane!;
-        let pilot: Pilot | undefined = plane.PrefPilot;
-
-        if (pilot) {
-            if (etow + pilot.Weight! <= plane.MTOW!) {
-                return pilot;
-            }
+        if (itow === 0) {
+            return virtualFlight;
         }
 
-        if (!plane.AllowedPilots) {
-            return pilot;
+        if (!virtualFlight.Plane?.PrefPilot) {
+            return virtualFlight;
         }
 
-        plane.AllowedPilots.some((allowedPilot) => {
-            if (etow + allowedPilot.Weight! <= plane.MTOW!) {
-                pilot = allowedPilot;
-                return true;
-            }
-        });
+        virtualFlight.Pilot = virtualFlight.Plane.PrefPilot;
+        setOptimalPilot(virtualFlight, booking.passengers);
 
-        if (!pilot) {
-            pilot = plane.AllowedPilots.reduce((pilot, allowedPilot) => {
-                return (allowedPilot.Weight! < pilot.Weight!) ? allowedPilot : pilot;
-            });
+        if (getETOW(virtualFlight, booking.passengers) > virtualFlight.Plane!.MTOW!) {
+            virtualFlight.Status = FlightStatus.OVERLOADED;
+            return virtualFlight;
         }
 
-        return pilot;
-    }
-
-    function isSeatPayloadValid(virtualFlight: Flight): boolean
-    {
-        const plane = virtualFlight.Plane!;
-        let isValid = true;
-
-        if (plane.MaxSeatPayload! === -1) {
-            return isValid;
+        if (!isSeatPayloadValid(virtualFlight, booking.passengers)) {
+            virtualFlight.Status = FlightStatus.OVERLOADED_SEAT;
+            return virtualFlight;
         }
 
-        booking.passengers.every((passenger) => {
-            if (passenger.Weight! > plane.MaxSeatPayload!) {
-                isValid = false;
-                return false;
-            }
-        });
+        virtualFlight.Status = FlightStatus.OK;
 
-        return isValid;
-    }
-
-    function compareFlights(a: Flight, b: Flight): number
-    {
-        if (!a.DepartureTime || !b.DepartureTime) {
-            return 0;
-        }
-
-        if (a.DepartureTime < b.DepartureTime) {
-            return -1;
-        }
-    
-        if (a.DepartureTime > b.DepartureTime) {
-            return 1;
-        }
-        
-        if (a.Plane && b.Plane) {
-            return a.Plane.AircraftType!.localeCompare(b.Plane.AircraftType!);
-        }
-
-        return 0;
+        return virtualFlight;
     }
 
     function resetStore() 

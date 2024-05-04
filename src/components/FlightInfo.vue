@@ -3,6 +3,7 @@ import type { Division } from '@/data/division/division.interface';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { type Passenger } from '@/data/passenger/passenger.interface';
 import { bookingStore } from '@/stores/booking';
+import { getETOW, getTotalPassengersWeight } from '@/utils/services/flightCalculation.service';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, type PropType } from 'vue';
 import FlightStatusInfo from './FlightStatusInfo.vue';
@@ -23,31 +24,16 @@ const props = defineProps({
     }
 });
 
-// ToDo: This calculation is used in the booking store as well
-const totalPassengerWeight = computed(() => {
-    if (!props.passengers) {
+const totalPassengersWeight = computed(() => {
+    return getTotalPassengersWeight(props.passengers);
+});
+
+const etow = computed(() => {
+    if (!flight.value) {
         return 0;
     }
 
-    return props.passengers.reduce(( accumulator, passenger) => accumulator + (passenger.Weight ?? 0), 0);
-});
-
-// ToDo: This calculation is used in the flight store for virtual flights as well
-const etow = computed(() => {
-    let etow = 0;
-    let fuel = 0;
-
-    if (!flight.value?.Plane || flight.value?.FuelAtDeparture === undefined) {
-        return etow;
-    }
-
-    if (flight.value.FuelAtDeparture > 0) {
-        fuel = flight.value.FuelAtDeparture * flight.value.Plane.FuelConversionFactor!;
-    }
-
-    etow = flight.value.Plane.EmptyWeight! + totalPassengerWeight.value + fuel + flight.value.Pilot!.Weight!;
-
-    return etow;
+    return getETOW(flight.value, props.passengers);
 });
 
 const overload = computed(() => {
@@ -131,7 +117,7 @@ async function cancelFlight(): Promise<void>
                     <div class="flex flex-column gap-1">
                         <PassengerInfoMinimal v-for="(passenger, index) in passengers" :key="index" :passenger="passenger" :seatNumber="index + 1" :seatPayload="flight?.Plane?.MaxSeatPayload" />
                     </div>
-                    <span><span class="font-bold">Gesamt:</span> {{ totalPassengerWeight }}kg</span>
+                    <span><span class="font-bold">Gesamt:</span> {{ totalPassengersWeight }}kg</span>
                 </div>
             </div>
             <div>

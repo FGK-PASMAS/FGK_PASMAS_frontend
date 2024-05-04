@@ -3,6 +3,7 @@ import type { Division } from "@/data/division/division.interface";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import { createFlight, deleteFlight, updateFlight } from "@/data/flight/flight.service";
 import { type Passenger } from "@/data/passenger/passenger.interface";
+import { getETOW, getTotalPassengersWeight } from "@/utils/services/flightCalculation.service";
 import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { computed, ref, type Ref } from "vue";
@@ -17,25 +18,15 @@ export const bookingStore = defineStore("booking", () => {
     });
 
     const totalPassengersWeight = computed(() => {
-        return passengers.value.reduce((accumulator, passenger) => accumulator + (passenger.Weight ?? 0), 0);
+        return getTotalPassengersWeight(passengers.value);
     });
 
-    // ToDo: This calculation is used in the flight store for virtual flights as well
     const etow = computed(() => {
-        let etow = 0;
-        let fuel = 0;
-
-        if (!flight.value?.Plane || flight.value?.FuelAtDeparture === undefined || !flight.value.Pilot) {
-            return etow;
+        if (!flight.value) {
+            return 0;
         }
 
-        if (flight.value.FuelAtDeparture > 0) {
-            fuel = flight.value.FuelAtDeparture * flight.value.Plane.FuelConversionFactor!;
-        }
-
-        etow = flight.value.Plane.EmptyWeight! + totalPassengersWeight.value + fuel + flight.value.Pilot.Weight!;
-
-        return etow;
+        return getETOW(flight.value, passengers.value);
     });
     
     const isEmpty = computed(() => {
