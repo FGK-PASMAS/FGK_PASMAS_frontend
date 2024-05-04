@@ -18,7 +18,7 @@ function newBooking(): void
 </script>
 
 <template>
-    <div class="h-full flex flex-column">
+    <div class="flex-grow-1 h-full flex flex-column">
         <h3>Buchung erfolgreich!</h3>
         <div class="flex-grow-1 flex flex-column gap-5">
             <div class="flex flex-column gap-1">
