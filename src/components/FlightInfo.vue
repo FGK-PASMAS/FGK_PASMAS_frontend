@@ -156,7 +156,7 @@ async function cancelFlight(): Promise<void>
                     <span><span class="font-bold">Kennzeichen:</span> {{ flight.Plane!.Registration }}</span>
                     <span><span class="font-bold">Typ:</span> {{ flight.Plane!.AircraftType }}</span>
                     <span><span class="font-bold">Leergewicht:</span> {{ flight.Plane!.EmptyWeight }}kg</span>
-                    <span v-if="flight.FuelAtDeparture && flight.FuelAtDeparture >= 0"><span class="font-bold">Treibstoff:</span> {{ flight.FuelAtDeparture }}L</span>
+                    <span v-if="flight.Plane!.FuelMaxCapacity! > 0"><span class="font-bold">Treibstoff:</span> {{ flight.FuelAtDeparture }}L</span>
                 </div>
                 <span v-else>-</span>
             </div>
