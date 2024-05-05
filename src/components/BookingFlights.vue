@@ -4,7 +4,9 @@ import FlightInfo from "@/components/FlightInfo.vue";
 import FlightInfoMinimal from "@/components/FlightInfoMinimal.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
 import { FlightEventHandler } from "@/data/flight/flight.eventHandler";
+import type { Flight } from "@/data/flight/flight.interface";
 import { getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.service";
+import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getPlanes } from "@/data/plane/plane.service";
 import { bookingStore } from "@/stores/booking";
 import { flightsStore } from "@/stores/flights";
@@ -63,6 +65,15 @@ onUnmounted(() => {
     }
 });
 
+function getPassengers(flight: Flight): Passenger[]
+{
+    if (flight.Passengers) {
+        return flight.Passengers;
+    }
+
+    return booking.passengers;
+}
+
 function openFlightInfo(index: number): void
 {
     flightIndex.value = index;
@@ -87,7 +98,7 @@ function onFlightInfoEvent(): void
             </div>
         </div>
         <AppDialog v-model:isOpen="isFlightInfoOpen">
-            <FlightInfo :division="booking.division" :passengers="booking.passengers" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightInfoEvent()" @flightCanceled="onFlightInfoEvent()" />
+            <FlightInfo :division="booking.division" :passengers="getPassengers(flights.flights[flightIndex])" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightInfoEvent()" @flightCanceled="onFlightInfoEvent()" />
         </AppDialog>
     </div>
 </template>
