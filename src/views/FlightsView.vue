@@ -10,7 +10,7 @@ import type { Division } from '@/data/division/division.interface';
 import { getDivisions } from '@/data/division/division.service';
 import { FlightEventHandler } from '@/data/flight/flight.eventHandler';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
-import { deleteFlight, getFlights, getFlightsByDivisionStream } from '@/data/flight/flight.service';
+import { deleteFlight, getFlights, getFlightsByDivisionStream, getFlightsStream } from '@/data/flight/flight.service';
 import { authStore } from '@/stores/auth';
 import { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from 'primevue/api';
@@ -68,9 +68,10 @@ let flightCancellationMsg = "Soll der Flug wirklich storniert werden?";
 onBeforeMount(async () => {
     divisions.value = await useValidateAPIData(getDivisions(), toast);
 
-    if (divisions.value.length <= 0) {
-        return;
-    }
+    divisions.value.unshift({
+        ID: 0,
+        Name: "Alle"
+    });
 
     flights.value = await useValidateAPIData(getFlights({
         byDivisionId: divisions.value[tabIndex.value]!.ID!,
@@ -81,7 +82,7 @@ onBeforeMount(async () => {
 
     isDataLoaded.value = true;
 
-    eventSource = getFlightsByDivisionStream(divisions.value[tabIndex.value]!.ID!);
+    eventSource = getFlightsStream();
 
     eventSource.onmessage = async (event) => {
         eventHandler.onEntityEvent(event, flights.value, toast);
@@ -121,7 +122,11 @@ async function changeTab(event: TabMenuChangeEvent): Promise<void>
 
     isDataLoaded.value = true;
 
-    eventSource = getFlightsByDivisionStream(divisions.value[tabIndex.value]!.ID!);
+    if (tabIndex.value === 0) {
+        eventSource = getFlightsStream();
+    } else {
+        eventSource = getFlightsByDivisionStream(divisions.value[tabIndex.value]!.ID!);
+    }
 
     eventSource.onmessage = async (event) => {
         eventHandler.onEntityEvent(event, flights.value, toast);
