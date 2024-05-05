@@ -106,7 +106,7 @@ async function cancelFlight(): Promise<void>
                 </div>
                 <span class="ml-3">{{ division?.Name }}</span>
             </div>
-            <div>
+            <div v-if="passengers && passengers.length > 0">
                 <div class="flex flex-wrap align-items-center gap-2 row-gap-1 mb-1">
                     <i class="bi-people-fill text-xl" />
                     <h3 class="m-0">Passagiere</h3>
@@ -160,15 +160,14 @@ async function cancelFlight(): Promise<void>
                 </div>
                 <span v-else>-</span>
             </div>
-            <div>
+            <div v-if="flight?.Pilot">
                 <div class="flex align-items-center gap-2 mb-1">
                     <i class="bi-person-vcard-fill text-xl" />
                     <h3 class="m-0">Pilot</h3>
                 </div>
-                <div v-if="flight" class="flex flex-column gap-1 ml-3">
+                <div class="flex flex-column gap-1 ml-3">
                     <span>{{ flight!.Pilot!.LastName + ", " + flight!.Pilot!.FirstName + " (" + flight!.Pilot!.Weight + "kg)" }}</span>
                 </div>
-                <span v-else>-</span>
             </div>
             <PrimeButton v-if="isReserveable" type="button" label="Reservieren" class="text-color" @click="reserveFlight()" :disabled="isButtonDisabled"
                 :pt="{
