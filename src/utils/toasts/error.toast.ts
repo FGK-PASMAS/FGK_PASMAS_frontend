@@ -22,7 +22,7 @@ export class ErrorToast implements ToastMessageOptions
     constructor({ 
         summary = "Fehler", 
         detail = undefined, 
-        life = undefined 
+        life = 9000 
     }: { summary?: string, detail?: any | undefined, life?: number | undefined } = {}) {
         this.severity = "error";
         this.summary = summary;

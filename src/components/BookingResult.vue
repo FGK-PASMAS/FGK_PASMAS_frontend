@@ -46,6 +46,10 @@ function newBooking(): void
                     <span>{{ flight!.DepartureTime!.toFormat("cccc, dd LLLL yyyy") }}</span>
                 </div>
             </div>
+            <div v-if="flight!.Description" class="flex gap-2">
+                <i class="bi-info-circle-fill" />
+                <span class="word-break-all">{{ flight!.Description }}</span>
+            </div>
             <div class="flex flex-column gap-1">
                 <div class="flex align-items-center gap-2">
                     <i class="bi-airplane-fill text-xl" />

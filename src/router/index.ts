@@ -67,7 +67,7 @@ export const router = createRouter({
             component: PassengersView,
             meta: {
                 auth: true,
-                guard: RouteGuard.ADMIN
+                guard: RouteGuard.USER
             }
         }, {
             path: "/settings",
