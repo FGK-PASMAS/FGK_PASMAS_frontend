@@ -25,6 +25,7 @@ const eventHandler = new FlightEventHandler();
 const isDataLoaded = ref(false);
 const flightIndex = ref(0);
 const isFlightInfoOpen = ref(false);
+const noFlightsMsg = "Es konnten keine Flüge ermittelt werden. Das liegt oft daran, dass der Flugzeitraum abgelaufen ist. Bitte wende dich an deinen Administrator!";
 
 onMounted(async () => {
     flights.resetStore();
@@ -78,9 +79,12 @@ function onFlightInfoEvent(): void
     <div class="flex flex-column gap-3 overflow-hidden">
         <FlightInfoMinimal />
         <div class="relative flex-grow-1 overflow-auto">
-            <TransitionLoading :isDataLoaded="isDataLoaded">
+            <TransitionLoading v-if="flights.flights.length > 0" :isDataLoaded="isDataLoaded">
                 <FlightTicket v-for="(flight, index) in flights.flights" :key="index" v-model:flight="flights.flights[index]" class="mt-1 mb-1" @showInfo="openFlightInfo(index)" />
             </TransitionLoading>
+            <div v-else>
+                {{ noFlightsMsg }}
+            </div>
         </div>
         <AppDialog v-model:isOpen="isFlightInfoOpen">
             <FlightInfo :division="booking.division" :passengers="booking.passengers" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightInfoEvent()" @flightCanceled="onFlightInfoEvent()" />
