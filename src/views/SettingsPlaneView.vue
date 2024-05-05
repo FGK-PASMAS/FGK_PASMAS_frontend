@@ -153,7 +153,7 @@ function onFinishedPlaneEdit(): void
                 </template>
             </PrimeTabMenu>
         </div>
-        <div class="relative flex-grow-1 overflow-auto">
+        <div class="relative flex-grow-1 flex overflow-auto">
             <TransitionLoading :isDataLoaded="isDataLoaded">
                 <PrimeDataTable
                     :value="planes"

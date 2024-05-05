@@ -94,7 +94,7 @@ function cancelUserRemoval(): void
         <DataTableViewHeader title="Benutzer" v-model:filters="filters" :dt="dt">
             <PrimeButton icon="bi-person-fill-add" label="Hinzufügen" @click="addUser()" class="text-color" />
         </DataTableViewHeader>
-        <div class="relative flex-grow-1 overflow-auto">
+        <div class="relative flex-grow-1 flex overflow-auto">
             <TransitionLoading :isDataLoaded="isDataLoaded">
                 <PrimeDataTable
                     :value="users"

@@ -195,7 +195,7 @@ function onCreateBlockerCancel(): void
                 class="w-full md:w-12rem" />
             <PrimeButton icon="bi-plus-circle-fill" label="Erstellen" :disabled="!selectedPlane" @click="createBlocker()" class="w-full md:w-12rem text-color" />
         </div>
-        <div class="relative flex-grow-1 overflow-auto">
+        <div class="relative flex-grow-1 flex overflow-auto">
             <TransitionLoading :isDataLoaded="isDataLoaded">
                 <PrimeDataTable
                     :value="flightsComputed"
