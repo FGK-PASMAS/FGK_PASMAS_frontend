@@ -3,6 +3,7 @@ import AppDialog from '@/components/AppDialog.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import DataTableViewHeader from '@/components/DataTableViewHeader.vue';
 import FlightInfo from '@/components/FlightInfo.vue';
+import TransitionLoading from '@/components/TransitionLoading.vue';
 import { useFlightStatusDisplayData } from '@/composables/useFlightStatusDisplayData';
 import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { Division } from '@/data/division/division.interface';
@@ -19,7 +20,6 @@ import { useToast } from 'primevue/usetoast';
 import { computed, onBeforeMount, onUnmounted, ref, type Ref } from 'vue';
 
 const auth = authStore();
-const toast = useToast();
 
 const divisions: Ref<Division[]> = ref([]);
 const flights: Ref<Flight[]> = ref([]);
@@ -58,6 +58,8 @@ const filters = ref({
     AircraftType: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
+const toast = useToast();
+const isDataLoaded = ref(false);
 const selectedFlightIndex: Ref<number | undefined> = ref();
 const isInfoDialogOpen = ref(false);
 const isDeleteDialogOpen = ref(false);
@@ -76,6 +78,8 @@ onBeforeMount(async () => {
         includePilot: true,
         includePassengers: true,
     }), toast);
+
+    isDataLoaded.value = true;
 
     eventSource = getFlightsByDivisionStream(divisions.value[tabIndex.value]!.ID!);
 
@@ -106,12 +110,16 @@ async function changeTab(event: TabMenuChangeEvent): Promise<void>
 
     tabIndex.value = event.index;
 
+    isDataLoaded.value = false;
+
     flights.value = await useValidateAPIData(getFlights({
         byDivisionId: divisions.value[tabIndex.value]!.ID!,
         includePlane: true,
         includePilot: true,
         includePassengers: true,
     }), toast);
+
+    isDataLoaded.value = true;
 
     eventSource = getFlightsByDivisionStream(divisions.value[tabIndex.value]!.ID!);
 
@@ -185,61 +193,63 @@ function cancelFlightCancellation(): void
                 </template>
             </PrimeTabMenu>
         </div>
-        <div class="flex-grow-1 overflow-auto">
-            <PrimeDataTable
-                :value="flightsComputed"
-                ref="dt"
-                exportFilename="export_flights"
-                csvSeparator=";"
-                v-model:filters="filters"
-                filterDisplay="row"
-                sortMode="multiple"
-                removableSort
-                stripedRows
-                scrollable
-                scrollHeight="flex"
-            >
-                <template #empty> Keine Flüge gefunden. </template>
-                <PrimeColumn header="Aktion">
-                    <template #body="slotProps">
-                        <div class="flex flex-column gap-2">
-                            <PrimeButton icon="bi-info-circle-fill" rounded @click="showInfo(slotProps.index)" class="text-color" />
-                            <PrimeButton v-if="auth.isAdmin" icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.index)" class="text-color" />
-                        </div>
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn field="Status" header="Status" sortable>
-                    <template #body="slotProps">
-                        <div class="flex align-items-center gap-2">
-                            <i class="bi-circle-fill" :class="slotProps.data.StatusColor" />
-                            <span>{{ slotProps.data.Status }}</span>
-                        </div>
-                    </template>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn field="FlightNo" header="Nr" sortable>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn field="DepartureTime" header="Start" sortable>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn field="Registration" header="FK" sortable>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn field="AircraftType" header="Typ" sortable>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-            </PrimeDataTable>
+        <div class="relative flex-grow-1 flex overflow-auto">
+            <TransitionLoading :isDataLoaded="isDataLoaded">
+                <PrimeDataTable
+                    :value="flightsComputed"
+                    ref="dt"
+                    exportFilename="export_flights"
+                    csvSeparator=";"
+                    v-model:filters="filters"
+                    filterDisplay="row"
+                    sortMode="multiple"
+                    removableSort
+                    stripedRows
+                    scrollable
+                    scrollHeight="flex"
+                >
+                    <template #empty> Keine Flüge gefunden. </template>
+                    <PrimeColumn header="Aktion">
+                        <template #body="slotProps">
+                            <div class="flex flex-column gap-2">
+                                <PrimeButton icon="bi-info-circle-fill" rounded @click="showInfo(slotProps.index)" class="text-color" />
+                                <PrimeButton v-if="auth.isAdmin" icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.index)" class="text-color" />
+                            </div>
+                        </template>
+                    </PrimeColumn>
+                    <PrimeColumn field="Status" header="Status" sortable>
+                        <template #body="slotProps">
+                            <div class="flex align-items-center gap-2">
+                                <i class="bi-circle-fill" :class="slotProps.data.StatusColor" />
+                                <span>{{ slotProps.data.Status }}</span>
+                            </div>
+                        </template>
+                        <template #filter="{ filterModel, filterCallback }">
+                            <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
+                        </template>
+                    </PrimeColumn>
+                    <PrimeColumn field="FlightNo" header="Nr" sortable>
+                        <template #filter="{ filterModel, filterCallback }">
+                            <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
+                        </template>
+                    </PrimeColumn>
+                    <PrimeColumn field="DepartureTime" header="Start" sortable>
+                        <template #filter="{ filterModel, filterCallback }">
+                            <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
+                        </template>
+                    </PrimeColumn>
+                    <PrimeColumn field="Registration" header="FK" sortable>
+                        <template #filter="{ filterModel, filterCallback }">
+                            <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
+                        </template>
+                    </PrimeColumn>
+                    <PrimeColumn field="AircraftType" header="Typ" sortable>
+                        <template #filter="{ filterModel, filterCallback }">
+                            <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
+                        </template>
+                    </PrimeColumn>
+                </PrimeDataTable>
+            </TransitionLoading>
         </div>
         <AppDialog v-model:isOpen="isInfoDialogOpen">
             <FlightInfo :division="flights[selectedFlightIndex ?? 0].Plane?.Division" :passengers="flights[selectedFlightIndex ?? 0].Passengers" v-model:flight="flights[selectedFlightIndex ?? 0]" />
