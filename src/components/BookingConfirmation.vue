@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { bookingStore } from '@/stores/booking';
+import Textarea from 'primevue/textarea';
 import PassengerEditMinimal from './PassengerEditMinimal.vue';
 
 const booking = bookingStore();
@@ -47,11 +48,8 @@ const booking = bookingStore();
                 <div class="flex flex-wrap gap-1">
                     <span><span class="font-bold">ETOW:</span> {{ booking.etow }}kg</span>
                 </div>
-                <div v-if="booking.flight!.Description" class="flex gap-2">
-                    <i class="bi-info-circle-fill text-red-400" />
-                    <span class="text-red-400 word-break-all">{{ booking.flight!.Description }}</span>
-                </div>
             </div>
+            <Textarea v-model="booking.flight!.Description" rows="5" cols="20" placeholder="Info" class="w-full mt-3" />
         </div>
         <div>
             <div class="flex align-items-center gap-2 mb-1">

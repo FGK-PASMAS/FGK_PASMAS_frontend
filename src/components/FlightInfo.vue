@@ -141,8 +141,8 @@ async function cancelFlight(): Promise<void>
                         <i v-else-if="overload !== -1" class="bi-check2 text-primary-400" />
                     </div>
                     <div v-if="flight!.Description" class="flex gap-2">
-                        <i class="bi-info-circle-fill text-red-400" />
-                        <span class="text-red-400 word-break-all">{{ flight!.Description }}</span>
+                        <i class="bi-info-circle-fill" />
+                        <span class="word-break-all">{{ flight!.Description }}</span>
                     </div>
                 </div>
                 <span v-else>-</span>
