@@ -13,8 +13,10 @@ import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { deleteFlight, getFlights, getFlightsByDivisionStream, getFlightsStream } from '@/data/flight/flight.service';
 import { authStore } from '@/stores/auth';
 import { EventSource } from "extended-eventsource";
+import { DateTime } from 'luxon';
 import { FilterMatchMode } from 'primevue/api';
 import type DataTable from 'primevue/datatable';
+import InputSwitch from 'primevue/inputswitch';
 import { type TabMenuChangeEvent } from 'primevue/tabmenu';
 import { useToast } from 'primevue/usetoast';
 import { computed, onBeforeMount, onUnmounted, ref, type Ref } from 'vue';
@@ -23,6 +25,7 @@ const auth = authStore();
 
 const divisions: Ref<Division[]> = ref([]);
 const flights: Ref<Flight[]> = ref([]);
+const isUpcomingFlights = ref(true);
 
 // The whole flights array has to be computed due to PrimeVue's filter not supporting functions - See https://github.com/primefaces/primevue/issues/4164
 const flightsComputed = computed(() => {
@@ -73,24 +76,7 @@ onBeforeMount(async () => {
         Name: "Alle"
     });
 
-    flights.value = await useValidateAPIData(getFlights({
-        byDivisionId: divisions.value[tabIndex.value]!.ID!,
-        includePlane: true,
-        includePilot: true,
-        includePassengers: true,
-    }), toast);
-
-    isDataLoaded.value = true;
-
-    eventSource = getFlightsStream();
-
-    eventSource.onmessage = async (event) => {
-        eventHandler.onEntityEvent(event, flights.value, toast);
-    }
-
-    eventSource.onerror = () => {
-        eventHandler.onErrorEvent(toast);
-    }
+    await loadFlights();
 });
 
 onUnmounted(() => {
@@ -99,28 +85,28 @@ onUnmounted(() => {
     }
 });
 
-async function changeTab(event: TabMenuChangeEvent): Promise<void>
+async function loadFlights(): Promise<void>
 {
-    event.originalEvent.stopPropagation();
-
-    if (event.index === tabIndex.value) {
-        return;
-    }
-
-    eventSource.close();
-
-    tabIndex.value = event.index;
-
-    isDataLoaded.value = false;
-
-    flights.value = await useValidateAPIData(getFlights({
+    let options: Record<string, string | number | boolean> = {
         byDivisionId: divisions.value[tabIndex.value]!.ID!,
         includePlane: true,
         includePilot: true,
         includePassengers: true,
-    }), toast);
+    };
+
+    isDataLoaded.value = false;
+
+    if (isUpcomingFlights.value) {
+        options.byDepartureTime = DateTime.now().toISO();
+    }
+
+    flights.value = await useValidateAPIData(getFlights(options), toast);
 
     isDataLoaded.value = true;
+
+    if (eventSource) {
+        eventSource.close();
+    }
 
     if (tabIndex.value === 0) {
         eventSource = getFlightsStream();
@@ -135,6 +121,24 @@ async function changeTab(event: TabMenuChangeEvent): Promise<void>
     eventSource.onerror = () => {
         eventHandler.onErrorEvent(toast);
     }
+}
+
+function onUpcomingFlightsToggle(): void
+{
+    loadFlights();
+}
+
+async function changeTab(event: TabMenuChangeEvent): Promise<void>
+{
+    event.originalEvent.stopPropagation();
+
+    if (event.index === tabIndex.value) {
+        return;
+    }
+
+    tabIndex.value = event.index;
+
+    await loadFlights();
 }
 
 function showInfo(index: number): void
@@ -188,7 +192,12 @@ function cancelFlightCancellation(): void
 
 <template>
     <main class="flex flex-column overflow-hidden">
-        <DataTableViewHeader title="Flüge" v-model:filters="filters" :dt="dt" />
+        <DataTableViewHeader title="Flüge" v-model:filters="filters" :dt="dt">
+            <PrimeInputGroup class="flex align-items-center gap-2">
+                <InputSwitch v-model="isUpcomingFlights" @change="onUpcomingFlightsToggle()" />
+                <span>Bevorstehende Flüge</span>
+            </PrimeInputGroup>
+        </DataTableViewHeader>
         <div>
             <PrimeTabMenu :model="divisions" @tab-change="changeTab($event)">
                 <template #item="{ item, props }">
