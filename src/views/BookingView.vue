@@ -15,6 +15,7 @@ import { getFlightsByDivisionStream } from "@/data/flight/flight.service";
 import { type Passenger } from "@/data/passenger/passenger.interface";
 import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
 import { getPlanesStream } from "@/data/plane/plane.service";
+import { authStore } from "@/stores/auth";
 import { bookingStore } from "@/stores/booking";
 import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
 import { parseAPIResponse } from "@/utils/services/fetch.service";
@@ -26,6 +27,7 @@ import { useToast } from "primevue/usetoast";
 import { onBeforeMount, onUnmounted, ref, toRaw, type Ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
+const auth = authStore();
 const booking = bookingStore();
 const bookedFlight: Ref<Flight | undefined> = ref();
 
@@ -143,6 +145,10 @@ function startBookingOberservers(): void
     bookedFlightEventSource.onmessage = async (event) => {
         const message = JSON.parse(event.data);
 
+        if (auth.user?.Username === message?.actionUser?.Username) {
+            return;
+        }
+
         if (booking.flight?.ID !== message?.data?.ID) {
             return;
         }
@@ -165,6 +171,10 @@ function startBookingOberservers(): void
 
     bookedPlaneEventSource.onmessage = async (event) => {
         const message = JSON.parse(event.data);
+
+        if (auth.user?.Username === message?.actionUser?.Username) {
+            return;
+        }
 
         if (booking.flight?.Plane?.ID !== message?.data?.ID) {
             return;

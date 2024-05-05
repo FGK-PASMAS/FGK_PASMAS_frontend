@@ -22,8 +22,7 @@ const planeUpdate = ref({
 });
 
 const emit = defineEmits([
-    "preConfirm",
-    "postConfirm",
+    "confirm",
     "cancel"
 ]);
 
@@ -50,11 +49,9 @@ async function confirm(): Promise<void>
 
     plane.value.FuelburnPerFlight = planeUpdate.value.FuelburnPerFlight;
 
-    emit("preConfirm")
-
     await useValidateAPIData(updatePlane(plane.value), toast);
 
-    emit("postConfirm");
+    emit("confirm");
 }
 
 function cancel(): void

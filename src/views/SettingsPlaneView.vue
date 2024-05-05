@@ -9,6 +9,7 @@ import { getDivisions } from "@/data/division/division.service";
 import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
 import type { Plane } from "@/data/plane/plane.interface";
 import { getPlanes, getPlanesStream } from "@/data/plane/plane.service";
+import { authStore } from "@/stores/auth";
 import { WarningToast } from "@/utils/toasts/warning.toast";
 import type { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from "primevue/api";
@@ -16,6 +17,8 @@ import type DataTable from "primevue/datatable";
 import type { TabMenuChangeEvent } from "primevue/tabmenu";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, onUnmounted, type Ref, ref } from "vue";
+
+const auth = authStore();
 
 const divisions: Ref<Division[]> = ref([]);
 const planes: Ref<Plane[]> = ref([]);
@@ -47,9 +50,6 @@ const toast = useToast();
 const isDataLoaded = ref(false);
 const planeIndex = ref(0);
 const isEditDialogOpen = ref(false);
-
-// Flag to determine if incoming SSEs are due to this client or other ones
-const isEditInProgress = ref(false);
 
 onBeforeMount(async () => {
     divisions.value = await useValidateAPIData(getDivisions(), toast);
@@ -89,7 +89,7 @@ function onPlaneEvent(event: MessageEvent<any>): void
 {
     const message = JSON.parse(event.data);
 
-    if (isEditInProgress.value) {
+    if (auth.user?.Username === message?.actionUser?.Username) {
         return;
     }
 
@@ -97,7 +97,7 @@ function onPlaneEvent(event: MessageEvent<any>): void
         return;
     }
 
-    onFinishedPlaneEdit();
+    onPlaneEditEvent();
 
     toast.add(new WarningToast({ detail: "Vorgang wurde abgebrochen." }));
 }
@@ -129,14 +129,8 @@ function editPlane(index: any): void
     isEditDialogOpen.value = true;
 }
 
-function onPlaneEditPreConfirm(): void
+function onPlaneEditEvent(): void
 {
-    isEditInProgress.value = true;
-}
-
-function onFinishedPlaneEdit(): void
-{
-    isEditInProgress.value = false;
     isEditDialogOpen.value = false;
 }
 </script>
@@ -199,7 +193,7 @@ function onFinishedPlaneEdit(): void
             </TransitionLoading>
         </div>
         <AppDialog v-model:isOpen="isEditDialogOpen" :isStrictClose="true">
-            <PlaneEdit v-model:plane="planes[planeIndex]" @preConfirm="onPlaneEditPreConfirm()" @postConfirm="onFinishedPlaneEdit()" @cancel="onFinishedPlaneEdit()" />
+            <PlaneEdit v-model:plane="planes[planeIndex]" @confirm="onPlaneEditEvent()" @cancel="onPlaneEditEvent()" />
         </AppDialog>
     </main>    
 </template>
