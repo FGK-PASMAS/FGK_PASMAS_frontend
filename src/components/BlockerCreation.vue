@@ -106,9 +106,7 @@ function cancel(): void
                 </div>
                 <div class="flex flex-column gap-2">
                     <Calendar 
-                        v-model="start" 
-                        :minDate="plane.SlotStartTime?.toJSDate()" 
-                        :maxDate="plane.SlotEndTime?.toJSDate()" 
+                        v-model="start"  
                         showTime 
                         hourFormat="24" 
                         showIcon 
@@ -120,8 +118,6 @@ function cancel(): void
                     />
                     <Calendar 
                         v-model="end" 
-                        :minDate="plane.SlotStartTime?.toJSDate()" 
-                        :maxDate="plane.SlotEndTime?.toJSDate()" 
                         showTime 
                         hourFormat="24" 
                         showIcon 
