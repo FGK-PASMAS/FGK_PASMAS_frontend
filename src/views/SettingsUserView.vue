@@ -100,7 +100,7 @@ function cancelUserRemoval(): void
                     exportFilename="export_users"
                     csvSeparator=";"
                     v-model:filters="filters"
-                    filterDisplay="row"
+                    filterDisplay="menu"
                     sortMode="multiple"
                     removableSort
                     stripedRows

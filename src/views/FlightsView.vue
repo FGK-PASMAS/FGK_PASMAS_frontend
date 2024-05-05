@@ -215,7 +215,7 @@ function cancelFlightCancellation(): void
                     exportFilename="export_flights"
                     csvSeparator=";"
                     v-model:filters="filters"
-                    filterDisplay="row"
+                    filterDisplay="menu"
                     sortMode="multiple"
                     removableSort
                     stripedRows

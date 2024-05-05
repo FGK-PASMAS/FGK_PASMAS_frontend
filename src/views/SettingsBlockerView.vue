@@ -208,7 +208,7 @@ function onCreateBlockerCancel(): void
                     :value="flightsComputed"
                     ref="dt"
                     v-model:filters="filters"
-                    filterDisplay="row"
+                    filterDisplay="menu"
                     sortMode="multiple"
                     removableSort
                     stripedRows
