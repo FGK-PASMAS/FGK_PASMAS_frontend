@@ -122,12 +122,10 @@ onBeforeRouteLeave(async () => {
 });
 
 booking.$subscribe((mutation, state) => {
-    if(state.flight) {
-        startBookingOberservers();
-    }
-
-    if(!state.flight) {
+    if(!state.flight || state.flight.Status === FlightStatus.BOOKED) {
         stopBookingOberservers();
+    } else {
+        startBookingOberservers();
     }
 
     onBookingUpdate();
