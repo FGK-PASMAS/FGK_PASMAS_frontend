@@ -67,7 +67,7 @@ onUnmounted(() => {
 
 function getPassengers(flight: Flight): Passenger[]
 {
-    if (flight.Passengers) {
+    if (flight.Passengers && flight.Passengers.length > 0) {
         return flight.Passengers;
     }
 
@@ -98,7 +98,7 @@ function onFlightInfoEvent(): void
             </div>
         </div>
         <AppDialog v-model:isOpen="isFlightInfoOpen">
-            <FlightInfo :division="booking.division" :passengers="getPassengers(flights.flights[flightIndex])" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightInfoEvent()" @flightCanceled="onFlightInfoEvent()" />
+            <FlightInfo :isBooking="true" :division="booking.division" :passengers="getPassengers(flights.flights[flightIndex])" v-model:flight="flights.flights[flightIndex]" @flightReserved="onFlightInfoEvent()" @flightCanceled="onFlightInfoEvent()" />
         </AppDialog>
     </div>
 </template>

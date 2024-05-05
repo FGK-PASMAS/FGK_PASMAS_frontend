@@ -35,6 +35,7 @@ const seatOverload = computed(() => {
     <div class="flex align-items-center gap-2">
         <i class="bi-person-fill" />
         <div class="flex flex-wrap gap-1">
+            <span v-if="passenger.PassNo">#{{ passenger.PassNo }}</span>
             <div v-if="passenger.LastName || passenger.FirstName" class="flex flex-wrap gap-1">
                 <span v-if="passenger.LastName" class="word-break-all">{{ passenger.LastName }}</span>
                 <span v-if="passenger.FirstName" class="word-break-all">{{ passenger.FirstName }}</span>

@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import AppDialog from '@/components/AppDialog.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import DataTableViewHeader from '@/components/DataTableViewHeader.vue';
+import FlightInfo from '@/components/FlightInfo.vue';
 import { useFlightStatusDisplayData } from '@/composables/useFlightStatusDisplayData';
 import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { Division } from '@/data/division/division.interface';
@@ -28,39 +30,14 @@ const flightsComputed = computed(() => {
 
     flights.value.forEach(flight => {
         const status = useFlightStatusDisplayData(flight.Status);
-        let pilot = "-"
-        const passengers = {
-            computed: "",
-            raw: [] as {}[]
-        }
-
-        if (flight.Pilot?.LastName && flight.Pilot?.FirstName) {
-            pilot = flight.Pilot?.LastName + " " + flight.Pilot?.FirstName;
-        }
-        
-        flight.Passengers?.forEach(passenger => {
-            passengers.computed += passenger.LastName + " " + passenger.FirstName + ", ";
-
-            passengers.raw.push({
-                ID: passenger.ID,
-                LastName: passenger.LastName,
-                FirstName: passenger.FirstName
-            });
-        });
 
         computed.push({
-            ID: flight.ID,
             FlightNo: flight.FlightNo,
             Status: status.status,
             StatusColor: status.color,
-            Description: flight.Description ?? "-",
             DepartureTime: flight.DepartureTime?.toFormat("HH:mm, dd.LL.yyyy"),
-            ArrivalTime: flight.ArrivalTime?.toFormat("HH:mm, dd.LL.yyyy"),
             Registration: flight.Plane?.Registration,
             AircraftType: flight.Plane?.AircraftType,
-            Pilot: pilot,
-            PassengersComputed: passengers.computed,
-            PassengersRaw: passengers.raw
         });
     });
 
@@ -74,19 +51,16 @@ const tabIndex = ref(0);
 const dt: Ref<DataTable | undefined> = ref();
 const filters = ref({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    ID: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    FlightNo: { value: null, matchMode: FilterMatchMode.CONTAINS },
     Status: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    Description: { value: null, matchMode: FilterMatchMode.CONTAINS },
     DepartureTime: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    ArrivalTime: { value: null, matchMode: FilterMatchMode.CONTAINS },
     Registration: { value: null, matchMode: FilterMatchMode.CONTAINS },
     AircraftType: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    Pilot: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    PassengersComputed: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 
+const selectedFlightIndex: Ref<number | undefined> = ref();
+const isInfoDialogOpen = ref(false);
 const isDeleteDialogOpen = ref(false);
-let flightToDelete: Flight | undefined;
 let flightCancellationMsg = "Soll der Flug wirklich storniert werden?"; 
 
 onBeforeMount(async () => {
@@ -150,15 +124,20 @@ async function changeTab(event: TabMenuChangeEvent): Promise<void>
     }
 }
 
-function cancelFlight(flightId: number): void
+function showInfo(index: number): void
 {
-    flightToDelete = flights.value.find((flight) => {
-        return flightId === flight.ID;
-    });
+    selectedFlightIndex.value = index;
+    isInfoDialogOpen.value = true;
+}
 
+function cancelFlight(index: number): void
+{
     let subject = "Blocker";
+    const flightToDelete = flights.value[index];
 
-    switch (flightToDelete?.Status) {
+    selectedFlightIndex.value = index;
+
+    switch (flightToDelete.Status) {
         case FlightStatus.BOOKED:
             subject = "Flug";
             break;
@@ -168,24 +147,29 @@ function cancelFlight(flightId: number): void
     }
 
     flightCancellationMsg = "Soll " + subject + " um " + flightToDelete?.DepartureTime?.toFormat("HH:mm, dd.LL.yyyy") + " wirklich storniert werden?";
-    
     isDeleteDialogOpen.value = true;
 }
 
 function confirmFlightCancellation(): void
 {
+    if (!selectedFlightIndex.value) {
+        return;
+    }
+
+    const flightToDelete = flights.value[selectedFlightIndex.value];
+
     if (!flightToDelete) {
         return;
     }
 
     useValidateAPIData(deleteFlight(flightToDelete), toast);
 
-    flightToDelete = undefined;
+    selectedFlightIndex.value = undefined;
 }
 
 function cancelFlightCancellation(): void
 {
-    flightToDelete = undefined;
+    selectedFlightIndex.value = undefined;
 }
 </script>
 
@@ -216,9 +200,12 @@ function cancelFlightCancellation(): void
                 scrollHeight="flex"
             >
                 <template #empty> Keine Flüge gefunden. </template>
-                <PrimeColumn v-if="auth.isAdmin" header="Aktion">
+                <PrimeColumn header="Aktion">
                     <template #body="slotProps">
-                        <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.data.ID)" class="text-color" />
+                        <div class="flex flex-column gap-2">
+                            <PrimeButton icon="bi-info-circle-fill" rounded @click="showInfo(slotProps.index)" class="text-color" />
+                            <PrimeButton v-if="auth.isAdmin" icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.index)" class="text-color" />
+                        </div>
                     </template>
                 </PrimeColumn>
                 <PrimeColumn field="Status" header="Status" sortable>
@@ -232,17 +219,12 @@ function cancelFlightCancellation(): void
                         <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
                     </template>
                 </PrimeColumn>
-                <PrimeColumn field="ID" header="Nr" sortable>
+                <PrimeColumn field="FlightNo" header="Nr" sortable>
                     <template #filter="{ filterModel, filterCallback }">
                         <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
                     </template>
                 </PrimeColumn>
                 <PrimeColumn field="DepartureTime" header="Start" sortable>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn field="ArrivalTime" header="Ende" sortable>
                     <template #filter="{ filterModel, filterCallback }">
                         <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
                     </template>
@@ -257,27 +239,11 @@ function cancelFlightCancellation(): void
                         <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
                     </template>
                 </PrimeColumn>
-                <PrimeColumn field="Description" header="Info" sortable>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn field="Pilot" header="Pilot" sortable>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
-                <PrimeColumn field="PassengersComputed" header="Passagiere" sortable>
-                    <template #body="slotProps">
-                        <p v-if="slotProps.data.PassengersRaw.length <= 0">-</p>
-                        <p v-else v-for="passenger in slotProps.data.PassengersRaw" :key="passenger.ID">{{ passenger.LastName }}, {{ passenger.FirstName }}</p>
-                    </template>
-                    <template #filter="{ filterModel, filterCallback }">
-                        <PrimeInputText v-model="filterModel.value" type="text" @input="filterCallback()" class="p-column-filter min-w-5rem" placeholder="Filter..." />
-                    </template>
-                </PrimeColumn>
             </PrimeDataTable>
         </div>
+        <AppDialog v-model:isOpen="isInfoDialogOpen">
+            <FlightInfo :division="flights[selectedFlightIndex ?? 0].Plane?.Division" :passengers="flights[selectedFlightIndex ?? 0].Passengers" v-model:flight="flights[selectedFlightIndex ?? 0]" />
+        </AppDialog>
         <ConfirmDialog
             v-model:isOpen="isDeleteDialogOpen"
             :description="flightCancellationMsg"
