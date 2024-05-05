@@ -144,13 +144,15 @@ function onFinishedPlaneEdit(): void
 <template>
     <main class="flex flex-column overflow-hidden">
         <DataTableViewHeader title="Flugzeuge" v-model:filters="filters" :dt="dt" />
-        <PrimeTabMenu :model="divisions" @tab-change="changeTab($event)" class="flex-grow-0">
-            <template #item="{ item, props }">
-                <a v-bind="props.action" class="flex align-items-center gap-2">
-                    <span class="font-bold">{{ item.Name }}</span>
-                </a>
-            </template>
-        </PrimeTabMenu>
+        <div>
+            <PrimeTabMenu :model="divisions" @tab-change="changeTab($event)">
+                <template #item="{ item, props }">
+                    <a v-bind="props.action" class="flex align-items-center gap-2">
+                        <span class="font-bold">{{ item.Name }}</span>
+                    </a>
+                </template>
+            </PrimeTabMenu>
+        </div>
         <div class="relative flex-grow-1 overflow-auto">
             <TransitionLoading :isDataLoaded="isDataLoaded">
                 <PrimeDataTable
