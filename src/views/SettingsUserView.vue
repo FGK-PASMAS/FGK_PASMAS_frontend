@@ -57,11 +57,9 @@ async function onAddUserEmit(): Promise<void>
     isAddUserOpen.value = false;
 }
 
-function removeUser(userId: number): void
+function removeUser(index: number): void
 {
-    userToRemove = users.value.find((user) => {
-        return userId === user.ID;
-    });
+    userToRemove = users.value[index];
 
     userRemovalMsg = "Soll Benutzer " + userToRemove?.Username + " wirklich gelöscht werden?";
 
@@ -94,7 +92,7 @@ function cancelUserRemoval(): void
         <DataTableViewHeader title="Benutzer" v-model:filters="filters" :dt="dt">
             <PrimeButton icon="bi-person-fill-add" label="Hinzufügen" @click="addUser()" class="text-color" />
         </DataTableViewHeader>
-        <div class="relative flex-grow-1 overflow-auto">
+        <div class="relative flex-grow-1 flex overflow-auto">
             <TransitionLoading :isDataLoaded="isDataLoaded">
                 <PrimeDataTable
                     :value="users"
@@ -112,7 +110,7 @@ function cancelUserRemoval(): void
                     <template #empty> Keine Benutzer gefunden. </template>
                     <PrimeColumn header="Aktion">
                         <template #body="slotProps">
-                            <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="removeUser(slotProps.data.ID)" class="text-color" />
+                            <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="removeUser(slotProps.index)" class="text-color" />
                         </template>
                     </PrimeColumn>
                     <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable>

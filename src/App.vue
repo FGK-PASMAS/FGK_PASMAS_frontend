@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { usePrimeVue } from "primevue/config";
 import Toast from "primevue/toast";
-import { onBeforeMount, ref } from "vue";
+import { onBeforeMount, onErrorCaptured, ref } from "vue";
 import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
-import { authStore } from "./stores/auth";
 import { RouteGuard } from "./router";
+import { authStore } from "./stores/auth";
+import { HTTPError } from "./utils/errors/http.error";
 
 const router = useRouter();
 const auth = authStore();
@@ -39,6 +40,26 @@ onBeforeMount(() => {
             applyTheme(darkTheme);
         }
     }
+});
+
+onErrorCaptured((err) => {
+    if (!(err instanceof HTTPError)) {
+        return;
+    }
+
+    if (err.Type !== "Unauthorized" && err.Type !== "UNAUTHORIZED") {
+        return;
+    }
+
+    auth.revoke();
+
+    if (router.currentRoute.value.name === "login") {
+        return false;
+    }
+
+    router.replace({ name: "home" });
+
+    return false;
 });
 
 window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
@@ -120,7 +141,7 @@ function openDrawer(): void
             <MenuDrawerItem icon="bi-house-door" item="Home" :to="{ name: 'home' }" />
             <MenuDrawerItem v-if="auth.isVendor" icon="bi-book" item="Buchen" :to="{ name: 'booking' }" />
             <MenuDrawerItem v-if="auth.isAuthenticated" icon="bi-airplane" item="Flüge" :to="{ name: 'flights' }" />
-            <MenuDrawerItem v-if="auth.isAdmin" icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
+            <MenuDrawerItem v-if="auth.isAuthenticated" icon="bi-people" item="Passagiere" :to="{ name: 'passengers' }" />
             <MenuDrawerItem v-if="auth.isAdmin" icon="bi-gear" item="Einstellungen" :to="{ name: 'settings.overview' }" />
         </MenuDrawer>
         <div id="content" class="h-full w-full flex flex-column overflow-hidden">

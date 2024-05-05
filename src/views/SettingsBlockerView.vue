@@ -12,12 +12,15 @@ import { getFlights } from "@/data/flight/flight.service";
 import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
 import type { Plane } from "@/data/plane/plane.interface";
 import { getPlanes, getPlanesStream } from "@/data/plane/plane.service";
+import { authStore } from "@/stores/auth";
 import { WarningToast } from "@/utils/toasts/warning.toast";
 import type { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from "primevue/api";
 import type DataTable from "primevue/datatable";
 import { useToast } from "primevue/usetoast";
 import { computed, onBeforeMount, onUnmounted, ref, type Ref } from "vue";
+
+const auth = authStore();
 
 const divisions: Ref<Division[]> = ref([]);
 const selectedDivision: Ref<Division | undefined> = ref();
@@ -104,6 +107,10 @@ onUnmounted(() => {
 async function onPlaneEvent(event: MessageEvent<any>): Promise<void>
 {
     const message = JSON.parse(event.data);
+
+    if (auth.user?.Username === message?.actionUser?.Username) {
+        return;
+    }
 
     if (selectedPlane.value?.ID !== message?.data?.ID) {
         return;
@@ -195,7 +202,7 @@ function onCreateBlockerCancel(): void
                 class="w-full md:w-12rem" />
             <PrimeButton icon="bi-plus-circle-fill" label="Erstellen" :disabled="!selectedPlane" @click="createBlocker()" class="w-full md:w-12rem text-color" />
         </div>
-        <div class="relative flex-grow-1 overflow-auto">
+        <div class="relative flex-grow-1 flex overflow-auto">
             <TransitionLoading :isDataLoaded="isDataLoaded">
                 <PrimeDataTable
                     :value="flightsComputed"

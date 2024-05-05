@@ -16,6 +16,10 @@ const flight = defineModel("flight", {
 });
 
 const props = defineProps({
+    isBooking: {
+        type: Boolean,
+        default: false
+    },
     division: {
         type: Object as PropType<Division>
     },
@@ -99,14 +103,14 @@ async function cancelFlight(): Promise<void>
             <PrimeDivider />
         </div>
         <div class="flex flex-column gap-5">
-            <div>
+            <div v-if="division">
                 <div class="flex align-items-center gap-2 mb-1">
                     <i class="bi-ticket-detailed-fill text-xl" />
                     <h3 class="m-0">Flugtyp</h3>
                 </div>
                 <span class="ml-3">{{ division?.Name }}</span>
             </div>
-            <div>
+            <div v-if="passengers && passengers.length > 0">
                 <div class="flex flex-wrap align-items-center gap-2 row-gap-1 mb-1">
                     <i class="bi-people-fill text-xl" />
                     <h3 class="m-0">Passagiere</h3>
@@ -123,7 +127,7 @@ async function cancelFlight(): Promise<void>
             <div>
                 <div class="flex flex-wrap align-items-center gap-2 row-gap-1 mb-1">
                     <i class="bi-clock-fill text-xl" />
-                    <h3 class="m-0">Flug</h3>
+                    <h3 class="m-0">Flug <span v-if="flight?.FlightNo">#{{ flight.FlightNo }}</span></h3>
                     <h3 v-if="flight?.Plane?.MTOW" class="m-0">(MTOW: {{ flight!.Plane!.MTOW }}kg)</h3>
                 </div>
                 <div v-if="flight" class="flex flex-column gap-2 ml-3">
@@ -141,8 +145,8 @@ async function cancelFlight(): Promise<void>
                         <i v-else-if="overload !== -1" class="bi-check2 text-primary-400" />
                     </div>
                     <div v-if="flight!.Description" class="flex gap-2">
-                        <i class="bi-info-circle-fill text-red-400" />
-                        <span class="text-red-400 word-break-all">{{ flight!.Description }}</span>
+                        <i class="bi-info-circle-fill" />
+                        <span class="word-break-all">{{ flight!.Description }}</span>
                     </div>
                 </div>
                 <span v-else>-</span>
@@ -160,26 +164,27 @@ async function cancelFlight(): Promise<void>
                 </div>
                 <span v-else>-</span>
             </div>
-            <div>
+            <div v-if="flight?.Pilot">
                 <div class="flex align-items-center gap-2 mb-1">
                     <i class="bi-person-vcard-fill text-xl" />
                     <h3 class="m-0">Pilot</h3>
                 </div>
-                <div v-if="flight" class="flex flex-column gap-1 ml-3">
+                <div class="flex flex-column gap-1 ml-3">
                     <span>{{ flight!.Pilot!.LastName + ", " + flight!.Pilot!.FirstName + " (" + flight!.Pilot!.Weight + "kg)" }}</span>
                 </div>
-                <span v-else>-</span>
             </div>
-            <PrimeButton v-if="isReserveable" type="button" label="Reservieren" class="text-color" @click="reserveFlight()" :disabled="isButtonDisabled"
-                :pt="{
-                    label: { class: 'font-normal' }
-                }"
-            />
-            <PrimeButton v-if="isCanceable" type="button" label="Stornieren" severity="danger" class="text-color" @click="cancelFlight()" :disabled="isButtonDisabled" 
-                :pt="{
-                    label: { class: 'font-normal' }
-                }"
-            />
+            <div v-if="isBooking" class="flex flex-column">
+                <PrimeButton v-if="isReserveable" type="button" label="Reservieren" class="text-color" @click="reserveFlight()" :disabled="isButtonDisabled"
+                    :pt="{
+                        label: { class: 'font-normal' }
+                    }"
+                />
+                <PrimeButton v-if="isCanceable" type="button" label="Stornieren" severity="danger" class="text-color" @click="cancelFlight()" :disabled="isButtonDisabled" 
+                    :pt="{
+                        label: { class: 'font-normal' }
+                    }"
+                />
+            </div>
         </div>
     </div>
 </template>

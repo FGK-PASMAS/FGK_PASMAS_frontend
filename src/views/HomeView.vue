@@ -54,7 +54,7 @@ const auth = authStore();
                         <span>Hier findest du alle im System erfassten Flüge!</span>
                     </RouterLink>
                 </PrimePanel>
-                <PrimePanel v-if="auth.isAdmin">
+                <PrimePanel v-if="auth.isAuthenticated">
                     <template #header>
                         <div class="flex align-items-center gap-2">
                             <i class="bi-people" />
