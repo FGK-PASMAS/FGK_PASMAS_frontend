@@ -35,6 +35,7 @@ const flightsComputed = computed(() => {
         const status = useFlightStatusDisplayData(flight.Status);
 
         computed.push({
+            ID: flight.ID,
             FlightNo: flight.FlightNo,
             Status: status.status,
             StatusColor: status.color,
@@ -141,18 +142,24 @@ async function changeTab(event: TabMenuChangeEvent): Promise<void>
     await loadFlights();
 }
 
-function showInfo(index: number): void
+function showInfo(selectedFlight: Flight): void
 {
-    selectedFlightIndex.value = index;
+    selectedFlightIndex.value = flights.value.findIndex((flight) => {
+        return selectedFlight.ID === flight.ID;
+    });
+
     isInfoDialogOpen.value = true;
 }
 
-function cancelFlight(index: number): void
+function cancelFlight(selectedFlight: Flight): void
 {
     let subject = "Blocker";
-    const flightToDelete = flights.value[index];
 
-    selectedFlightIndex.value = index;
+    selectedFlightIndex.value = flights.value.findIndex((flight) => {
+        return selectedFlight.ID === flight.ID;
+    });
+
+    const flightToDelete = flights.value[selectedFlightIndex.value];
 
     switch (flightToDelete.Status) {
         case FlightStatus.BOOKED:
@@ -226,8 +233,8 @@ function cancelFlightCancellation(): void
                     <PrimeColumn header="Aktion">
                         <template #body="slotProps">
                             <div class="flex flex-column gap-2">
-                                <PrimeButton icon="bi-info-circle-fill" rounded @click="showInfo(slotProps.index)" class="text-color" />
-                                <PrimeButton v-if="auth.isAdmin" icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.index)" class="text-color" />
+                                <PrimeButton icon="bi-info-circle-fill" rounded @click="showInfo(slotProps.data)" class="text-color" />
+                                <PrimeButton v-if="auth.isAdmin" icon="bi-trash-fill" severity="danger" rounded @click="cancelFlight(slotProps.data)" class="text-color" />
                             </div>
                         </template>
                     </PrimeColumn>
