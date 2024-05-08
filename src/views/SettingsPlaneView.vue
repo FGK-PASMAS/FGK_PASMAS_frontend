@@ -123,9 +123,12 @@ async function changeTab(event: TabMenuChangeEvent): Promise<void>
     isDataLoaded.value = true;
 }
 
-function editPlane(index: any): void 
+function editPlane(selectedPlane: Plane): void 
 {   
-    planeIndex.value = index;
+    planeIndex.value = planes.value.findIndex((plane) => {
+        return plane.ID === selectedPlane.ID;
+    });
+
     isEditDialogOpen.value = true;
 }
 
@@ -165,7 +168,7 @@ function onPlaneEditEvent(): void
                     <template #empty> Keine Flugzeuge gefunden. </template>
                     <PrimeColumn header="Aktion">
                         <template #body="slotProps">
-                            <PrimeButton icon="bi-pencil-fill" rounded @click="editPlane(slotProps.index)" class="text-color" />
+                            <PrimeButton icon="bi-pencil-fill" rounded @click="editPlane(slotProps.data)" class="text-color" />
                         </template>
                     </PrimeColumn>
                     <PrimeColumn v-for="col of columnsBasic" :key="col.field" :field="col.field" :header="col.header" sortable>

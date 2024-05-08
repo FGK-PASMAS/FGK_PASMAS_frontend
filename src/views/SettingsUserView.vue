@@ -2,6 +2,7 @@
 import AppDialog from '@/components/AppDialog.vue';
 import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import DataTableViewHeader from '@/components/DataTableViewHeader.vue';
+import TransitionLoading from '@/components/TransitionLoading.vue';
 import UserCreation from '@/components/UserCreation.vue';
 import { useValidateAPIData } from '@/composables/useValidateAPIData';
 import type { User } from '@/data/user/user.interface';
@@ -11,7 +12,6 @@ import { FilterMatchMode } from 'primevue/api';
 import type DataTable from 'primevue/datatable';
 import { useToast } from 'primevue/usetoast';
 import { onBeforeMount, ref, type Ref } from 'vue';
-import TransitionLoading from '@/components/TransitionLoading.vue';
 
 const users: Ref<User[]> = ref([]);
 
@@ -57,9 +57,9 @@ async function onAddUserEmit(): Promise<void>
     isAddUserOpen.value = false;
 }
 
-function removeUser(index: number): void
+function removeUser(user: User): void
 {
-    userToRemove = users.value[index];
+    userToRemove = user;
 
     userRemovalMsg = "Soll Benutzer " + userToRemove?.Username + " wirklich gelöscht werden?";
 
@@ -110,7 +110,7 @@ function cancelUserRemoval(): void
                     <template #empty> Keine Benutzer gefunden. </template>
                     <PrimeColumn header="Aktion">
                         <template #body="slotProps">
-                            <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="removeUser(slotProps.index)" class="text-color" />
+                            <PrimeButton icon="bi-trash-fill" severity="danger" rounded @click="removeUser(slotProps.data)" class="text-color" />
                         </template>
                     </PrimeColumn>
                     <PrimeColumn v-for="col of columns" :key="col.field" :field="col.field" :header="col.header" sortable>
