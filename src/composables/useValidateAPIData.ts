@@ -1,5 +1,5 @@
-import { APIError } from "@/utils/errors/api.error";
-import { ErrorToast } from "@/utils/toasts/error.toast";
+import { APIError } from "@/core/errors/api.error";
+import { ErrorToast } from "@/core/toasts/error.toast";
 import type { ToastServiceMethods } from "primevue/toastservice";
 
 /**

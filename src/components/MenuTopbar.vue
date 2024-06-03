@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { InfoToast } from "@/core/toasts/info.toast";
 import { authStore } from "@/stores/auth";
 import InputSwitch from "primevue/inputswitch";
+import { useToast } from "primevue/usetoast";
 import { RouterLink, useRouter } from "vue-router";
 import MenuLogo from "./MenuLogo.vue";
-import { useToast } from "primevue/usetoast";
-import { InfoToast } from "@/utils/toasts/info.toast";
 
 const router = useRouter();
 const auth = authStore();

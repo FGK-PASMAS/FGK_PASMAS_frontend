@@ -6,9 +6,9 @@ import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
+import { HTTPError } from "./core/errors/http.error";
 import { RouteGuard } from "./router";
 import { authStore } from "./stores/auth";
-import { HTTPError } from "./utils/errors/http.error";
 
 const router = useRouter();
 const auth = authStore();

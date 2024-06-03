@@ -1,4 +1,4 @@
-import type { EntityInterface } from "@/utils/interfaces/entity.interface";
+import type { EntityInterface } from "@/core/interfaces/entity.interface";
 
 export enum Role {
     ADMIN = "admin",

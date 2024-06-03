@@ -1,6 +1,6 @@
-import type { APIError } from "@/utils/errors/api.error";
-import { fetchAPI } from "@/utils/services/fetch.service";
-import { getStream } from "@/utils/services/stream.service";
+import type { APIError } from "@/core/errors/api.error";
+import { fetchAPI } from "@/core/services/fetch.service";
+import { getStream } from "@/core/services/stream.service";
 import { EventSource } from "extended-eventsource";
 import type { Flight } from "./flight.interface";
 

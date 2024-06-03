@@ -1,4 +1,4 @@
-import type { EntityInterface } from "@/utils/interfaces/entity.interface";
+import type { EntityInterface } from "@/core/interfaces/entity.interface";
 import type { Flight } from "../flight/flight.interface";
 
 export enum PassengerAction {

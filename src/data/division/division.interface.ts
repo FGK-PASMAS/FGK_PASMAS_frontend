@@ -1,4 +1,4 @@
-import type { EntityInterface } from "@/utils/interfaces/entity.interface";
+import type { EntityInterface } from "@/core/interfaces/entity.interface";
 import type { Plane } from "../plane/plane.interface";
 
 export interface Division extends EntityInterface {

@@ -1,6 +1,6 @@
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
+import { fetchAuth } from "@/core/services/fetch.service";
 import { Role, type User } from "@/data/user/user.interface";
-import { fetchAuth } from "@/utils/services/fetch.service";
 import useJwt from "jwt-decode";
 import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";

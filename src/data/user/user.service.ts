@@ -1,6 +1,6 @@
-import type { APIError } from "@/utils/errors/api.error";
+import type { APIError } from "@/core/errors/api.error";
+import { fetchAPI } from "@/core/services/fetch.service";
 import type { User } from "./user.interface";
-import { fetchAPI } from "@/utils/services/fetch.service";
 
 export const getUsers = async (params?: Record<string, string | number | boolean>): Promise<User[] | APIError> => {
     return await fetchAPI({

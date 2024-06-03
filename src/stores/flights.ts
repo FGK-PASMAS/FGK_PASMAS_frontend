@@ -1,6 +1,6 @@
+import { compareFlights, getETOW, getITOW, isFuelEnough, isSeatPayloadValid, setOptimalPilot } from "@/core/services/flightCalculation.service";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import type { Plane } from "@/data/plane/plane.interface";
-import { compareFlights, getETOW, getITOW, isFuelEnough, isSeatPayloadValid, setOptimalPilot } from "@/utils/services/flightCalculation.service";
 import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import { computed, ref, type Ref } from "vue";

@@ -1,9 +1,9 @@
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
+import { getETOW, getTotalPassengersWeight } from "@/core/services/flightCalculation.service";
 import type { Division } from "@/data/division/division.interface";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import { createFlight, deleteFlight, updateFlight } from "@/data/flight/flight.service";
 import { type Passenger } from "@/data/passenger/passenger.interface";
-import { getETOW, getTotalPassengersWeight } from "@/utils/services/flightCalculation.service";
 import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { computed, ref, type Ref } from "vue";

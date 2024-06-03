@@ -1,6 +1,6 @@
-import { EntityEventHandler } from "@/utils/eventHandlers/entity.eventHandler";
-import type { EntityInterface } from "@/utils/interfaces/entity.interface";
-import { InfoToast } from "@/utils/toasts/info.toast";
+import { EntityEventHandler } from "@/core/eventHandlers/entity.eventHandler";
+import type { EntityInterface } from "@/core/interfaces/entity.interface";
+import { InfoToast } from "@/core/toasts/info.toast";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import type { Passenger } from "./passenger.interface";
 

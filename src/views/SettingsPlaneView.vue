@@ -4,19 +4,19 @@ import DataTableViewHeader from "@/components/DataTableViewHeader.vue";
 import PlaneEdit from "@/components/PlaneEdit.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
 import { useValidateAPIData } from "@/composables/useValidateAPIData";
+import { WarningToast } from "@/core/toasts/warning.toast";
 import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
 import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
 import type { Plane } from "@/data/plane/plane.interface";
 import { getPlanes, getPlanesStream } from "@/data/plane/plane.service";
 import { authStore } from "@/stores/auth";
-import { WarningToast } from "@/utils/toasts/warning.toast";
 import type { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from "primevue/api";
 import type DataTable from "primevue/datatable";
 import type { TabMenuChangeEvent } from "primevue/tabmenu";
 import { useToast } from "primevue/usetoast";
-import { onBeforeMount, onUnmounted, type Ref, ref } from "vue";
+import { onBeforeMount, onUnmounted, ref, type Ref } from "vue";
 
 const auth = authStore();
 
