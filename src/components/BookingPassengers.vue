@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PassengerEditMinimal from "@/components/PassengerEditMinimal.vue";
-import { useValidateAPIData } from "@/composables/useValidateAPIData";
+import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
 import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
 import { bookingStore } from "@/stores/booking";

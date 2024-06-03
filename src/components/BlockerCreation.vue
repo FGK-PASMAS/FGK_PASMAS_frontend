@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useValidateAPIData } from '@/composables/useValidateAPIData';
+import { useValidateAPIData } from '@/core/composables/useValidateAPIData';
 import { InfoToast } from '@/core/toasts/info.toast';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { createFlight } from '@/data/flight/flight.service';

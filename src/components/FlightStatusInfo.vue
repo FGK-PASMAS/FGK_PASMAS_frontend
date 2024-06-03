@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFlightStatusDisplayData, type FlightStatusDisplayData } from "@/composables/useFlightStatusDisplayData";
+import { useFlightStatusDisplayData, type FlightStatusDisplayData } from "@/core/composables/useFlightStatusDisplayData";
 import { FlightStatus } from "@/data/flight/flight.interface";
 import { computed, type PropType } from "vue";
 

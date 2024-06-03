@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import DataTableViewHeader from "@/components/DataTableViewHeader.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
-import { useValidateAPIData } from "@/composables/useValidateAPIData";
+import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
 import { PassengerEventHandler } from "@/data/passenger/passenger.eventHandler";
 import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getPassengers, getPassengersStream } from "@/data/passenger/passenger.service";

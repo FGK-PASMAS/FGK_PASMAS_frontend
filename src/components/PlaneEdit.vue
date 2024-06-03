@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useValidateAPIData } from '@/composables/useValidateAPIData';
+import { useValidateAPIData } from '@/core/composables/useValidateAPIData';
 import type { Plane } from '@/data/plane/plane.interface';
 import { updatePlane } from '@/data/plane/plane.service';
 import { DateTime } from 'luxon';

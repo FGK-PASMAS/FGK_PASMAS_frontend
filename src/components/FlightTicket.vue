@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useFlightStatusDisplayData, type FlightStatusDisplayData } from '@/composables/useFlightStatusDisplayData';
+import { useFlightStatusDisplayData, type FlightStatusDisplayData } from '@/core/composables/useFlightStatusDisplayData';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { bookingStore } from '@/stores/booking';
 import { useToast } from 'primevue/usetoast';

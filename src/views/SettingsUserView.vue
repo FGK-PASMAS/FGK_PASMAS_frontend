@@ -4,7 +4,7 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue';
 import DataTableViewHeader from '@/components/DataTableViewHeader.vue';
 import TransitionLoading from '@/components/TransitionLoading.vue';
 import UserCreation from '@/components/UserCreation.vue';
-import { useValidateAPIData } from '@/composables/useValidateAPIData';
+import { useValidateAPIData } from '@/core/composables/useValidateAPIData';
 import { InfoToast } from '@/core/toasts/info.toast';
 import type { User } from '@/data/user/user.interface';
 import { deleteUser, getUsers } from '@/data/user/user.service';

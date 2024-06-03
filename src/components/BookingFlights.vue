@@ -2,7 +2,7 @@
 import AppDialog from "@/components/AppDialog.vue";
 import FlightInfo from "@/components/FlightInfo.vue";
 import FlightInfoMinimal from "@/components/FlightInfoMinimal.vue";
-import { useValidateAPIData } from "@/composables/useValidateAPIData";
+import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
 import { FlightEventHandler } from "@/data/flight/flight.eventHandler";
 import type { Flight } from "@/data/flight/flight.interface";
 import { getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.service";
