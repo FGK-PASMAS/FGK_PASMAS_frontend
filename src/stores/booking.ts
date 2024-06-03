@@ -1,5 +1,5 @@
+import { getETOW, getTotalPassengersWeight } from "@/core/composables/useFlightCalculator";
 import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
-import { getETOW, getTotalPassengersWeight } from "@/core/services/flightCalculation.service";
 import type { Division } from "@/data/division/division.interface";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import { createFlight, deleteFlight, updateFlight } from "@/data/flight/flight.service";

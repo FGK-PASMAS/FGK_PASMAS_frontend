@@ -1,6 +1,6 @@
+import { parseAPIResponse } from "@/core/composables/useFetch";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import type { EntityInterface } from "../interfaces/entity.interface";
-import { parseAPIResponse } from "../services/fetch.service";
 import { ErrorToast } from "../toasts/error.toast";
 
 export default abstract class EntityEventHandler

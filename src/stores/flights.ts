@@ -1,4 +1,4 @@
-import { compareFlights, getETOW, getITOW, isFuelEnough, isSeatPayloadValid, setOptimalPilot } from "@/core/services/flightCalculation.service";
+import { compareFlights, getETOW, getITOW, isFuelEnough, isSeatPayloadValid, setOptimalPilot } from "@/core/composables/useFlightCalculator";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import type { Plane } from "@/data/plane/plane.interface";
 import { DateTime } from "luxon";

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getETOW, getTotalPassengersWeight } from '@/core/services/flightCalculation.service';
+import { getETOW, getTotalPassengersWeight } from '@/core/composables/useFlightCalculator';
 import type { Division } from '@/data/division/division.interface';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { type Passenger } from '@/data/passenger/passenger.interface';

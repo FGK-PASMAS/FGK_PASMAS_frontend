@@ -1,5 +1,5 @@
+import { fetchAuth } from "@/core/composables/useFetch";
 import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
-import { fetchAuth } from "@/core/services/fetch.service";
 import { Role, type User } from "@/data/user/user.interface";
 import useJwt from "jwt-decode";
 import { defineStore } from "pinia";
