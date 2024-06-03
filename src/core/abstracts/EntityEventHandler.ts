@@ -3,7 +3,7 @@ import type { EntityInterface } from "../interfaces/entity.interface";
 import { parseAPIResponse } from "../services/fetch.service";
 import { ErrorToast } from "../toasts/error.toast";
 
-export abstract class EntityEventHandler 
+export default abstract class EntityEventHandler
 {
     public onEntityEvent(event: MessageEvent<any>, store: EntityInterface[], toast?: ToastServiceMethods): void
     {

@@ -1,4 +1,4 @@
-import { EntityEventHandler } from "@/core/eventHandlers/entity.eventHandler";
+import EntityEventHandler from "@/core/abstracts/EntityEventHandler";
 import type { EntityInterface } from "@/core/interfaces/entity.interface";
 import { InfoToast } from "@/core/toasts/info.toast";
 import type { ToastServiceMethods } from "primevue/toastservice";
