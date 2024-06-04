@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import AppDialog from "@/components/AppDialog.vue";
 import MenuLogo from "@/components/MenuLogo.vue";
-import { authStore } from "@/stores/auth";
+import { useAuthStore } from "@/stores/authStore";
 import InputGroupAddon from 'primevue/inputgroupaddon';
 import { useToast } from "primevue/usetoast";
 import { ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 
 const router = useRouter();
-const auth = authStore();
+const auth = useAuthStore();
 const toast = useToast();
 
 const username = ref("");

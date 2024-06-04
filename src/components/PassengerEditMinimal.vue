@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import type { Passenger } from "@/data/passenger/Passenger";
 import type { PropType } from "vue";
-import type { Passenger } from "@/data/passenger/passenger.interface";
 
 defineProps({
     seatNumber: {

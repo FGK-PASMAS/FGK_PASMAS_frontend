@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { bookingStore } from '@/stores/booking';
+import { useBookingStore } from '@/stores/bookingStore';
 import { ref } from 'vue';
 import AppDialog from './AppDialog.vue';
 import FlightInfo from './FlightInfo.vue';
 
-const booking = bookingStore();
+const booking = useBookingStore();
 
 const isOverviewDialogOpen = ref(false);
 

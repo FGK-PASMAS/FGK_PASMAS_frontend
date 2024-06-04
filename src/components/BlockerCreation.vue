@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useValidateAPIData } from '@/composables/useValidateAPIData';
-import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
-import { createFlight } from '@/data/flight/flight.service';
-import type { Plane } from '@/data/plane/plane.interface';
-import { InfoToast } from '@/utils/toasts/info.toast';
+import { useValidateAPIData } from '@/core/composables/useValidateAPIData';
+import { InfoToast } from '@/core/toasts/InfoToast';
+import { FlightStatus, type Flight } from '@/data/flight/Flight';
+import { createFlight } from '@/data/flight/useFlight';
+import type { Plane } from '@/data/plane/Plane';
 import { DateTime } from 'luxon';
 import Calendar from 'primevue/calendar';
 import Textarea from 'primevue/textarea';

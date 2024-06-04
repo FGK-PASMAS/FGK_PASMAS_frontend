@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import type { Division } from '@/data/division/division.interface';
-import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
-import { type Passenger } from '@/data/passenger/passenger.interface';
-import { bookingStore } from '@/stores/booking';
-import { getETOW, getTotalPassengersWeight } from '@/utils/services/flightCalculation.service';
+import { getETOW, getTotalPassengersWeight } from '@/core/composables/useFlightCalculator';
+import type { Division } from '@/data/division/Division';
+import { FlightStatus, type Flight } from '@/data/flight/Flight';
+import { type Passenger } from '@/data/passenger/Passenger';
+import { useBookingStore } from '@/stores/bookingStore';
 import { useToast } from 'primevue/usetoast';
 import { computed, ref, type PropType } from 'vue';
 import FlightStatusInfo from './FlightStatusInfo.vue';
 import PassengerInfoMinimal from './PassengerInfoMinimal.vue';
 
-const booking = bookingStore();
+const booking = useBookingStore();
 
 const flight = defineModel("flight", {
     type: Object as PropType<Flight>

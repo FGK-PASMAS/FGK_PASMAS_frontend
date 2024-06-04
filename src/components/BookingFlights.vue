@@ -2,14 +2,14 @@
 import AppDialog from "@/components/AppDialog.vue";
 import FlightInfo from "@/components/FlightInfo.vue";
 import FlightInfoMinimal from "@/components/FlightInfoMinimal.vue";
-import { useValidateAPIData } from "@/composables/useValidateAPIData";
-import { FlightEventHandler } from "@/data/flight/flight.eventHandler";
-import type { Flight } from "@/data/flight/flight.interface";
-import { getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.service";
-import type { Passenger } from "@/data/passenger/passenger.interface";
-import { getPlanes } from "@/data/plane/plane.service";
-import { bookingStore } from "@/stores/booking";
-import { flightsStore } from "@/stores/flights";
+import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
+import type { Flight } from "@/data/flight/Flight";
+import { FlightEventHandler } from "@/data/flight/FlightEventHandler";
+import { getFlights, getFlightsByDivisionStream } from "@/data/flight/useFlight";
+import type { Passenger } from "@/data/passenger/Passenger";
+import { getPlanes } from "@/data/plane/usePlane";
+import { useBookingStore } from '@/stores/bookingStore';
+import { useFlightStore } from "@/stores/flightStore";
 import { EventSource } from "extended-eventsource";
 import { useToast } from "primevue/usetoast";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -18,8 +18,8 @@ import TransitionLoading from "./TransitionLoading.vue";
 
 const toast = useToast();
 
-const booking = bookingStore();
-const flights = flightsStore();
+const booking = useBookingStore();
+const flights = useFlightStore();
 
 let eventSource: EventSource;
 const eventHandler = new FlightEventHandler();

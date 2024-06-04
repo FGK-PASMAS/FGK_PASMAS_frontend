@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useValidateAPIData } from '@/composables/useValidateAPIData';
-import type { Plane } from '@/data/plane/plane.interface';
-import { updatePlane } from '@/data/plane/plane.service';
+import { useValidateAPIData } from '@/core/composables/useValidateAPIData';
+import type { Plane } from '@/data/plane/Plane';
+import { updatePlane } from '@/data/plane/usePlane';
 import { DateTime } from 'luxon';
 import Calendar from 'primevue/calendar';
 import { useToast } from 'primevue/usetoast';

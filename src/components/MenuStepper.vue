@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MenuStepperItemInterface } from "@/utils/interfaces/menuStepperItem.interface";
+import type { MenuStepperItemInterface } from "@/core/interfaces/MenuStepperItemInterface";
 import Steps from "primevue/steps";
 import { computed, onBeforeMount, onBeforeUpdate, ref } from "vue";
 
