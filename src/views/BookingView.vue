@@ -9,7 +9,7 @@ import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
 import { parseAPIResponse } from "@/core/composables/useFetch";
-import type { MenuStepperItemInterface } from "@/core/interfaces/menuStepperItem.interface";
+import type { MenuStepperItemInterface } from "@/core/interfaces/MenuStepperItemInterface";
 import { InfoToast } from "@/core/toasts/info.toast";
 import { WarningToast } from "@/core/toasts/warning.toast";
 import type { Division } from "@/data/division/division.interface";

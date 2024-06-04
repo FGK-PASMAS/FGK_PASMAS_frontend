@@ -1,4 +1,4 @@
-import type { EntityInterface } from "@/core/interfaces/entity.interface";
+import type { EntityInterface } from "@/core/interfaces/EntityInterface";
 import type { DateTimeMaybeValid } from "luxon";
 import type { Division } from "../division/division.interface";
 import type { Flight } from "../flight/flight.interface";
