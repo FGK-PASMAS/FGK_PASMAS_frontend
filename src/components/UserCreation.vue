@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useValidateAPIData } from '@/core/composables/useValidateAPIData';
 import { InfoToast } from '@/core/toasts/InfoToast';
-import { Role, type User } from '@/data/user/user.interface';
-import { createUser } from '@/data/user/user.service';
+import { Role, type User } from '@/data/user/User';
+import { createUser } from '@/data/user/useUser';
 import { useToast } from 'primevue/usetoast';
 import { ref } from 'vue';
 

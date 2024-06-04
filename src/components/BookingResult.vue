@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Flight } from '@/data/flight/flight.interface';
+import type { Flight } from '@/data/flight/Flight';
 import { useBookingStore } from '@/stores/bookingStore';
 import type { PropType } from 'vue';
 

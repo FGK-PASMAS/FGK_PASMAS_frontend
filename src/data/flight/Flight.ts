@@ -1,8 +1,8 @@
 import type { EntityInterface } from "@/core/interfaces/EntityInterface";
+import type { Passenger } from "@/data/passenger/Passenger";
+import type { Pilot } from "@/data/pilot/Pilot";
+import type { Plane } from "@/data/plane/Plane";
 import type { DateTimeMaybeValid } from "luxon";
-import type { Passenger } from "../passenger/passenger.interface";
-import type { Pilot } from "../pilot/pilot.interface";
-import type { Plane } from "../plane/plane.interface";
 
 export enum FlightStatus {
     OK = "OK",

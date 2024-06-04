@@ -1,8 +1,8 @@
 import { fetchAPI } from "@/core/composables/useFetch";
 import { getStream } from "@/core/composables/useStream";
 import { APIError } from "@/core/errors/APIError";
+import type { Plane } from "@/data/plane/Plane";
 import type { EventSource } from "extended-eventsource";
-import type { Plane } from "./plane.interface";
 
 export const getPlanes = async (params?: Record<string, string | number | boolean>): Promise<Plane[] | APIError> => {
     return await fetchAPI({

@@ -1,8 +1,8 @@
 import type { EntityInterface } from "@/core/interfaces/EntityInterface";
+import type { Division } from "@/data/division/Division";
+import type { Flight } from "@/data/flight/Flight";
+import type { Pilot } from "@/data/pilot/Pilot";
 import type { DateTimeMaybeValid } from "luxon";
-import type { Division } from "../division/division.interface";
-import type { Flight } from "../flight/flight.interface";
-import type { Pilot } from "../pilot/pilot.interface";
 
 export interface Plane extends EntityInterface {
     Registration?: string;

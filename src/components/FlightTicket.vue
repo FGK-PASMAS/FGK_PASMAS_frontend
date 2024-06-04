@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useFlightStatusDisplayData, type FlightStatusDisplayData } from '@/core/composables/useFlightStatusDisplayData';
-import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
+import { FlightStatus, type Flight } from '@/data/flight/Flight';
 import { useBookingStore } from '@/stores/bookingStore';
 import { useToast } from 'primevue/usetoast';
 import { computed, type PropType } from 'vue';

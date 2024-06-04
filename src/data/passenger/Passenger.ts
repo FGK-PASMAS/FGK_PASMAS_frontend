@@ -1,5 +1,5 @@
 import type { EntityInterface } from "@/core/interfaces/EntityInterface";
-import type { Flight } from "../flight/flight.interface";
+import type { Flight } from "@/data/flight/Flight";
 
 export enum PassengerAction {
     CREATE = "CREATE",

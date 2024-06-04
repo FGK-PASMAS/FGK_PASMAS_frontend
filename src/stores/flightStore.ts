@@ -1,6 +1,6 @@
 import { compareFlights, getETOW, getITOW, isFuelEnough, isSeatPayloadValid, setOptimalPilot } from "@/core/composables/useFlightCalculator";
-import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
-import type { Plane } from "@/data/plane/plane.interface";
+import { FlightStatus, type Flight } from "@/data/flight/Flight";
+import type { Plane } from "@/data/plane/Plane";
 import { useBookingStore } from '@/stores/bookingStore';
 import { DateTime } from "luxon";
 import { defineStore } from "pinia";

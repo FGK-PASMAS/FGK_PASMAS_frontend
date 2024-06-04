@@ -1,9 +1,9 @@
 import { getETOW, getTotalPassengersWeight } from "@/core/composables/useFlightCalculator";
 import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
-import type { Division } from "@/data/division/division.interface";
-import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
-import { createFlight, deleteFlight, updateFlight } from "@/data/flight/flight.service";
-import { type Passenger } from "@/data/passenger/passenger.interface";
+import type { Division } from "@/data/division/Division";
+import { FlightStatus, type Flight } from "@/data/flight/Flight";
+import { createFlight, deleteFlight, updateFlight } from "@/data/flight/useFlight";
+import { type Passenger } from "@/data/passenger/Passenger";
 import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { computed, ref, type Ref } from "vue";

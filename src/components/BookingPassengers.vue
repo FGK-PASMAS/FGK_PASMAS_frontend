@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import PassengerEditMinimal from "@/components/PassengerEditMinimal.vue";
 import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
-import type { Division } from "@/data/division/division.interface";
-import { getDivisions } from "@/data/division/division.service";
+import type { Division } from "@/data/division/Division";
+import { getDivisions } from "@/data/division/useDivision";
 import { useBookingStore } from '@/stores/bookingStore';
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, ref, type Ref } from "vue";

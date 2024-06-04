@@ -1,8 +1,8 @@
 import EntityEventHandler from "@/core/abstracts/EntityEventHandler";
 import type { EntityInterface } from "@/core/interfaces/EntityInterface";
 import { InfoToast } from '@/core/toasts/InfoToast';
+import type { Passenger } from "@/data/passenger/Passenger";
 import type { ToastServiceMethods } from "primevue/toastservice";
-import type { Passenger } from "./passenger.interface";
 
 export class PassengerEventHandler extends EntityEventHandler 
 {

@@ -1,4 +1,4 @@
-import { FlightStatus, FlightStatusBgColor, FlightStatusColor, FlightStatusDisplayName } from "@/data/flight/flight.interface";
+import { FlightStatus, FlightStatusBgColor, FlightStatusColor, FlightStatusDisplayName } from "@/data/flight/Flight";
 
 export interface FlightStatusDisplayData {
     status: String,

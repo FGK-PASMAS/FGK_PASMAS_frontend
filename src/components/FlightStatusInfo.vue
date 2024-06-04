@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useFlightStatusDisplayData, type FlightStatusDisplayData } from "@/core/composables/useFlightStatusDisplayData";
-import { FlightStatus } from "@/data/flight/flight.interface";
+import { FlightStatus } from "@/data/flight/Flight";
 import { computed, type PropType } from "vue";
 
 const props = defineProps({

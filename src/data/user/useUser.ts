@@ -1,6 +1,6 @@
 import { fetchAPI } from "@/core/composables/useFetch";
 import { APIError } from "@/core/errors/APIError";
-import type { User } from "./user.interface";
+import type { User } from "@/data/user/User";
 
 export const getUsers = async (params?: Record<string, string | number | boolean>): Promise<User[] | APIError> => {
     return await fetchAPI({

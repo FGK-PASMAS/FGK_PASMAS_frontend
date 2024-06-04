@@ -1,5 +1,5 @@
-import type { Flight } from "@/data/flight/flight.interface";
-import type { Passenger } from "@/data/passenger/passenger.interface";
+import type { Flight } from "@/data/flight/Flight";
+import type { Passenger } from "@/data/passenger/Passenger";
 
 export const getTotalPassengersWeight = (passengers?: Passenger[]): number => {
     if (!passengers) {

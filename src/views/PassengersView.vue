@@ -2,9 +2,9 @@
 import DataTableViewHeader from "@/components/DataTableViewHeader.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
 import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
-import { PassengerEventHandler } from "@/data/passenger/passenger.eventHandler";
-import type { Passenger } from "@/data/passenger/passenger.interface";
-import { getPassengers, getPassengersStream } from "@/data/passenger/passenger.service";
+import type { Passenger } from "@/data/passenger/Passenger";
+import { PassengerEventHandler } from "@/data/passenger/PassengerEventHandler";
+import { getPassengers, getPassengersStream } from "@/data/passenger/usePassenger";
 import { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from "primevue/api";
 import type DataTable from "primevue/datatable";
