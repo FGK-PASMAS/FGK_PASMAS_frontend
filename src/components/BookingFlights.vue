@@ -8,8 +8,8 @@ import type { Flight } from "@/data/flight/flight.interface";
 import { getFlights, getFlightsByDivisionStream } from "@/data/flight/flight.service";
 import type { Passenger } from "@/data/passenger/passenger.interface";
 import { getPlanes } from "@/data/plane/plane.service";
-import { bookingStore } from "@/stores/booking";
-import { flightsStore } from "@/stores/flights";
+import { useBookingStore } from '@/stores/bookingStore';
+import { useFlightStore } from "@/stores/flightStore";
 import { EventSource } from "extended-eventsource";
 import { useToast } from "primevue/usetoast";
 import { onMounted, onUnmounted, ref } from "vue";
@@ -18,8 +18,8 @@ import TransitionLoading from "./TransitionLoading.vue";
 
 const toast = useToast();
 
-const booking = bookingStore();
-const flights = flightsStore();
+const booking = useBookingStore();
+const flights = useFlightStore();
 
 let eventSource: EventSource;
 const eventHandler = new FlightEventHandler();

@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { authStore } from '@/stores/auth';
+import { useAuthStore } from "@/stores/authStore";
 import { RouterLink } from 'vue-router';
 
 const appName = import.meta.env.VITE_APP_NAME;
 
-const auth = authStore();
+const auth = useAuthStore();
 </script>
 
 <template>

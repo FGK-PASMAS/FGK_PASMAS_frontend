@@ -1,13 +1,13 @@
 import { compareFlights, getETOW, getITOW, isFuelEnough, isSeatPayloadValid, setOptimalPilot } from "@/core/composables/useFlightCalculator";
 import { FlightStatus, type Flight } from "@/data/flight/flight.interface";
 import type { Plane } from "@/data/plane/plane.interface";
+import { useBookingStore } from '@/stores/bookingStore';
 import { DateTime } from "luxon";
 import { defineStore } from "pinia";
 import { computed, ref, type Ref } from "vue";
-import { bookingStore } from "./booking";
 
-export const flightsStore = defineStore("flights", () => {
-    const booking = bookingStore();
+export const useFlightStore = defineStore("flights", () => {
+    const booking = useBookingStore();
 
     const planes: Ref<Plane[]> = ref([]);
     const existingFlights: Ref<Flight[]> = ref([]);

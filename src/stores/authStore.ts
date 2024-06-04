@@ -6,7 +6,7 @@ import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { computed, ref } from "vue";
 
-export const authStore = defineStore("auth", () => {    
+export const useAuthStore = defineStore("auth", () => {    
     const token = ref();
     const isAuthenticated = ref(true);
 

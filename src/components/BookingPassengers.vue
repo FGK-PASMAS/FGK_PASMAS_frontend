@@ -3,14 +3,14 @@ import PassengerEditMinimal from "@/components/PassengerEditMinimal.vue";
 import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
 import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
-import { bookingStore } from "@/stores/booking";
+import { useBookingStore } from '@/stores/bookingStore';
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, ref, type Ref } from "vue";
 
 const toast = useToast();
-const dropDown = ref(null);
+const booking = useBookingStore();
 
-const booking = bookingStore();
+const dropDown = ref(null);
 const divisions: Ref<Division[]> = ref([]);
 
 onBeforeMount(async () => {

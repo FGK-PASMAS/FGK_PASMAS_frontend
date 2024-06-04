@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useFlightStatusDisplayData, type FlightStatusDisplayData } from '@/core/composables/useFlightStatusDisplayData';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
-import { bookingStore } from '@/stores/booking';
+import { useBookingStore } from '@/stores/bookingStore';
 import { useToast } from 'primevue/usetoast';
 import { computed, type PropType } from 'vue';
 
-const booking = bookingStore();
+const booking = useBookingStore();
 
 const flight = defineModel("flight", {
     type: Object as PropType<Flight>,

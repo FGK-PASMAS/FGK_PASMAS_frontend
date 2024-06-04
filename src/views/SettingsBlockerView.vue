@@ -13,14 +13,14 @@ import { getFlights } from "@/data/flight/flight.service";
 import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
 import type { Plane } from "@/data/plane/plane.interface";
 import { getPlanes, getPlanesStream } from "@/data/plane/plane.service";
-import { authStore } from "@/stores/auth";
+import { useAuthStore } from "@/stores/authStore";
 import type { EventSource } from "extended-eventsource";
 import { FilterMatchMode } from "primevue/api";
 import type DataTable from "primevue/datatable";
 import { useToast } from "primevue/usetoast";
 import { computed, onBeforeMount, onUnmounted, ref, type Ref } from "vue";
 
-const auth = authStore();
+const auth = useAuthStore();
 
 const divisions: Ref<Division[]> = ref([]);
 const selectedDivision: Ref<Division | undefined> = ref();

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { bookingStore } from '@/stores/booking';
+import { useBookingStore } from '@/stores/bookingStore';
 import Textarea from 'primevue/textarea';
 import PassengerEditMinimal from './PassengerEditMinimal.vue';
 
-const booking = bookingStore();
+const booking = useBookingStore();
 </script>
 
 <template>

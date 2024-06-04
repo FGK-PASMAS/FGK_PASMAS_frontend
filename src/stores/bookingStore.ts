@@ -8,7 +8,7 @@ import { defineStore } from "pinia";
 import type { ToastServiceMethods } from "primevue/toastservice";
 import { computed, ref, type Ref } from "vue";
 
-export const bookingStore = defineStore("booking", () => {
+export const useBookingStore = defineStore("booking", () => {
     const division: Ref<Division | undefined> = ref();
     const seats: Ref<Passenger[]> = ref([]);
     const flight: Ref<Flight | undefined> = ref();

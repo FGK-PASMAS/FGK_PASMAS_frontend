@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { useAuthStore } from "@/stores/authStore";
 import type DataTable from 'primevue/datatable';
 import { type PropType } from 'vue';
 import ContentHeader from './ContentHeader.vue';
-import { authStore } from '@/stores/auth';
 
-const auth = authStore();
+const auth = useAuthStore();
 
 const filters = defineModel("filters", {
     type: Object

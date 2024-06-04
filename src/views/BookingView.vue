@@ -8,8 +8,8 @@ import ContentHeader from "@/components/ContentHeader.vue";
 import MenuStepper from "@/components/MenuStepper.vue";
 import NavigationGuardDialog from "@/components/NavigationGuardDialog.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
-import type { MenuStepperItemInterface } from "@/core/interfaces/menuStepperItem.interface";
 import { parseAPIResponse } from "@/core/composables/useFetch";
+import type { MenuStepperItemInterface } from "@/core/interfaces/menuStepperItem.interface";
 import { InfoToast } from "@/core/toasts/info.toast";
 import { WarningToast } from "@/core/toasts/warning.toast";
 import type { Division } from "@/data/division/division.interface";
@@ -19,16 +19,16 @@ import { getFlightsByDivisionStream } from "@/data/flight/flight.service";
 import { type Passenger } from "@/data/passenger/passenger.interface";
 import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
 import { getPlanesStream } from "@/data/plane/plane.service";
-import { authStore } from "@/stores/auth";
-import { bookingStore } from "@/stores/booking";
+import { useAuthStore } from "@/stores/authStore";
+import { useBookingStore } from '@/stores/bookingStore';
 import type { EventSource } from "extended-eventsource";
 import { DateTime } from "luxon";
 import { useToast } from "primevue/usetoast";
 import { onBeforeMount, onUnmounted, ref, toRaw, type Ref } from "vue";
 import { onBeforeRouteLeave } from "vue-router";
 
-const auth = authStore();
-const booking = bookingStore();
+const auth = useAuthStore();
+const booking = useBookingStore();
 const bookedFlight: Ref<Flight | undefined> = ref();
 
 // Observers to watch changes to the booking state due to administrator intervention

@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { InfoToast } from "@/core/toasts/info.toast";
-import { authStore } from "@/stores/auth";
+import { useAuthStore } from "@/stores/authStore";
 import InputSwitch from "primevue/inputswitch";
 import { useToast } from "primevue/usetoast";
 import { RouterLink, useRouter } from "vue-router";
 import MenuLogo from "./MenuLogo.vue";
 
 const router = useRouter();
-const auth = authStore();
+const auth = useAuthStore();
 const toast = useToast();
 
 const isDarkMode = defineModel("isDarkMode", { 

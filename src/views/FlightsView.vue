@@ -11,7 +11,7 @@ import { getDivisions } from '@/data/division/division.service';
 import { FlightEventHandler } from '@/data/flight/flight.eventHandler';
 import { FlightStatus, type Flight } from '@/data/flight/flight.interface';
 import { deleteFlight, getFlights, getFlightsByDivisionStream, getFlightsStream } from '@/data/flight/flight.service';
-import { authStore } from '@/stores/auth';
+import { useAuthStore } from "@/stores/authStore";
 import { EventSource } from "extended-eventsource";
 import { DateTime } from 'luxon';
 import { FilterMatchMode } from 'primevue/api';
@@ -21,7 +21,7 @@ import { type TabMenuChangeEvent } from 'primevue/tabmenu';
 import { useToast } from 'primevue/usetoast';
 import { computed, onBeforeMount, onUnmounted, ref, type Ref } from 'vue';
 
-const auth = authStore();
+const auth = useAuthStore();
 
 const divisions: Ref<Division[]> = ref([]);
 const flights: Ref<Flight[]> = ref([]);

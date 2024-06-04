@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { Flight } from '@/data/flight/flight.interface';
-import { bookingStore } from '@/stores/booking';
+import { useBookingStore } from '@/stores/bookingStore';
 import type { PropType } from 'vue';
 
-const booking = bookingStore();
+const booking = useBookingStore();
 
 defineProps({
     flight: {

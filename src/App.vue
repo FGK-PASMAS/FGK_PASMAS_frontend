@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useAuthStore } from "@/stores/authStore";
 import { usePrimeVue } from "primevue/config";
 import Toast from "primevue/toast";
 import { onBeforeMount, onErrorCaptured, ref } from "vue";
@@ -8,10 +9,9 @@ import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
 import { HTTPError } from "./core/errors/http.error";
 import { RouteGuard } from "./router";
-import { authStore } from "./stores/auth";
 
 const router = useRouter();
-const auth = authStore();
+const auth = useAuthStore();
 const PrimeVue = usePrimeVue();
 
 // Theme
