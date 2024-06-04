@@ -5,7 +5,7 @@ import DataTableViewHeader from '@/components/DataTableViewHeader.vue';
 import TransitionLoading from '@/components/TransitionLoading.vue';
 import UserCreation from '@/components/UserCreation.vue';
 import { useValidateAPIData } from '@/core/composables/useValidateAPIData';
-import { InfoToast } from '@/core/toasts/info.toast';
+import { InfoToast } from '@/core/toasts/InfoToast';
 import type { User } from '@/data/user/user.interface';
 import { deleteUser, getUsers } from '@/data/user/user.service';
 import { FilterMatchMode } from 'primevue/api';

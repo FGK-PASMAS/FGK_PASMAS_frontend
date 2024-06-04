@@ -5,7 +5,7 @@ import ContentHeader from "@/components/ContentHeader.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
 import { useFlightStatusDisplayData } from "@/core/composables/useFlightStatusDisplayData";
 import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
-import { WarningToast } from "@/core/toasts/warning.toast";
+import { WarningToast } from "@/core/toasts/WarningToast";
 import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
 import type { Flight } from "@/data/flight/flight.interface";

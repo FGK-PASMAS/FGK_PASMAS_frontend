@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { InfoToast } from "@/core/toasts/info.toast";
+import { InfoToast } from '@/core/toasts/InfoToast';
 import { useAuthStore } from "@/stores/authStore";
 import InputSwitch from "primevue/inputswitch";
 import { useToast } from "primevue/usetoast";

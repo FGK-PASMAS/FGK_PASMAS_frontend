@@ -4,7 +4,7 @@ import DataTableViewHeader from "@/components/DataTableViewHeader.vue";
 import PlaneEdit from "@/components/PlaneEdit.vue";
 import TransitionLoading from "@/components/TransitionLoading.vue";
 import { useValidateAPIData } from "@/core/composables/useValidateAPIData";
-import { WarningToast } from "@/core/toasts/warning.toast";
+import { WarningToast } from "@/core/toasts/WarningToast";
 import type { Division } from "@/data/division/division.interface";
 import { getDivisions } from "@/data/division/division.service";
 import { PlaneEventHandler } from "@/data/plane/plane.eventHandler";
