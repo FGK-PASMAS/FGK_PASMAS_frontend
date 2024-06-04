@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { HTTPError } from "@/core/errors/HTTPError";
 import { useAuthStore } from "@/stores/authStore";
 import { usePrimeVue } from "primevue/config";
 import Toast from "primevue/toast";
@@ -7,7 +8,6 @@ import { useRouter } from "vue-router";
 import MenuDrawer from "./components/MenuDrawer.vue";
 import MenuDrawerItem from "./components/MenuDrawerItem.vue";
 import MenuTopbar from "./components/MenuTopbar.vue";
-import { HTTPError } from "./core/errors/http.error";
 import { RouteGuard } from "./router";
 
 const router = useRouter();

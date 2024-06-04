@@ -1,4 +1,4 @@
-import { APIError } from "./api.error";
+import { APIError } from "@/core/errors/APIError";
 
 export class HTTPError extends APIError {
     constructor(statusCode: number, Type?: string, Message?: string) {

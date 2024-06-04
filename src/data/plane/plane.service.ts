@@ -1,6 +1,6 @@
 import { fetchAPI } from "@/core/composables/useFetch";
 import { getStream } from "@/core/composables/useStream";
-import type { APIError } from "@/core/errors/api.error";
+import { APIError } from "@/core/errors/APIError";
 import type { EventSource } from "extended-eventsource";
 import type { Plane } from "./plane.interface";
 

@@ -1,4 +1,4 @@
-import { APIError } from "./api.error";
+import { APIError } from "@/core/errors/APIError";
 
 export class SyntaxError extends APIError {
     constructor(Message?: string) {

@@ -1,4 +1,4 @@
-import { APIError } from "@/core/errors/api.error";
+import { APIError } from "@/core/errors/APIError";
 import { ErrorToast } from "@/core/toasts/error.toast";
 import type { ToastServiceMethods } from "primevue/toastservice";
 

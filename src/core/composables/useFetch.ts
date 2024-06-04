@@ -1,8 +1,8 @@
+import { APIError } from "@/core/errors/APIError";
+import { FetchError } from "@/core/errors/FetchError";
+import { HTTPError } from "@/core/errors/HTTPError";
+import { SyntaxError } from "@/core/errors/SyntaxError";
 import { DateTime } from "luxon";
-import { APIError } from "../errors/api.error";
-import { FetchError } from "../errors/fetch.error";
-import { HTTPError } from "../errors/http.error";
-import { SyntaxError } from "../errors/syntax.error";
 
 interface FetchAPIRequest {
     resource: string,
