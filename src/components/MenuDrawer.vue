@@ -24,7 +24,7 @@ function closeDrawer(): void
 <template>
     <div class="h-full z-3">
         <div class="shade md:hidden" :class="{ 'hidden': !isOpen }" @click="closeDrawer()"></div>
-        <div class="drawer h-full md:static fixed flex-shrink-0 flex flex-column justify-content-between min-w-max" :class="{ 'closed': isClosed, 'open': isOpen }">
+        <div class="drawer h-full fixed md:static flex-shrink-0 flex flex-column justify-content-between min-w-max" :class="{ 'closed': isClosed, 'open': isOpen }">
             <div class="flex flex-column">
                 <div class="flex justify-content-between align-items-center pt-1 pr-2 pb-1 pl-2">
                     <MenuLogo />
