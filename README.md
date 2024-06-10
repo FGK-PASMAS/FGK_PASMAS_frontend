@@ -43,4 +43,4 @@ The frontend will be accessible on port 80 of your server by default.
 
 ## Additional Notes
 
-Please note that PasMAs is still under development but is currently not actively maintained by the original authors due to other real-life commitments.
+Please note that PasMAs is still under development but is currently not actively maintained by the original authors.
