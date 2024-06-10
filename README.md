@@ -16,11 +16,13 @@ The application consists of both a backend and a frontend. This repository conta
 
 The PasMAs frontend can be deployed either locally via Vite or on a production server via Docker. Please ensure that the backend is running when using the PasMAs frontend!
 
-### Configuration
+### Deployment via Vite
+
+#### Configuration
 
 Before running the frontend application, you need to configure it via environment variables. Simply copy the `.env.example` file to a `.env` file, and set the correct configuration values accordingly.
 
-### Deployment via Vite
+#### Running the application
 
 Make sure you have an up-to-date version of [Node.js](https://nodejs.org/en) installed. Navigate to the project directory and run the following commands to install dependencies and start the development server:
 
@@ -33,13 +35,39 @@ The frontend will be accessible at http://localhost:5173 by default.
 
 ### Deployment via Docker
 
-PasMAs comes with a docker-compose file included. Make sure you have an up-to-date version of [Docker](https://www.docker.com/) installed on your server. Navigate to the project directory and run the following commands to run the frontend application as a container:
+PasMAs comes with 2 included docker-compose files. One is for using the application over HTTP, and the other one for HTTPS.
+
+#### HTTP
+
+##### Configuration
+
+Before running the frontend application, you need to configure it via environment variables. Simply copy the `.env.example` file to a `.env` file, and set the correct configuration values accordingly.
+
+##### Running the application
+
+Make sure you have an up-to-date version of [Docker](https://www.docker.com/) installed on your server. Navigate to the project directory and run the following commands to run the frontend application as a container:
 
 ```
 docker compose up -d
 ```
 
 The frontend will be accessible on port 80 of your server by default.
+
+#### HTTPS
+
+##### Configuration
+
+Before running the frontend application, you need to configure it via environment variables. Simply copy the `.env.ssl.example` file to a `.env` file, and set the correct configuration values accordingly.
+
+##### Running the application
+
+Make sure you have an up-to-date version of [Docker](https://www.docker.com/) installed on your server. Navigate to the project directory and run the following commands to run the frontend application as a container:
+
+```
+docker-compose -f docker-compose.ssl.yml up -d
+```
+
+The frontend will be accessible on port 443 of your server by default.
 
 ## Additional Notes
 
