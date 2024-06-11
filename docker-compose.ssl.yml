@@ -1,0 +1,12 @@
+services:
+  frontend:
+    build:
+      context: .
+    restart: unless-stopped
+    container_name: vue
+    ports:
+      - "80:80"
+    volumes:
+      - ./docker/nginx/nginx.ssh.conf:/etc/nginx/nginx.conf:ro
+      - ${NGINX_CERTIFICATE}:/etc/nginx/certs/fullchain.pem
+      - ${NGINX_CERTIFICATE_KEY}:/etc/nginx/certs/privkey.pem
