@@ -18,13 +18,15 @@ The PasMAs frontend can be deployed either locally via Vite or on a production s
 
 ### Deployment via Vite
 
+Make sure you have an up-to-date version of [Node.js](https://nodejs.org/en) installed.
+
 #### Configuration
 
 Before running the frontend application, you need to configure it via environment variables. Simply copy the `.env.example` file to a `.env` file, and set the correct configuration values accordingly.
 
 #### Running the application
 
-Make sure you have an up-to-date version of [Node.js](https://nodejs.org/en) installed. Navigate to the project directory and run the following commands to install dependencies and start the development server:
+Navigate to the project directory and run the following commands to install dependencies and start the development server:
 
 ```
 npm install
@@ -35,7 +37,7 @@ The frontend will be accessible at http://localhost:5173 by default.
 
 ### Deployment via Docker
 
-PasMAs comes with 2 included docker-compose files. One is for using the application over HTTP, and the other one for HTTPS.
+PasMAs comes with 2 included docker-compose files. One is for using the application over HTTP, and the other one for HTTPS. Make sure you have an up-to-date version of [Docker](https://www.docker.com/) installed on your server.
 
 #### HTTP
 
@@ -45,7 +47,7 @@ Before running the frontend application, you need to configure it via environmen
 
 ##### Running the application
 
-Make sure you have an up-to-date version of [Docker](https://www.docker.com/) installed on your server. Navigate to the project directory and run the following commands to run the frontend application as a container:
+Navigate to the project directory and run the following commands to run the frontend application as a container:
 
 ```
 docker compose up -d
@@ -61,7 +63,7 @@ Before running the frontend application, you need to configure it via environmen
 
 ##### Running the application
 
-Make sure you have an up-to-date version of [Docker](https://www.docker.com/) installed on your server. Navigate to the project directory and run the following commands to run the frontend application as a container:
+Navigate to the project directory and run the following commands to run the frontend application as a container:
 
 ```
 docker-compose -f docker-compose.ssl.yml up -d
